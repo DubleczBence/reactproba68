@@ -1,6 +1,6 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Home from './Home';
@@ -8,14 +8,9 @@ import Home from './Home';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate(); // Helyezd a hookot ide
-  const location = useLocation();
+  
 
-  useEffect(() => {
-    // Ha a felhasználó nincs bejelentkezve, de nem a /sign-up oldalon van, irányítsd a /sign-in oldalra
-    if (!isAuthenticated && location.pathname !== '/sign-up') {
-      navigate('/sign-in');
-    }
-  }, [isAuthenticated, navigate, location]);
+  
 
 
   const HandleSignUpData = async ({ type, data }) => {
@@ -72,7 +67,7 @@ function App() {
         if (type === 'user') {
           navigate('/home', { state: { userName: result.name } }); // Felhasználói név
         } else if (type === 'company') {
-          navigate('/home', { state: { companyName: result.companyName } }); // Céges név
+          navigate('/home', { state: { companyName: result.cegnev } }); // Céges név
         }
 
       } else {

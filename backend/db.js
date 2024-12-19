@@ -6,6 +6,7 @@ const db = mysql.createConnection({
   user: 'roote',      // Az adatbázis felhasználónév
   password: 'antiszoci',      // Az adatbázis jelszó (ha van)
   database: 'survey_app', // Az adatbázis neve
+  port: 3307
 });
 
 db.connect((err) => {

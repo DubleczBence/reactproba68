@@ -72,7 +72,31 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+
+  const [company_nameError, setCompanyNameError] = React.useState(false);
+  const [company_nameErrorMessage, setCompanyNameErrorMessage] = React.useState('');
+  const [company_phonenumberError, setCompanyPhonenumberError] = React.useState(false);
+  const [company_phonenumberErrorMessage, setCompanyPhonenumberErrorMessage] = React.useState('');
+  const [company_emailError, setCompanyEmailError] = React.useState(false);
+  const [company_emailErrorMessage, setCompanyEmailErrorMessage] = React.useState('');
+  const [company_passwordError, setCompanyPasswordError] = React.useState(false);
+  const [company_passwordErrorMessage, setCompanyPasswordErrorMessage] = React.useState('');
+  const [company_settlementError, setCompanySettlementError] = React.useState(false);
+  const [company_settlementErrorMessage, setCompanySettlementErrorMessage] = React.useState('');
+  const [company_countyError, setCompanyCountyError] = React.useState(false);
+  const [company_countyErrorMessage, setCompanyCountyErrorMessage] = React.useState('');
+  const [company_invoiceError, setCompanyInvoiceError] = React.useState(false);
+  const [company_invoiceErrorMessage, setCompanyInvoiceErrorMessage] = React.useState('');
+  const [company_creditcardError, setCompanyCreditcardError] = React.useState(false);
+  const [company_creditcardErrorMessage, setCompanyCreditcardErrorMessage] = React.useState('');
+  const [company_taxnumberError, setCompanyTaxnumberError] = React.useState(false);
+  const [company_taxnumberErrorMessage, setCompanyTaxnumberErrorMessage] = React.useState('');
+  const [company_registerError, setCompanyRegisterError] = React.useState(false);
+  const [company_registerErrorMessage, setCompanyRegisterErrorMessage] = React.useState('');
+  const [company_geographicnoError, setCompanyGeographicNoError] = React.useState(false);
+  const [company_geographicnoErrorMessage, setCompanyGeographicNoErrorMessage] = React.useState('');
   const [checked, setChecked] = React.useState(false);
+  const phoneRegex = /^[0-9+]+$/;
 
 
   const [name, setName] = React.useState('');
@@ -154,51 +178,127 @@ export default function SignUp(props) {
     else{
     // Ha céges form van kiválasztva, további mezők validálása
       if (!cegnev || cegnev.length < 1) {
-        alert('Cégnév is required.');
-        isValid = false;
+        setCompanyNameError(true);
+        setCompanyNameErrorMessage('Company name is required.');
+      isValid = false;
+      } else {
+        setCompanyNameError(false);
+        setCompanyNameErrorMessage('');
       }
-      if (!telefon || telefon.length < 1) {
-        alert('Telefonszám is required.');
-        isValid = false;
-      }
-      if (!ceg_email || ceg_email.length < 1) {
-        alert('Cég Email is required.');
-        isValid = false;
-      }
-      if (!jelszo || jelszo.length < 1) {
-        alert('Jelszo is required.');
-        isValid = false;
-      }
-      if (!telepules || telepules.length < 1) {
-        alert('Telepules is required.');
-        isValid = false;
-      }
-      if (!megye || megye.length < 1) {
-        alert('Megye is required.');
-        isValid = false;
-      }
-      if (!ceges_szamla || ceges_szamla.length < 1) {
-        alert('Céges számla is required.');
-        isValid = false;
-      }
-      if (!hitelkartya || hitelkartya.length < 1) {
-        alert('Hitelkartya is required.');
-        isValid = false;
-      }
-      if (!adoszam || adoszam.length < 8) {
-        alert('Adószám must be at least 8 characters.');
-        isValid = false;
-      }
-      if (!cegjegyzek || cegjegyzek.length < 1) {
-        alert('Cégjegyzékszám is required.');
-        isValid = false;
-      }
-      if (!helyrajziszam || helyrajziszam.length < 1) {
-        alert('Helyrajzi szám is required.');
-        isValid = false;
-      }
-    }
 
+      if (!telefon || (telefon.startsWith('+36') && telefon.length !== 12) || (telefon.startsWith('06') && telefon.length !== 11) || (!telefon.startsWith('+36') && !telefon.startsWith('06')) || (!telefon.startsWith('+3620') && !telefon.startsWith('+3630') && !telefon.startsWith('+3670') && !telefon.startsWith('0620') && !telefon.startsWith('0630') && !telefon.startsWith('0670')) || !phoneRegex.test(telefon)) {
+        setCompanyPhonenumberError(true);
+        setCompanyPhonenumberErrorMessage('The phone number must be valid and Hungarian.');
+      isValid = false;
+      } else {
+        setCompanyPhonenumberError(false);
+        setCompanyPhonenumberErrorMessage('');
+      }
+
+      if (!ceg_email || !/\S+@\S+\.\S+/.test(ceg_email)) {
+        setCompanyEmailError(true);
+        setCompanyEmailErrorMessage('Please enter a valid email address.');
+        isValid = false;
+      }else {
+        setCompanyEmailError(false);
+        setCompanyEmailErrorMessage('');
+      }
+
+      if (!jelszo || jelszo.length < 6) {
+        setCompanyPasswordError(true);
+        setCompanyPasswordErrorMessage('Password must be at least 6 characters long.');
+        isValid = false;
+      } 
+      else if (!/[A-Z]/.test(jelszo)) {
+        setCompanyPasswordError(true);
+        setCompanyPasswordErrorMessage('Password must contain at least one uppercase letter.');
+        isValid = false;
+      } 
+      else if (!/[a-z]/.test(jelszo)) {
+        setCompanyPasswordError(true);
+        setCompanyPasswordErrorMessage('Password must contain at least one lowercase letter.');
+        isValid = false;
+      } 
+      else if (!/[0-9]/.test(jelszo)) {
+        setCompanyPasswordError(true);
+        setCompanyPasswordErrorMessage('Password must contain at least one number.');
+        isValid = false;
+      } 
+      else {
+        setCompanyPasswordError(false);
+        setCompanyPasswordErrorMessage('');
+      }
+
+      if (!telepules || telepules.length < 1) {
+        setCompanySettlementError(true);
+        setCompanySettlementErrorMessage('Settelment is required.');
+        isValid = false;
+      } 
+      else {
+        setCompanySettlementError(false);
+        setCompanySettlementErrorMessage('');
+      }
+
+      if (!megye || megye.length < 1) {
+        setCompanyCountyError(true);
+        setCompanyCountyErrorMessage('County is required.');
+        isValid = false;
+      } 
+      else {
+        setCompanyCountyError(false);
+        setCompanyCountyErrorMessage('');
+      }
+
+      if (!ceges_szamla || ceges_szamla.length !== 24 || !/^\d+$/.test(ceges_szamla)) {
+        setCompanyInvoiceError(true);
+        setCompanyInvoiceErrorMessage('Invoice must be 24 characters long and contain only numbers.');
+        isValid = false;
+      }
+      else {
+          setCompanyInvoiceError(false);
+          setCompanyInvoiceErrorMessage('');
+      }
+
+      if (!hitelkartya || hitelkartya.length !== 16 || !/^\d+$/.test(hitelkartya)) {
+        setCompanyCreditcardError(true);
+        setCompanyCreditcardErrorMessage('Credit card number must be 16 digits and contain only numbers.');
+        isValid = false;
+      } 
+      else {
+          setCompanyCreditcardError(false);
+          setCompanyCreditcardErrorMessage('');
+      }
+
+      if (!adoszam || adoszam.length < 8) {
+        setCompanyTaxnumberError(true);
+        setCompanyTaxnumberErrorMessage('Taxnumber is required.');
+        isValid = false;
+      } 
+      else {
+        setCompanyTaxnumberError(false);
+        setCompanyTaxnumberErrorMessage('');
+      }
+
+      if (!cegjegyzek || cegjegyzek.length !== 10 || !/^\d{10}$/.test(cegjegyzek)) {
+        setCompanyRegisterError(true);
+        setCompanyRegisterErrorMessage('Company register must be 10 digits long and contain only numbers.');
+        isValid = false;
+      } 
+      else {
+          setCompanyRegisterError(false);
+          setCompanyRegisterErrorMessage('');
+      }
+
+      if (!helyrajziszam ||  helyrajziszam.length < 1 || !/^\d{1,4}[-/]\d{1,4}$/.test(helyrajziszam)) {
+        setCompanyGeographicNoError(true);
+        setCompanyGeographicNoErrorMessage('Geographic number is required and must contain only numbers, with an optional separator ("/" or "-").');
+        isValid = false;
+    } else {
+        setCompanyGeographicNoError(false);
+        setCompanyGeographicNoErrorMessage('');
+    }
+    }
+    
 
     return isValid;
   };
@@ -353,6 +453,9 @@ export default function SignUp(props) {
                     placeholder="Cégnév"
                     value={cegnev}
                     onChange={handleCegnevChange}
+                    error={company_nameError}
+                    helperText={company_nameErrorMessage}
+                    color={company_nameError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -365,6 +468,9 @@ export default function SignUp(props) {
                     placeholder="+36 20 123 4567"
                     value={telefon}
                     onChange={handleTelefonChange}
+                    error={company_phonenumberError}
+                    helperText={company_phonenumberErrorMessage}
+                    color={company_phonenumberError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -377,6 +483,11 @@ export default function SignUp(props) {
                     placeholder="ceg@email.com"
                     value={ceg_email}
                     onChange={handleCeg_emailChange}
+                    autoComplete="ceg_email"
+                    variant="outlined"
+                    error={company_emailError}
+                    helperText={company_emailErrorMessage}
+                    color={company_emailError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -390,6 +501,10 @@ export default function SignUp(props) {
                     placeholder="••••••"
                     value={jelszo}
                     onChange={handleJelszoChange}
+                    variant="outlined"
+                    error={company_passwordError}
+                    helperText={company_passwordErrorMessage}
+                    color={company_passwordError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -402,6 +517,10 @@ export default function SignUp(props) {
                     placeholder="Budapest"
                     value={telepules}
                     onChange={handleTelepulesChange}
+                    variant="outlined"
+                    error={company_settlementError}
+                    helperText={company_settlementErrorMessage}
+                    color={company_settlementError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -414,10 +533,14 @@ export default function SignUp(props) {
                     placeholder="Pest"
                     value={megye}
                     onChange={handleMegyeChange}
+                    variant="outlined"
+                    error={company_countyError}
+                    helperText={company_countyErrorMessage}
+                    color={company_countyError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
-                  <FormLabel htmlFor="ceges_szamla">Céges számla</FormLabel>
+                  <FormLabel htmlFor="ceges_szamla">Számlaszám</FormLabel>
                   <TextField
                     required
                     fullWidth
@@ -426,6 +549,10 @@ export default function SignUp(props) {
                     placeholder="12345678-12345678-12345678"
                     value={ceges_szamla}
                     onChange={handleCeges_szamlaChange}
+                    variant="outlined"
+                    error={company_invoiceError}
+                    helperText={company_invoiceErrorMessage}
+                    color={company_invoiceError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -438,6 +565,10 @@ export default function SignUp(props) {
                     placeholder="1234 5678 9012 3456"
                     value={hitelkartya}
                     onChange={handleHitelkartyaChange}
+                    variant="outlined"
+                    error={company_creditcardError}
+                    helperText={company_creditcardErrorMessage}
+                    color={company_creditcardError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -450,6 +581,10 @@ export default function SignUp(props) {
                     placeholder="12345678-1-12"
                     value={adoszam}
                     onChange={handleAdoszamChange}
+                    variant="outlined"
+                    error={company_taxnumberError}
+                    helperText={company_taxnumberErrorMessage}
+                    color={company_taxnumberError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -462,6 +597,10 @@ export default function SignUp(props) {
                     placeholder="01-09-123456"
                     value={cegjegyzek}
                     onChange={handleCegjegyzekChange}
+                    variant="outlined"
+                    error={company_registerError}
+                    helperText={company_registerErrorMessage}
+                    color={company_registerError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -474,6 +613,10 @@ export default function SignUp(props) {
                     placeholder="12345/1"
                     value={helyrajziszam}
                     onChange={handleHelyrajziszamChange}
+                    variant="outlined"
+                    error={company_geographicnoError}
+                    helperText={company_geographicnoErrorMessage}
+                    color={company_geographicnoError ? 'error' : 'primary'}
                   />
                 </FormControl>
               </>
