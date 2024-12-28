@@ -131,13 +131,23 @@ export default function SignUp(props) {
   const handleMegyeChange = (e) => setMegye(e.target.value);
   const handleCeges_szamlaChange = (e) => setCeges_szamla(e.target.value);
   const handleHitelkartyaChange = (e) => setHitelkartya(e.target.value);
-  const handleAdoszamChange = (e) => setAdoszam(e.target.value);
   const handleCegjegyzekChange = (e) => setCegjegyzek(e.target.value);
   const handleHelyrajziszamChange = (e) => setHelyrajziszam(e.target.value);
   
 
-
-
+  const handleAdoszamChange = (e) => {
+    const input = e.target.value.replace(/[^0-9]/g, ""); // Csak számok engedélyezése
+    let formatted = input;
+  
+    // Formázás kötőjelekkel
+    if (input.length > 8) {
+      formatted = `${input.slice(0, 8)}-${input.slice(8, 9)}-${input.slice(9, 11)}`;
+    } else if (input.length > 8) {
+      formatted = `${input.slice(0, 8)}-${input.slice(8)}`;
+    }
+  
+    setAdoszam(formatted);
+  };
 
 
 
@@ -269,14 +279,13 @@ export default function SignUp(props) {
           setCompanyCreditcardErrorMessage('');
       }
 
-      if (!adoszam || adoszam.length < 8) {
+      if (!adoszam || adoszam.replace(/[^0-9]/g, "").length < 8) {
         setCompanyTaxnumberError(true);
-        setCompanyTaxnumberErrorMessage('Taxnumber is required.');
+        setCompanyTaxnumberErrorMessage("Az adószámnak legalább 8 számjegyűnek kell lennie.");
         isValid = false;
-      } 
-      else {
+      } else {
         setCompanyTaxnumberError(false);
-        setCompanyTaxnumberErrorMessage('');
+        setCompanyTaxnumberErrorMessage("");
       }
 
       if (!cegjegyzek || cegjegyzek.length !== 10 || !/^\d{10}$/.test(cegjegyzek)) {
