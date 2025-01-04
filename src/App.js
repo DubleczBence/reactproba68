@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Home from './Home';
+import CompHome from './Comp_Home';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -67,7 +68,7 @@ function App() {
         if (type === 'user') {
           navigate('/home', { state: { userName: result.name } }); // Felhasználói név
         } else if (type === 'company') {
-          navigate('/home', { state: { companyName: result.cegnev } }); // Céges név
+          navigate('/comp_home', { state: { companyName: result.cegnev } }); // Céges név
         }
 
       } else {
@@ -91,6 +92,7 @@ function App() {
         <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
         <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
         <Route path="/home" element={isAuthenticated ? <Home onSignOut={HandleSignOut} /> : <SignIn />} />
+        <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
       </Routes>
   );
 }
