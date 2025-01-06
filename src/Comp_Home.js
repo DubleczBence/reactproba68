@@ -182,11 +182,50 @@ const CompHome = ({ onSignOut }) => {
       </Typography>
 
 
-      <Card variant="outlined">
+      <Card 
+      variant="outlined"
+      sx={{
+        mt: 7, // Margin-top a Card és a Bottom Navigation között
+        width: '90% !important', // Például egy szélesség beállítása, hogy ne töltse ki teljesen a képernyőt
+        height: '60% !important',
+        maxWidth:  '700px !important', // Maximális szélesség
+      }}>
 
-      <Button variant="outlined" startIcon={<AddCircleOutlineIcon />}>
-        Kérdőív létrehozása
-      </Button>
+<Button
+  sx={{
+    height: '20% !important', // Gomb magassága
+    justifyContent: 'flex-start', // Balra igazítja a szöveget
+    textAlign: 'left', // Biztosítja, hogy a szöveg balra legyen
+    pl: 4, // Bal oldali padding
+    fontSize: '1.2rem', // Szöveg mérete
+  }}
+  variant="outlined"
+  startIcon={
+    <AddCircleOutlineIcon
+    sx={{
+      width: '32px', // Ikon szélessége
+      height: '32px', // Ikon magassága
+      mr: 2,
+    }}
+    />
+  }
+>
+  Kérdőív létrehozása
+</Button>
+
+
+<Button
+  sx={{
+    height: '20% !important', // Gomb magassága
+    justifyContent: 'flex-start', // Balra igazítja a szöveget
+    textAlign: 'left', // Biztosítja, hogy a szöveg balra legyen
+    pl: 4, // Bal oldali padding
+    fontSize: '1.2rem', // Szöveg mérete
+  }}
+  variant="outlined"
+>
+  Cím
+</Button>
 
 
 
