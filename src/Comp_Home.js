@@ -31,6 +31,29 @@ import Tooltip from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import MuiCard from '@mui/material/Card';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
+
+const Card = styled(MuiCard)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignSelf: 'center',
+  width: '100%',
+  padding: theme.spacing(4),
+  gap: theme.spacing(2),
+  margin: 'auto',
+  boxShadow:
+    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+  [theme.breakpoints.up('sm')]: {
+    width: '450px',
+  },
+  ...theme.applyStyles('dark', {
+    boxShadow:
+      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+  }),
+}));
+
 
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -102,6 +125,7 @@ const CompHome = ({ onSignOut }) => {
   return (
     <AppTheme>
       <React.Fragment>
+      
         <CssBaseline enableColorScheme />
     <Box
       sx={{
@@ -114,6 +138,9 @@ const CompHome = ({ onSignOut }) => {
         pt: 4, // Padding a tetején
       }}
     >
+
+    
+
     <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
 
     <IconButton aria-label="cart" sx={{ position: 'absolute', top: '1rem', right: '12.5rem' }}>
@@ -151,8 +178,23 @@ const CompHome = ({ onSignOut }) => {
           left: 26,
         }}
       >
-       {Credit}
+       {Credit} Kredit
       </Typography>
+
+
+      <Card variant="outlined">
+
+      <Button variant="outlined" startIcon={<AddCircleOutlineIcon />}>
+        Kérdőív létrehozása
+      </Button>
+
+
+
+
+
+
+
+      </Card>
 
 
       <Tooltip title="Account settings">
@@ -261,7 +303,9 @@ const CompHome = ({ onSignOut }) => {
           <Button onClick={onSignOut}>Igen</Button>
         </DialogActions>
       </Dialog>
+      
     </Box>
+    
     </React.Fragment>
     </AppTheme>
   );
