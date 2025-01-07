@@ -33,6 +33,8 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import MuiCard from '@mui/material/Card';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import TextField from '@mui/material/TextField';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -99,6 +101,22 @@ const CompHome = ({ onSignOut }) => {
   const location = useLocation();
   console.log(location);
   const name = location.state?.userName || location.state?.companyName;
+
+
+
+
+    const [showFirstCard, setShowFirstCard] = React.useState(true); // Az első Card láthatósága
+  
+    const handleClickOpenKerd = () => {
+      setShowFirstCard(false); // Az első Card elrejtése
+    };
+  
+    const handleCloseKerd = () => {
+      setShowFirstCard(true); // Az első Card újra megjelenítése
+    };
+
+
+
 
 
   const [open, setOpen] = React.useState(false);
@@ -182,58 +200,108 @@ const CompHome = ({ onSignOut }) => {
       </Typography>
 
 
-      <Card 
-      variant="outlined"
-      sx={{
-        mt: 7, // Margin-top a Card és a Bottom Navigation között
-        width: '90% !important', // Például egy szélesség beállítása, hogy ne töltse ki teljesen a képernyőt
-        height: '60% !important',
-        maxWidth:  '700px !important', // Maximális szélesség
-      }}>
-
-<Button
-  sx={{
-    height: '20% !important', // Gomb magassága
-    justifyContent: 'flex-start', // Balra igazítja a szöveget
-    textAlign: 'left', // Biztosítja, hogy a szöveg balra legyen
-    pl: 4, // Bal oldali padding
-    fontSize: '1.2rem', // Szöveg mérete
-  }}
-  variant="outlined"
-  startIcon={
-    <AddCircleOutlineIcon
-    sx={{
-      width: '32px', // Ikon szélessége
-      height: '32px', // Ikon magassága
-      mr: 2,
-    }}
-    />
-  }
->
-  Kérdőív létrehozása
-</Button>
-
-
-<Button
-  sx={{
-    height: '20% !important', // Gomb magassága
-    justifyContent: 'flex-start', // Balra igazítja a szöveget
-    textAlign: 'left', // Biztosítja, hogy a szöveg balra legyen
-    pl: 4, // Bal oldali padding
-    fontSize: '1.2rem', // Szöveg mérete
-  }}
-  variant="outlined"
->
-  Cím
-</Button>
 
 
 
+      {/* Első Card */}
+      {showFirstCard && (
+        <Card
+          variant="outlined"
+          sx={{
+            mt: 7, // Margin-top
+            width: "90% !important",
+            height: "60% !important",
+            maxWidth: "700px !important",
+          }}
+        >
+          <Button
+            onClick={handleClickOpenKerd}
+            sx={{
+              height: "20% !important",
+              justifyContent: "flex-start",
+              textAlign: "left",
+              pl: 4,
+              fontSize: "1.2rem",
+            }}
+            variant="outlined"
+            startIcon={
+              <AddCircleOutlineIcon
+                sx={{
+                  width: "32px",
+                  height: "32px",
+                  mr: 2,
+                }}
+              />
+            }
+          >
+            Kérdőív létrehozása
+          </Button>
+
+          <Button
+            sx={{
+              height: "20% !important",
+              justifyContent: "flex-start",
+              textAlign: "left",
+              pl: 4,
+              fontSize: "1.2rem",
+            }}
+            variant="outlined"
+          >
+            Cím
+          </Button>
+        </Card>
+      )}
+
+      {/* Második Card */}
+      {!showFirstCard && (
+        <Card
+          noValidate
+          autoComplete="off"
+          variant="outlined"
+          sx={{
+            mt: 7, // Margin-top
+            width: "90% !important",
+            height: "60% !important",
+            maxWidth: "700px !important",
+          }}
+        >
+          
+          <TextField
+            sx={{
+              width: '25ch',
+              height: '7ch',
+              '& .MuiInputLabel-root': {
+                fontSize: '1.3rem', // Növeli a label méretét
+              },
+            }}
+           id="standard-basic" label="Kérdőív címe" variant="standard" 
+           />
 
 
-
-
-      </Card>
+          <Button
+            onClick={handleCloseKerd}
+            sx={{
+              width: "22px", // A gomb szélessége és magassága
+              height: "22px",
+              minWidth: "0px", // Minimalizálja a gomb alapértelmezett paddingjét
+              padding: "0px", // Eltávolítja az extra belső térközt
+              display: "flex", // Középre igazításhoz
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            >
+            
+              <CloseIcon
+                sx={{
+                  width: "22px",
+                  height: "22px",
+                }}
+              />
+            
+          
+          </Button>
+        </Card>
+        )}
 
 
       <Tooltip title="Account settings">
