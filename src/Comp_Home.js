@@ -35,6 +35,11 @@ import MuiCard from '@mui/material/Card';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import TextFieldsIcon from '@mui/icons-material/TextFields';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -91,6 +96,8 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
 };
 
 
+
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -101,6 +108,16 @@ const CompHome = ({ onSignOut }) => {
   const location = useLocation();
   console.log(location);
   const name = location.state?.userName || location.state?.companyName;
+
+
+
+
+  const [selectedButton, setSelectedButton] = React.useState(null);
+
+  const handleButtonClick = (button) => {
+    setSelectedButton(button);
+  };
+  
 
 
 
@@ -259,17 +276,22 @@ const CompHome = ({ onSignOut }) => {
           autoComplete="off"
           variant="outlined"
           sx={{
+            top: "4px",
             mt: 7, // Margin-top
             width: "90% !important",
-            height: "60% !important",
+            height: "70% !important",
             maxWidth: "700px !important",
+            position: "relative",
+            padding: "10px",
           }}
         >
           
           <TextField
             sx={{
+              left: "20px",
               width: '25ch',
               height: '7ch',
+              mb: "20px",
               '& .MuiInputLabel-root': {
                 fontSize: '1.3rem', // Növeli a label méretét
               },
@@ -278,9 +300,104 @@ const CompHome = ({ onSignOut }) => {
            />
 
 
+<Container
+    maxWidth="fix"
+    sx={{
+      padding: "16px", // Belső térköz a Containerben
+      borderRadius: "16px", // Lekerekített sarkok
+      backgroundColor: "rgba(55, 58, 63, 0.5)", // Háttérszín
+      height: "100%",
+      width: "100%",
+    }}
+  >
+    <TextField
+            sx={{
+              left: "10px",
+              width: '25ch',
+              height: '7ch',
+              '& .MuiInputLabel-root': {
+                fontSize: '1.1rem', // Növeli a label méretét
+              },
+            }}
+           id="standard-basic" label="Kérdés 1" variant="standard" 
+           />
+
+
+      <Typography
+        component="h1"
+        variant="subtitle2"
+        sx={{
+          mt: 2,
+          textAlign: 'center',
+        }}
+      >
+      Válaszadás típusa
+      </Typography>
+
+
+
+      <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        "& > *": {
+          m: 1,
+        },
+      }}
+    >
+      <ButtonGroup
+        variant="text"
+        aria-label="Basic button group"
+        sx={{
+          "& .MuiButtonGroup-grouped": {
+            border: "none",
+            borderRadius: "20px",
+            margin: "0 4px",
+          },
+        }}
+      >
+        <Button
+          onClick={() => handleButtonClick("radio")}
+          sx={{
+            backgroundColor: selectedButton === "radio" ? "#1976d2" : "transparent",
+            color: selectedButton === "radio" ? "#fff" : "inherit",
+          }}
+        >
+          {<RadioButtonCheckedIcon />} Feleletválasztó
+        </Button>
+        <Button
+          onClick={() => handleButtonClick("checkbox")}
+          sx={{
+            backgroundColor: selectedButton === "checkbox" ? "#1976d2" : "transparent",
+            color: selectedButton === "checkbox" ? "#fff" : "inherit",
+          }}
+        >
+          {<CheckBoxIcon />} Jelölőnégyzet
+        </Button>
+        <Button
+          onClick={() => handleButtonClick("text")}
+          sx={{
+            backgroundColor: selectedButton === "text" ? "#1976d2" : "transparent",
+            color: selectedButton === "text" ? "#fff" : "inherit",
+          }}
+        >
+          {<TextFieldsIcon />} Szöveges válasz
+        </Button>
+      </ButtonGroup>
+    </Box>
+
+
+          
+  </Container>
+
+
           <Button
             onClick={handleCloseKerd}
             sx={{
+              position: "absolute", // Abszolút pozicionálás
+              top: "8px", // Távolság a Card tetejétől
+              right: "8px",
               width: "22px", // A gomb szélessége és magassága
               height: "22px",
               minWidth: "0px", // Minimalizálja a gomb alapértelmezett paddingjét
