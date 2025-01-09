@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -40,6 +40,54 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import PropTypes from 'prop-types';
+import FormControl from '@mui/material/FormControl';
+
+
+
+const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
+  ({ theme }) => ({
+    variants: [
+      {
+        props: { checked: true },
+        style: {
+          '.MuiFormControlLabel-label': {
+            color: theme.palette.primary.main,
+          },
+        },
+      },
+    ],
+  }),
+);
+
+function MyFormControlLabel(props) {
+  const radioGroup = useRadioGroup();
+
+  let checked = false;
+
+  if (radioGroup) {
+    checked = radioGroup.value === props.value;
+  }
+
+  return <StyledFormControlLabel checked={checked} {...props} />;
+}
+
+MyFormControlLabel.propTypes = {
+  /**
+   * The value of the component.
+   */
+  value: PropTypes.any,
+};
+
+
+
+
+
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -113,6 +161,7 @@ const CompHome = ({ onSignOut }) => {
 
 
   const [selectedButton, setSelectedButton] = React.useState(null);
+  const [label, setLabel] = useState(''); // Új állapot a címke szövegéhez
 
   const handleButtonClick = (button) => {
     setSelectedButton(button);
@@ -362,6 +411,7 @@ const CompHome = ({ onSignOut }) => {
           sx={{
             backgroundColor: selectedButton === "radio" ? "#1976d2" : "transparent",
             color: selectedButton === "radio" ? "#fff" : "inherit",
+            opacity: selectedButton === 'radio' ? 1 : 0.5,
           }}
         >
           {<RadioButtonCheckedIcon />} Feleletválasztó
@@ -371,6 +421,7 @@ const CompHome = ({ onSignOut }) => {
           sx={{
             backgroundColor: selectedButton === "checkbox" ? "#1976d2" : "transparent",
             color: selectedButton === "checkbox" ? "#fff" : "inherit",
+            opacity: selectedButton === 'checkbox' ? 1 : 0.5,
           }}
         >
           {<CheckBoxIcon />} Jelölőnégyzet
@@ -380,12 +431,39 @@ const CompHome = ({ onSignOut }) => {
           sx={{
             backgroundColor: selectedButton === "text" ? "#1976d2" : "transparent",
             color: selectedButton === "text" ? "#fff" : "inherit",
+            opacity: selectedButton === 'text' ? 1 : 0.5,
           }}
         >
           {<TextFieldsIcon />} Szöveges válasz
         </Button>
       </ButtonGroup>
     </Box>
+
+    <Box sx={{ width: 500, maxWidth: '100%' }}>
+
+    <input type="text" value={label} onChange={(e) => setLabel(e.target.value)} />
+
+      {selectedButton === 'radio' && (
+        <RadioGroup name="use-radio-group" defaultValue="first">
+          <FormControlLabel value="first" label={label} control={<Radio />} />
+        </RadioGroup>
+      )}
+
+      {selectedButton === 'checkbox' && (
+        <FormGroup>
+          <FormControlLabel required control={<Checkbox />} label={label} />
+        </FormGroup>
+      )}
+
+      {selectedButton === 'text' && (
+        <FormControl sx={{ width: 500, maxWidth: '100%' }}>
+          <TextField sx={{ top: 20, }} placeholder="Szöveges válasz" id="fullWidth" />
+        </FormControl>
+      )}
+    </Box>
+
+
+    
 
 
           
