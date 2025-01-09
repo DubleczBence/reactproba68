@@ -46,7 +46,6 @@ import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import PropTypes from 'prop-types';
-import FormControl from '@mui/material/FormControl';
 
 
 
@@ -160,15 +159,26 @@ const CompHome = ({ onSignOut }) => {
 
 
 
-  const [selectedButton, setSelectedButton] = React.useState(null);
-  const [label, setLabel] = useState(''); // Új állapot a címke szövegéhez
+  const [selectedButton, setSelectedButton] = useState("radio");
+  const [options, setOptions] = useState([{ id: 1, label: "" }]);
 
-  const handleButtonClick = (button) => {
-    setSelectedButton(button);
-  };
+const handleButtonClick = (type) => {
+  setSelectedButton(type);
+  setOptions([{ id: 1, label: "" }]); // Reset options when type changes
+};
   
 
 
+const handleLabelChange = (id, value) => {
+  setOptions((prev) =>
+    prev.map((option) => (option.id === id ? { ...option, label: value } : option))
+  );
+};
+
+
+const handleAddOption = () => {
+  setOptions((prev) => [...prev, { id: prev.length + 1, label: "" }]);
+};
 
 
     const [showFirstCard, setShowFirstCard] = React.useState(true); // Az első Card láthatósága
@@ -440,32 +450,68 @@ const CompHome = ({ onSignOut }) => {
     </Box>
 
     <Box sx={{ width: 500, maxWidth: '100%' }}>
+    {selectedButton === "radio" && (
+          <RadioGroup>
+            {options.map((option) => (
+              <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Radio />
+                <TextField
+                  placeholder="Label megadása"
+                  value={option.label}
+                  onChange={(e) => handleLabelChange(option.id, e.target.value)}
+                  sx={{ ml: 2 }}
+                />
+              </Box>
+            ))}
+          </RadioGroup>
+        )}
 
-    <input type="text" value={label} onChange={(e) => setLabel(e.target.value)} />
+        {selectedButton === "checkbox" && (
+          <FormGroup>
+            {options.map((option) => (
+              <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                <Checkbox />
+                <TextField
+                  placeholder="Label megadása"
+                  value={option.label}
+                  onChange={(e) => handleLabelChange(option.id, e.target.value)}
+                  sx={{ ml: 2 }}
+                />
+              </Box>
+            ))}
+          </FormGroup>
+        )}
 
-      {selectedButton === 'radio' && (
-        <RadioGroup name="use-radio-group" defaultValue="first">
-          <FormControlLabel value="first" label={label} control={<Radio />} />
-        </RadioGroup>
+        {selectedButton === "text" && (
+          <TextField
+            placeholder="Szöveges válasz"
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+        )}
+  </Box>
+
+  {(selectedButton === "radio" || selectedButton === "checkbox" || selectedButton === "text") && (
+        <Button
+          onClick={handleAddOption}
+          startIcon={<AddCircleOutlineIcon />}
+          variant="outlined"
+
+          sx={{
+            border: "none", // Körvonal (ha szükséges)
+            backgroundColor: "transparent !important",
+            borderRadius: "16px", // Lekerekített sarkok
+            color: "white", // Szöveg színe
+            "&:hover": {
+            backgroundColor: "rgba(255, 255, 255, 0.1) !important", // Szürke háttér hover állapotban
+            },
+            transition: "background-color 0.3s, border-color 0.3s !important", // Simább átmenet
+          }}
+        >
+          Opció hozzáadása
+        </Button>
       )}
-
-      {selectedButton === 'checkbox' && (
-        <FormGroup>
-          <FormControlLabel required control={<Checkbox />} label={label} />
-        </FormGroup>
-      )}
-
-      {selectedButton === 'text' && (
-        <FormControl sx={{ width: 500, maxWidth: '100%' }}>
-          <TextField sx={{ top: 20, }} placeholder="Szöveges válasz" id="fullWidth" />
-        </FormControl>
-      )}
-    </Box>
-
-
     
-
-
           
   </Container>
 
