@@ -46,6 +46,8 @@ import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import PropTypes from 'prop-types';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -159,26 +161,100 @@ const CompHome = ({ onSignOut }) => {
 
 
 
-  const [selectedButton, setSelectedButton] = useState("radio");
-  const [options, setOptions] = useState([{ id: 1, label: "" }]);
-
-const handleButtonClick = (type) => {
-  setSelectedButton(type);
-  setOptions([{ id: 1, label: "" }]); // Reset options when type changes
-};
   
 
+  const handleButtonClick = (questionId, type) => {
+    setQuestions((prev) =>
+      prev.map((question) =>
+        question.id === questionId
+          ? { ...question, selectedButton: type }
+          : question
+      )
+    );
+  };
 
-const handleLabelChange = (id, value) => {
-  setOptions((prev) =>
-    prev.map((option) => (option.id === id ? { ...option, label: value } : option))
+
+
+  
+
+const [questions, setQuestions] = useState([{
+  id: 1,
+  selectedButton: "radio",
+  options: [{ id: 1, label: "" }]
+}]);
+
+
+
+const handleAddQuestion = () => {
+  setQuestions((prev) => [
+    ...prev,
+    {
+      id: uuidv4(), // Egyedi azonosító
+      selectedButton: "radio",
+      options: [{ id: uuidv4(), label: "" }], // Opció egyedi azonosítója
+    },
+  ]);
+};
+
+
+
+
+
+
+
+
+const handleLabelChange = (questionId, optionId, value) => {
+  console.log("Question ID:", questionId);
+  console.log("Option ID:", optionId);
+  console.log("New Value:", value);
+  setQuestions(prev =>
+    prev.map((question) =>
+      question.id === questionId
+        ? {
+            ...question,
+            options: question.options.map((option) =>
+              option.id === optionId ? { ...option, label: value } : option
+            )
+          }
+        : question
+    )
   );
 };
 
 
-const handleAddOption = () => {
-  setOptions((prev) => [...prev, { id: prev.length + 1, label: "" }]);
+
+const handleAddOption = (questionId) => {
+  setQuestions((prev) =>
+    prev.map((q) =>
+      q.id === questionId
+        ? {
+            ...q,
+            options: [
+              ...q.options,
+              { id: uuidv4(), label: "" }, // Egyedi azonosító
+            ],
+          }
+        : q
+    )
+  );
 };
+
+
+
+const handleRemoveOption = (questionId, optionId) => {
+  setQuestions(prev =>
+    prev.map((question) =>
+      question.id === questionId
+        ? {
+            ...question,
+            options: question.options.filter(option => option.id !== optionId)
+          }
+        : question
+    )
+  );
+};
+
+
 
 
     const [showFirstCard, setShowFirstCard] = React.useState(true); // Az első Card láthatósága
@@ -338,10 +414,11 @@ const handleAddOption = () => {
             top: "4px",
             mt: 7, // Margin-top
             width: "90% !important",
-            height: "70% !important",
+            height: "70vh",
             maxWidth: "700px !important",
             position: "relative",
             padding: "10px",
+            overflow: "auto",
           }}
         >
           
@@ -355,18 +432,22 @@ const handleAddOption = () => {
                 fontSize: '1.3rem', // Növeli a label méretét
               },
             }}
-           id="standard-basic" label="Kérdőív címe" variant="standard" 
+            id='valami' label="Kérdőív címe" variant="standard" 
            />
 
-
+{questions.map((question) => (
 <Container
+    key={question.id}
     maxWidth="fix"
     sx={{
       padding: "16px", // Belső térköz a Containerben
       borderRadius: "16px", // Lekerekített sarkok
       backgroundColor: "rgba(55, 58, 63, 0.5)", // Háttérszín
-      height: "100%",
+      height: "auto",
+      maxHeight: "calc(70vh - 100px)", // Maximális magasság a Card magasságához igazítva
       width: "100%",
+      minHeight: "200px",
+      overflow: "auto", // Görgetősáv megjelenítése
     }}
   >
     <TextField
@@ -378,7 +459,7 @@ const handleAddOption = () => {
                 fontSize: '1.1rem', // Növeli a label méretét
               },
             }}
-           id="standard-basic" label="Kérdés 1" variant="standard" 
+            id={`question-${question.id}-label`} label="Kérdés 1" variant="standard" 
            />
 
 
@@ -417,31 +498,31 @@ const handleAddOption = () => {
         }}
       >
         <Button
-          onClick={() => handleButtonClick("radio")}
+          onClick={() => handleButtonClick(question.id, "radio")}
           sx={{
-            backgroundColor: selectedButton === "radio" ? "#1976d2" : "transparent",
-            color: selectedButton === "radio" ? "#fff" : "inherit",
-            opacity: selectedButton === 'radio' ? 1 : 0.5,
+            backgroundColor: question.selectedButton === "radio" ? "#1976d2" : "transparent",
+            color: question.selectedButton === "radio" ? "#fff" : "inherit",
+            opacity: question.selectedButton === 'radio' ? 1 : 0.5,
           }}
         >
           {<RadioButtonCheckedIcon />} Feleletválasztó
         </Button>
         <Button
-          onClick={() => handleButtonClick("checkbox")}
+          onClick={() => handleButtonClick(question.id, "checkbox")}
           sx={{
-            backgroundColor: selectedButton === "checkbox" ? "#1976d2" : "transparent",
-            color: selectedButton === "checkbox" ? "#fff" : "inherit",
-            opacity: selectedButton === 'checkbox' ? 1 : 0.5,
+            backgroundColor: question.selectedButton === "checkbox" ? "#1976d2" : "transparent",
+            color: question.selectedButton === "checkbox" ? "#fff" : "inherit",
+            opacity: question.selectedButton === 'checkbox' ? 1 : 0.5,
           }}
         >
           {<CheckBoxIcon />} Jelölőnégyzet
         </Button>
         <Button
-          onClick={() => handleButtonClick("text")}
+          onClick={() => handleButtonClick(question.id, "text")}
           sx={{
-            backgroundColor: selectedButton === "text" ? "#1976d2" : "transparent",
-            color: selectedButton === "text" ? "#fff" : "inherit",
-            opacity: selectedButton === 'text' ? 1 : 0.5,
+            backgroundColor: question.selectedButton === "text" ? "#1976d2" : "transparent",
+            color: question.selectedButton === "text" ? "#fff" : "inherit",
+            opacity: question.selectedButton === 'text' ? 1 : 0.5,
           }}
         >
           {<TextFieldsIcon />} Szöveges válasz
@@ -450,39 +531,63 @@ const handleAddOption = () => {
     </Box>
 
     <Box sx={{ width: 500, maxWidth: '100%' }}>
-    {selectedButton === "radio" && (
+    {question.selectedButton === "radio" && (
           <RadioGroup>
-            {options.map((option) => (
+            {question.options.map((option) => (
               <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <Radio />
                 <TextField
                   placeholder="Label megadása"
                   value={option.label}
-                  onChange={(e) => handleLabelChange(option.id, e.target.value)}
+                  onChange={(e) => handleLabelChange(question.id, option.id, e.target.value)}
                   sx={{ ml: 2 }}
                 />
+                  <Button
+                  onClick={() => handleRemoveOption(question.id, option.id)}
+                  color="error"
+                  sx={{
+                    ml: 2,
+                    minWidth: "30px",
+                    padding: "4px",
+                    borderRadius: "20%",
+                  }}
+                >
+                  <RemoveIcon />
+                </Button>
               </Box>
             ))}
           </RadioGroup>
         )}
 
-        {selectedButton === "checkbox" && (
+        {question.selectedButton === "checkbox" && (
           <FormGroup>
-            {options.map((option) => (
+            {question.options.map((option) => (
               <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <Checkbox />
                 <TextField
                   placeholder="Label megadása"
                   value={option.label}
-                  onChange={(e) => handleLabelChange(option.id, e.target.value)}
+                  onChange={(e) => handleLabelChange(question.id, option.id, e.target.value)}
                   sx={{ ml: 2 }}
                 />
+                <Button
+          onClick={() => handleRemoveOption(question.id, option.id)}
+          color="error"
+          sx={{
+            ml: 2,
+            minWidth: "30px",
+            padding: "4px",
+            borderRadius: "20%",
+          }}
+        >
+          <RemoveIcon />
+        </Button>
               </Box>
             ))}
           </FormGroup>
         )}
 
-        {selectedButton === "text" && (
+        {question.selectedButton === "text" && (
           <TextField
             placeholder="Szöveges válasz"
             fullWidth
@@ -491,29 +596,45 @@ const handleAddOption = () => {
         )}
   </Box>
 
-  {(selectedButton === "radio" || selectedButton === "checkbox" || selectedButton === "text") && (
-        <Button
-          onClick={handleAddOption}
-          startIcon={<AddCircleOutlineIcon />}
-          variant="outlined"
-
-          sx={{
-            border: "none", // Körvonal (ha szükséges)
-            backgroundColor: "transparent !important",
-            borderRadius: "16px", // Lekerekített sarkok
-            color: "white", // Szöveg színe
-            "&:hover": {
-            backgroundColor: "rgba(255, 255, 255, 0.1) !important", // Szürke háttér hover állapotban
-            },
-            transition: "background-color 0.3s, border-color 0.3s !important", // Simább átmenet
-          }}
-        >
-          Opció hozzáadása
-        </Button>
-      )}
+  {(question.selectedButton === "radio" || question.selectedButton === "checkbox" || question.selectedButton === "text") && (
+    <Button
+      onClick={() => handleAddOption(question.id)}
+      startIcon={<AddCircleOutlineIcon />}
+      variant="outlined"
+      sx={{
+        border: "none", // Körvonal (ha szükséges)
+        backgroundColor: "transparent !important",
+        borderRadius: "16px", // Lekerekített sarkok
+        color: "white", // Szöveg színe
+        "&:hover": {
+          backgroundColor: "rgba(255, 255, 255, 0.1) !important", // Szürke háttér hover állapotban
+        },
+        transition: "background-color 0.3s, border-color 0.3s !important", // Simább átmenet
+      }}
+    >
+      Opció hozzáadása
+    </Button>
+  )}
     
           
   </Container>
+  ))}
+
+
+
+
+      <Button
+        onClick={handleAddQuestion}
+        startIcon={<AddCircleOutlineIcon />}
+        variant="outlined"
+        sx={{ 
+          mt: 2,
+          justifyContent: "flex-start",
+          pl: 2
+         }}
+      >
+        Kérdés hozzáadása
+      </Button>
 
 
           <Button
@@ -543,6 +664,8 @@ const handleAddOption = () => {
           </Button>
         </Card>
         )}
+      
+        
 
 
       <Tooltip title="Account settings">
