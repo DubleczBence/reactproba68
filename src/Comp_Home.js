@@ -48,6 +48,7 @@ import Radio from '@mui/material/Radio';
 import PropTypes from 'prop-types';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { v4 as uuidv4 } from 'uuid';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
@@ -198,6 +199,9 @@ const handleAddQuestion = () => {
 
 
 
+const handleRemoveQuestion = (id) => {
+  setQuestions((prev) => prev.filter((q) => q.id !== id));
+};
 
 
 
@@ -446,8 +450,9 @@ const handleRemoveOption = (questionId, optionId) => {
       height: "auto",
       maxHeight: "calc(70vh - 100px)", // Maximális magasság a Card magasságához igazítva
       width: "100%",
-      minHeight: "200px",
+      minHeight: "300px",
       overflow: "auto", // Görgetősáv megjelenítése
+      position: "relative",
     }}
   >
     <TextField
@@ -615,6 +620,23 @@ const handleRemoveOption = (questionId, optionId) => {
       Opció hozzáadása
     </Button>
   )}
+
+
+<Button
+    onClick={() => handleRemoveQuestion(question.id)}
+    sx={{
+      position: "absolute", // A gomb abszolút pozíciója
+      top: "8px",           // A Container tetejétől számított távolság
+      right: "16px",        // A Container jobb szélétől számított távolság
+      width: "22px",
+      height: "22px",
+      minWidth: "0px",       // Kis méretű gomb
+      padding: "0px",
+    }}
+  >
+    <DeleteIcon />
+  </Button>
+          
     
           
   </Container>
