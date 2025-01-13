@@ -365,7 +365,7 @@ const handleRemoveOption = (questionId, optionId) => {
           variant="outlined"
           sx={{
             mt: 7, // Margin-top
-            width: "90% !important",
+            width: "95% !important",
             height: "60% !important",
             maxWidth: "700px !important",
           }}
@@ -417,7 +417,7 @@ const handleRemoveOption = (questionId, optionId) => {
           sx={{
             top: "4px",
             mt: 7, // Margin-top
-            width: "90% !important",
+            width: "95% !important",
             height: "70vh",
             maxWidth: "700px !important",
             position: "relative",
@@ -446,10 +446,13 @@ const handleRemoveOption = (questionId, optionId) => {
     sx={{
       padding: "16px", // Belső térköz a Containerben
       borderRadius: "16px", // Lekerekített sarkok
-      backgroundColor: "rgba(55, 58, 63, 0.5)", // Háttérszín
+      backgroundColor: (theme) =>
+        theme.palette.mode === "light"
+          ? theme.palette.background.paper
+          : "#1B2430",
       height: "auto",
       maxHeight: "calc(70vh - 100px)", // Maximális magasság a Card magasságához igazítva
-      width: "100%",
+      width: "98%",
       minHeight: "300px",
       overflow: "auto", // Görgetősáv megjelenítése
       position: "relative",
@@ -579,7 +582,7 @@ const handleRemoveOption = (questionId, optionId) => {
           onClick={() => handleRemoveOption(question.id, option.id)}
           color="error"
           sx={{
-            ml: 2,
+            ml: 30,
             minWidth: "30px",
             padding: "4px",
             borderRadius: "20%",
@@ -608,13 +611,12 @@ const handleRemoveOption = (questionId, optionId) => {
       variant="outlined"
       sx={{
         border: "none", // Körvonal (ha szükséges)
-        backgroundColor: "transparent !important",
         borderRadius: "16px", // Lekerekített sarkok
-        color: "white", // Szöveg színe
+        backgroundColor: (theme) => theme.palette.background.paper,
+        color: (theme) => theme.palette.text.primary,
         "&:hover": {
-          backgroundColor: "rgba(255, 255, 255, 0.1) !important", // Szürke háttér hover állapotban
+          backgroundColor: "#243642",
         },
-        transition: "background-color 0.3s, border-color 0.3s !important", // Simább átmenet
       }}
     >
       Opció hozzáadása
@@ -652,7 +654,7 @@ const handleRemoveOption = (questionId, optionId) => {
         sx={{ 
           mt: 2,
           justifyContent: "flex-start",
-          pl: 2
+          pl: 2,
          }}
       >
         Kérdés hozzáadása
