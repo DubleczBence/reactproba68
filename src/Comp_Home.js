@@ -692,27 +692,27 @@ const handleRemoveOption = (questionId, optionId) => {
         
 
 
-      <Tooltip title="Account settings">
-  <IconButton
-    onClick={handleClickProfile}
-    size="small"
-    sx={{
-      position: 'absolute',
-      top: 16,
-      right: 16,
-      padding: 0, // Eltávolítja a belső margót
-      width: 40, // Azonos szélesség, mint az Avatar
-      height: 40, // Azonos magasság, mint az Avatar
-      borderRadius: '50%', // Kör alakúvá teszi az IconButton-t
-      overflow: 'hidden', // Eltünteti az esetleges tartalmi túllógást
-    }}
-    aria-controls={openprofile ? 'account-menu' : undefined}
-    aria-haspopup="true"
-    aria-expanded={openprofile ? 'true' : undefined}
-  >
-    <Avatar sx={{ width: 40, height: 40 }}>M</Avatar>
-  </IconButton>
-</Tooltip>
+  <Tooltip title="Account settings">
+    <IconButton
+      onClick={handleClickProfile}
+      size="small"
+      sx={{
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        padding: 0, // Eltávolítja a belső margót
+        width: 40, // Azonos szélesség, mint az Avatar
+        height: 40, // Azonos magasság, mint az Avatar
+        borderRadius: '50%', // Kör alakúvá teszi az IconButton-t
+        overflow: 'hidden', // Eltünteti az esetleges tartalmi túllógást
+      }}
+      aria-controls={openprofile ? 'account-menu' : undefined}
+      aria-haspopup="true"
+      aria-expanded={openprofile ? 'true' : undefined}
+    >
+      <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
+    </IconButton>
+  </Tooltip>
 
         <Menu
         anchorEl={anchorEl}
