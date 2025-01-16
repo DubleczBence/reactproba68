@@ -11,10 +11,10 @@ function App() {
   const navigate = useNavigate(); // Helyezd a hookot ide
   
 
-  const handleSendData = async ({ type, data }) => {
-    console.log('Received data from Home:', { type, data });
+  const handleSendData = async ({ data }) => {
+    console.log('Received data from Home:', { data });
   
-    const endpoint = 'http://localhost:3001/api/users/home';
+    const endpoint = 'http://localhost:3001/api/main/home';
   
     try {
       const response = await fetch(endpoint, {
@@ -114,8 +114,7 @@ function App() {
         <Route path="/" element={<SignIn  onSignIn={HandleSignInData}/>} />
         <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
         <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
-        <Route path="/home" element={<Home onSignOut={handleSendData} />} />
-        <Route path="/home" element={isAuthenticated ? <Home onSignOut={HandleSignOut} /> : <SignIn />} />
+        <Route path="/home" element={isAuthenticated ? (<Home onSendData={handleSendData} onSignOut={HandleSignOut} />) : (<SignIn />)} />
         <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
       </Routes>
   );

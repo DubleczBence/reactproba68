@@ -129,7 +129,7 @@ const Home = ({ onSignOut }) => {
       nem,
       anyagi,
     };
-    onSignOut({ type: 'home', data });
+    onSignOut({ data });
   };
 
 

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db'); // Importáld az adatbázis konfigurációt
-const bcrypt = require('bcrypt'); // Jelszó hash-eléshez
 
 // Regisztrációs végpont
 router.post('/home', async (req, res) => {
@@ -21,8 +20,8 @@ router.post('/home', async (req, res) => {
   
       res.status(201).json({ message: 'Küldés sikeres!' });
     } catch (error) {
-      console.error('Hiba történt regisztráció közben:', error);
-      res.status(500).json({ error: 'Hiba történt a regisztráció során.' });
+      console.error('Hiba történt a küldés közben:', error);
+      res.status(500).json({ error: 'Hiba történt a küldés során.' });
     }
   });
 
