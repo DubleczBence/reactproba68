@@ -34,7 +34,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignSelf: 'center',
-  width: 'auto',
+  width: '100%',
   padding: theme.spacing(4),
   gap: theme.spacing(5),
   margin: 'auto',
@@ -120,6 +120,17 @@ const Home = ({ onSignOut }) => {
   };
 
 
+
+  const sendData = () => {
+    const data = {
+      vegzettseg,
+      korcsoport,
+      regio,
+      nem,
+      anyagi,
+    };
+    onSignOut({ type: 'home', data });
+  };
 
 
 
@@ -378,6 +389,7 @@ const [open, setOpen] = React.useState(false);
               type="submit"
               fullWidth
               variant="contained"
+              onClick={sendData}
             >
               Küldés
       </Button>

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/userRoutes');
 const companyRoutes = require('./routes/companyRoutes');
+const mainRoutes = require('./routes/mainRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -11,6 +12,7 @@ const PORT = 3001;
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(bodyParser.json());
 app.use('/api/users', userRoutes); // A felhasználói API végpontok
+app.use('/api/main', mainRoutes); // A felhasználói API végpontok
 app.use('/api/companies', companyRoutes);
 
 // Indítsd el a szervert

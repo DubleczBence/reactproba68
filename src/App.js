@@ -11,6 +11,29 @@ function App() {
   const navigate = useNavigate(); // Helyezd a hookot ide
   
 
+  const handleSendData = async ({ type, data }) => {
+    console.log('Received data from Home:', { type, data });
+  
+    const endpoint = 'http://localhost:3001/api/users/home';
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+  
+      const result = await response.json();
+      if (response.ok) {
+        alert('Data sent successfully!');
+      } else {
+        alert(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error sending data:', error);
+      alert('Failed to send data. Please try again.');
+    }
+  };
   
 
 
@@ -91,6 +114,7 @@ function App() {
         <Route path="/" element={<SignIn  onSignIn={HandleSignInData}/>} />
         <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
         <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
+        <Route path="/home" element={<Home onSignOut={handleSendData} />} />
         <Route path="/home" element={isAuthenticated ? <Home onSignOut={HandleSignOut} /> : <SignIn />} />
         <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
       </Routes>
