@@ -11,27 +11,40 @@ function App() {
   const navigate = useNavigate(); // Helyezd a hookot ide
   
 
+  const getToken = () => {
+    return localStorage.getItem('token');
+  };
+
   const handleSendData = async ({ data }) => {
     console.log('Received data from Home:', { data });
-  
+
+    const token = getToken(); // Token lekérése
+    if (!token) {
+      alert('Nincs bejelentkezve!');
+      return;
+    }
+
     const endpoint = 'http://localhost:3001/api/main/home';
-  
+
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Token hozzáadása a fejlécben
+        },
         body: JSON.stringify(data),
       });
-  
+
       const result = await response.json();
       if (response.ok) {
-        alert('Data sent successfully!');
+        alert('Adatok sikeresen elküldve!');
       } else {
-        alert(`Error: ${result.error}`);
+        alert(`Hiba: ${result.error}`);
       }
     } catch (error) {
-      console.error('Error sending data:', error);
-      alert('Failed to send data. Please try again.');
+      console.error('Hiba az adatok küldése közben:', error);
+      alert('Az adatok küldése nem sikerült. Kérlek, próbáld újra.');
     }
   };
   
@@ -88,6 +101,13 @@ function App() {
         alert('Bejelentkezés sikeres!');
         setIsAuthenticated(true); // Frissítsd az autentikáció állapotát
 
+
+         // Token mentése a localStorage-ba
+         if (result.token) {
+          localStorage.setItem('token', result.token);
+        }
+
+
         if (type === 'user') {
           navigate('/home', { state: { userName: result.name } }); // Felhasználói név
         } else if (type === 'company') {
@@ -110,14 +130,14 @@ function App() {
   };
 
   return (
-      <Routes>
-        <Route path="/" element={<SignIn  onSignIn={HandleSignInData}/>} />
-        <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
-        <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
-        <Route path="/home" element={isAuthenticated ? (<Home onSendData={handleSendData} onSignOut={HandleSignOut} />) : (<SignIn />)} />
-        <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
-      </Routes>
-  );
+    <Routes>
+      <Route path="/" element={<SignIn  onSignIn={HandleSignInData}/>} />
+      <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
+      <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
+      <Route path="/home" element={ isAuthenticated ? (<Home onSendData={handleSendData} onSignOut={HandleSignOut} /> ) : ( <SignIn />)} />
+      <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
+    </Routes>
+);
 }
 
 export default App;

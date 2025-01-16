@@ -80,7 +80,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 
-const Home = ({ onSignOut }) => {
+const Home = ({ onSignOut, onSendData }) => {
 
 
   const [vegzettseg, setVegzettseg] = React.useState('');
@@ -129,7 +129,7 @@ const Home = ({ onSignOut }) => {
       nem,
       anyagi,
     };
-    onSignOut({ data });
+    onSendData({ data });
   };
 
 
@@ -165,7 +165,7 @@ const [open, setOpen] = React.useState(false);
 
   return (
 
-    <AppTheme {...onSignOut}>
+    <AppTheme {...onSendData}>
       <UserContainer direction="column" justifyContent="space-between">
       <React.Fragment>
           <CssBaseline enableColorScheme />
