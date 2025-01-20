@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -88,6 +88,10 @@ const Home = ({ onSignOut, onSendData }) => {
   const [regio, setRegio] = React.useState('');
   const [nem, setNem] = React.useState('');
   const [anyagi, setAnyagi] = React.useState('');
+  const [isFormFilled, setIsFormFilled] = useState(false); // Itt hozd létre az állapotot
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [name, setName] = useState('');
+  
 
 
 
@@ -161,8 +165,37 @@ const [open, setOpen] = React.useState(false);
 
   const location = useLocation();
   console.log(location);
-  const name = location.state?.userName || location.state?.companyName;
 
+
+
+  useEffect(() => {
+    const checkIfSignedIn = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        setIsSignedIn(true);
+        const response = await fetch('http://localhost:3001/api/main/check-form-filled', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        const result = await response.json();
+        if (result.isFormFilled) {
+          setIsFormFilled(true);
+        }
+      }
+    };
+    checkIfSignedIn();
+  }, []);
+
+  useEffect(() => {
+    if (location.state) {
+      setName(location.state.userName);
+    }
+  }, [location]);
+
+  if (isSignedIn) {
+    if (isFormFilled) {
   return (
 
     <AppTheme {...onSendData}>
@@ -182,7 +215,34 @@ const [open, setOpen] = React.useState(false);
       
       <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
           
+
+      </React.Fragment>
+    </UserContainer>
+    </AppTheme>
+    )} else{ 
+      return(
+        <AppTheme {...onSendData}>
+          <UserContainer direction="column" justifyContent="space-between">
+            <React.Fragment>
+
+
+            <CssBaseline enableColorScheme />
+
+
+                <Typography
+              component="h1"
+              variant="h6"
+              sx={{
+                textAlign: 'center',
+                mb: 2,
+              }}
+            >
+              Köszöntjük az oldalon, {name}!
+            </Typography>
             
+            <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
+            
+
             <Card variant="outlined">
     
 
@@ -507,6 +567,8 @@ const [open, setOpen] = React.useState(false);
   </UserContainer>
 </AppTheme>
   );
+  }
+}
 };
 
 export default Home;

@@ -3,9 +3,10 @@ const mysql = require('mysql2');
 // Kapcsolat létrehozása
 const db = mysql.createConnection({
   host: 'localhost', // Az adatbázis szerver címe
-  user: 'root',      // Az adatbázis felhasználónév
+  user: 'roote',      // Az adatbázis felhasználónév
   password: 'antiszoci',      // Az adatbázis jelszó (ha van)
   database: 'survey_app', // Az adatbázis neve
+  port: 3307
 });
 
 db.connect((err) => {

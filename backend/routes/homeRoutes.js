@@ -33,4 +33,28 @@ router.post('/home', async (req, res) => {
   }
 });
 
+
+
+router.get('/check-form-filled', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const decoded = jwt.verify(token, SECRET_KEY);
+  const userId = decoded.id;
+
+  try {
+    const [responses] = await db.promise().query(
+      'SELECT * FROM users_responses WHERE user_id = ?',
+      [userId]
+    );
+
+    if (responses.length > 0) {
+      res.status(200).json({ isFormFilled: true });
+    } else {
+      res.status(200).json({ isFormFilled: false });
+    }
+  } catch (error) {
+    console.error('Hiba történt a kérdőív kitöltésének ellenőrzése közben:', error);
+    res.status(500).json({ error: 'Hiba történt a kérdőív kitöltésének ellenőrzése során.' });
+  }
+});
+
 module.exports = router;
