@@ -5,11 +5,14 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Home from './Home';
 import CompHome from './Comp_Home';
+import CustomizedSnackbars from './CustomizedSnackbars';
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate(); // Helyezd a hookot ide
   
+
 
   const getToken = () => {
     return localStorage.getItem('token');
@@ -67,16 +70,22 @@ function App() {
 
       const result = await response.json();
       if (response.ok) {
-        alert('Registration successful!');
+        setSnackbar({ open: true, message: 'Registration successful!', severity: 'success' });
         navigate('/sign-in');
       } else {
-        alert(`Error: ${result.error}`);
+        setSnackbar({ open: true, message: `Error: ${result.error}`, severity: 'error' });
       }
     } catch (error) {
       console.error('Error during registration:', error);
-      alert('Failed to register. Please try again.');
+      setSnackbar({ open: true, message: 'Failed to register. Please try again.', severity: 'error' });
     }
   };
+
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
 
   const HandleSignInData = async ({ type, data }) => {
     console.log('Received data from SignIn:', { type, data });
@@ -129,7 +138,10 @@ function App() {
     navigate('/sign-in');
   };
 
+  
+
   return (
+    <div>
     <Routes>
       <Route path="/" element={<SignIn  onSignIn={HandleSignInData}/>} />
       <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
@@ -137,7 +149,16 @@ function App() {
       <Route path="/home" element={ isAuthenticated ? (<Home onSendData={handleSendData} onSignOut={HandleSignOut} /> ) : ( <SignIn />)} />
       <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
     </Routes>
+    <CustomizedSnackbars
+      open={snackbar.open}
+      handleClose={handleCloseSnackbar}
+      message={snackbar.message}
+      severity={snackbar.severity}
+    />
+    </div>
 );
+
+
 }
 
 export default App;
