@@ -154,13 +154,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 const CompHome = ({ onSignOut }) => {
-  const Credit = 120;
+  const [credit, setCredit] = useState(120);
   const location = useLocation();
   console.log(location);
   const name = location.state?.userName || location.state?.companyName;
 
 
 
+
+const [questions, setQuestions] = useState([{
+  id: 1,
+  selectedButton: "radio",
+  options: [{ id: 1, label: "" }]
+}]);
 
   
 
@@ -178,15 +184,12 @@ const CompHome = ({ onSignOut }) => {
 
   
 
-const [questions, setQuestions] = useState([{
-  id: 1,
-  selectedButton: "radio",
-  options: [{ id: 1, label: "" }]
-}]);
+
 
 
 
 const handleAddQuestion = () => {
+  if (credit >= 30) {
   setQuestions((prev) => [
     ...prev,
     {
@@ -195,12 +198,18 @@ const handleAddQuestion = () => {
       options: [{ id: uuidv4(), label: "" }], // Opció egyedi azonosítója
     },
   ]);
+  setCredit(credit - 30);
+  }
+  else {
+    alert("Nincs elegendő kredit a kérdés hozzáadásához!");
+  }
 };
 
 
 
 const handleRemoveQuestion = (id) => {
   setQuestions((prev) => prev.filter((q) => q.id !== id));
+  setCredit(credit + 30);
 };
 
 
@@ -229,32 +238,57 @@ const handleLabelChange = (questionId, optionId, value) => {
 
 const handleAddOption = (questionId) => {
   setQuestions((prev) =>
-    prev.map((q) =>
-      q.id === questionId
-        ? {
+    prev.map((q) => {
+      if (q.id === questionId) {
+        if (q.options.length >= 4 && credit >= 10) {
+          // Hitelcsökkentés és új opció hozzáadása
+          setCredit((prevCredit) => prevCredit - 10);
+          return {
             ...q,
             options: [
               ...q.options,
-              { id: uuidv4(), label: "" }, // Egyedi azonosító
+              { id: uuidv4(), label: `Option ${q.options.length + 1}` },
             ],
-          }
-        : q
-    )
+          };
+        } else if (q.options.length < 4) {
+          // Új opció hozzáadása hitel nélkül
+          return {
+            ...q,
+            options: [
+              ...q.options,
+              { id: uuidv4(), label: `Option ${q.options.length + 1}` },
+            ],
+          };
+        }
+      }
+      return q;
+    })
   );
 };
 
 
 
 const handleRemoveOption = (questionId, optionId) => {
-  setQuestions(prev =>
-    prev.map((question) =>
-      question.id === questionId
-        ? {
-            ...question,
-            options: question.options.filter(option => option.id !== optionId)
-          }
-        : question
-    )
+  setQuestions((prev) =>
+    prev.map((question) => {
+      if (question.id === questionId) {
+        const wasAboveLimit = question.options.length > 4; // Ellenőrizni, hogy 4 fölött volt-e
+        const updatedOptions = question.options.filter(
+          (option) => option.id !== optionId
+        );
+
+        // Ha korábban több mint 4 opció volt, növeljük a kreditet
+        if (wasAboveLimit) {
+          setCredit((prevCredit) => prevCredit + 10); // Hozzáadjuk a kreditet
+        }
+
+        return {
+          ...question,
+          options: updatedOptions,
+        };
+      }
+      return question;
+    })
   );
 };
 
@@ -352,7 +386,7 @@ const handleRemoveOption = (questionId, optionId) => {
           left: 26,
         }}
       >
-       {Credit} Kredit
+       {120} Kredit
       </Typography>
 
 
@@ -433,7 +467,7 @@ const handleRemoveOption = (questionId, optionId) => {
               height: '7ch',
               mb: "20px",
               '& .MuiInputLabel-root': {
-                fontSize: '1.3rem', // Növeli a label méretét
+                fontSize: '1.2rem', // Növeli a label méretét
               },
             }}
             id='valami' label="Kérdőív címe" variant="standard" 
@@ -467,7 +501,7 @@ const handleRemoveOption = (questionId, optionId) => {
                 fontSize: '1.1rem', // Növeli a label méretét
               },
             }}
-            id={`question-${question.id}-label`} label="Kérdés 1" variant="standard" 
+            id={`question-${question.id}-label`} label="Kérdés" variant="standard" 
            />
 
 
@@ -554,7 +588,7 @@ const handleRemoveOption = (questionId, optionId) => {
                   onClick={() => handleRemoveOption(question.id, option.id)}
                   color="error"
                   sx={{
-                    ml: 2,
+                    ml: 30,
                     minWidth: "30px",
                     padding: "4px",
                     borderRadius: "20%",
@@ -638,9 +672,12 @@ const handleRemoveOption = (questionId, optionId) => {
   >
     <DeleteIcon />
   </Button>
+
+
+
+  
           
     
-          
   </Container>
   ))}
 
@@ -649,16 +686,52 @@ const handleRemoveOption = (questionId, optionId) => {
 
       <Button
         onClick={handleAddQuestion}
+        disabled={credit < 30}
         startIcon={<AddCircleOutlineIcon />}
         variant="outlined"
         sx={{ 
-          mt: 2,
+          mt: 0,
           justifyContent: "flex-start",
           pl: 2,
          }}
       >
         Kérdés hozzáadása
       </Button>
+
+
+
+
+      <Typography component="h1" variant="subtitle1" sx={{ textAlign: 'center', mt: 3}}>{credit}/120 Kredit</Typography>
+
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center", // Vízszintesen középre igazítás
+          alignItems: "center", // Függőlegesen középre igazítás
+          height: "100vh", // Teljes magasságú konténer (ha szükséges)
+        }}
+      >
+        <Button
+          variant="outlined"
+          sx={{
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            width: "82px",
+            mb: 2,
+            border: "none", // Körvonal (ha szükséges)
+            borderRadius: "10px", // Lekerekített sarkok
+            backgroundColor: (theme) => theme.palette.background.paper,
+            color: (theme) => theme.palette.text.primary,
+            "&:hover": {
+              backgroundColor: "#243642",
+            },
+          }}
+        >
+          Tovább
+        </Button>
+      </Box>
 
 
           <Button
@@ -686,10 +759,16 @@ const handleRemoveOption = (questionId, optionId) => {
             
           
           </Button>
+
+          
+
+
         </Card>
         )}
+
+
       
-        
+      
 
 
   <Tooltip title="Account settings">
