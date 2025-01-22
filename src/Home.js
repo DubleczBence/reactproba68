@@ -29,7 +29,6 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 
 
-
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -214,7 +213,112 @@ const [open, setOpen] = React.useState(false);
       </Typography>
       
       <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
-          
+      <Tooltip title="Account settings">
+    <IconButton
+      onClick={handleClickProfile}
+      size="small"
+      sx={{
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        padding: 0, // Eltávolítja a belső margót
+        width: 40, // Azonos szélesség, mint az Avatar
+        height: 40, // Azonos magasság, mint az Avatar
+        borderRadius: '50%', // Kör alakúvá teszi az IconButton-t
+        overflow: 'hidden', // Eltünteti az esetleges tartalmi túllógást
+      }}
+      aria-controls={openprofile ? 'account-menu' : undefined}
+      aria-haspopup="true"
+      aria-expanded={openprofile ? 'true' : undefined}
+    >
+      <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
+    </IconButton>
+  </Tooltip>
+
+        <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={openprofile}
+        onClose={handleCloseProfile}
+        onClick={handleCloseProfile}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleCloseProfile}>
+          <Avatar /> Profile
+        </MenuItem>
+        <MenuItem onClick={handleCloseProfile}>
+          <Avatar /> My account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleCloseProfile}>
+          <ListItemIcon>
+            <PersonAdd fontSize="small" />
+          </ListItemIcon>
+          Add another account
+        </MenuItem>
+        <MenuItem onClick={handleCloseProfile}>
+          <ListItemIcon>
+            <Settings fontSize="small" />
+          </ListItemIcon>
+          Settings
+        </MenuItem>
+        <MenuItem onClick={handleClickOpen}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
+
+
+      
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Kijelentkezés"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Biztosan ki szeretne jelentkezni?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Nem</Button>
+          <Button onClick={onSignOut}>Igen</Button>
+        </DialogActions>
+      </Dialog>
 
       </React.Fragment>
     </UserContainer>
@@ -401,7 +505,7 @@ const [open, setOpen] = React.useState(false);
           </MenuItem>
           <MenuItem value={20}>Férfi</MenuItem>
           <MenuItem value={21}>Nő</MenuItem>
-          <MenuItem value={22}>Egyéb</MenuItem>
+          <MenuItem value={22}>Agyi beteg vagyok</MenuItem>
         </Select>
       </FormControl>
 

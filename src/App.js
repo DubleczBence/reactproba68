@@ -41,13 +41,13 @@ function App() {
 
       const result = await response.json();
       if (response.ok) {
-        alert('Adatok sikeresen elküldve!');
+        setSnackbar({ open: true, message: 'Adatok sikeresen elküldve!', severity: 'success' });
       } else {
-        alert(`Hiba: ${result.error}`);
+        setSnackbar({ open: true, message: `Error: ${result.error}`, severity: 'error' });
       }
     } catch (error) {
       console.error('Hiba az adatok küldése közben:', error);
-      alert('Az adatok küldése nem sikerült. Kérlek, próbáld újra.');
+      setSnackbar({ open: true, message: 'Az adatok küldése nem sikerült. Kérlek próbáld újra.', severity: 'error' });
     }
   };
   
@@ -70,7 +70,7 @@ function App() {
 
       const result = await response.json();
       if (response.ok) {
-        setSnackbar({ open: true, message: 'Registration successful!', severity: 'success' });
+        setSnackbar({ open: true, message: 'Sikeres regisztráció!', severity: 'success' });
         navigate('/sign-in');
       } else {
         setSnackbar({ open: true, message: `Error: ${result.error}`, severity: 'error' });
@@ -107,7 +107,7 @@ function App() {
       console.log('Result:', result);
   
       if (response.ok) {
-        alert('Bejelentkezés sikeres!');
+        setSnackbar({ open: true, message: 'Sikeres bejelentkezés!', severity: 'success' });
         setIsAuthenticated(true); // Frissítsd az autentikáció állapotát
 
 
@@ -124,11 +124,11 @@ function App() {
         }
 
       } else {
-        alert(`Hiba: ${result.error}`);
+        setSnackbar({ open: true, message: `Error: ${result.error}`, severity: 'error' });
       }
     } catch (error) {
       console.error('Hiba a bejelentkezés során:', error);
-      alert('A bejelentkezés nem sikerült. Kérlek, próbáld újra.');
+      setSnackbar({ open: true, message: 'A bejelentkezés nem sikerült. Kérlek próbáld újra.', severity: 'error' });
     }
   };
   
