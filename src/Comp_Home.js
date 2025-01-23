@@ -295,17 +295,24 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
 
-    const [showFirstCard, setShowFirstCard] = React.useState(true); // Az első Card láthatósága
+    const [showFirstCard, setShowFirstCard, showSecondCard, setShowSecondCard] = React.useState(true); // Az első Card láthatósága
   
     const handleClickOpenKerd = () => {
       setShowFirstCard(false); // Az első Card elrejtése
+      setShowSecondCard(true); // A második Card megjelenítése
     };
   
     const handleCloseKerd = () => {
       setShowFirstCard(true); // Az első Card újra megjelenítése
+      setShowSecondCard(false); // A második Card elrejtése
     };
 
 
+
+    const handleClickOpenSzuro = () => {
+      setShowFirstCard(false); // Az első Card elrejtése
+      setShowSecondCard(false); // A második Card megjelenítése
+    };
 
 
 
@@ -443,7 +450,7 @@ const handleRemoveOption = (questionId, optionId) => {
       )}
 
       {/* Második Card */}
-      {!showFirstCard && (
+      {!showFirstCard && showSecondCard && (
         <Card
           noValidate
           autoComplete="off"
@@ -713,6 +720,7 @@ const handleRemoveOption = (questionId, optionId) => {
         }}
       >
         <Button
+          onClick={handleClickOpenSzuro}
           variant="outlined"
           sx={{
             alignItems: "center",
@@ -766,6 +774,54 @@ const handleRemoveOption = (questionId, optionId) => {
         </Card>
         )}
 
+
+        {/* Harmadik Card */}
+        {!showFirstCard && !showSecondCard && (
+        <Card
+        variant="outlined"
+        sx={{
+          mt: 7, // Margin-top
+          width: "95% !important",
+          height: "60% !important",
+          maxWidth: "700px !important",
+        }}>
+          
+          <Button
+            sx={{
+              height: "20% !important",
+              justifyContent: "flex-start",
+              textAlign: "left",
+              pl: 4,
+              fontSize: "1.2rem",
+            }}
+            variant="outlined"
+            startIcon={
+              <AddCircleOutlineIcon
+                sx={{
+                  width: "32px",
+                  height: "32px",
+                  mr: 2,
+                }}
+              />
+            }
+          >
+            Kérdőív létrehozása
+          </Button>
+
+          <Button
+            sx={{
+              height: "20% !important",
+              justifyContent: "flex-start",
+              textAlign: "left",
+              pl: 4,
+              fontSize: "1.2rem",
+            }}
+            variant="outlined"
+          >
+            Cím
+          </Button>
+        </Card>
+        )};
 
       
       

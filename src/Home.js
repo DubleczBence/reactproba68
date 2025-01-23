@@ -505,7 +505,7 @@ const [open, setOpen] = React.useState(false);
           </MenuItem>
           <MenuItem value={20}>Férfi</MenuItem>
           <MenuItem value={21}>Nő</MenuItem>
-          <MenuItem value={22}>Agyi beteg vagyok</MenuItem>
+          <MenuItem value={22}>Egyéb</MenuItem>
         </Select>
       </FormControl>
 
