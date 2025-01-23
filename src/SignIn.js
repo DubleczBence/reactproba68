@@ -318,7 +318,7 @@ export default function SignIn(props) {
               variant="contained"
               onClick={validateInputs}
             >
-              {checked ? 'Cég Bejelentkezés' : 'User Bejelentkezés'}
+              {checked ? 'Company Sign in' : 'User Sign in'}
             </Button>
             <MuiLink
               component="button"

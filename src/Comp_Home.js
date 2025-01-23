@@ -295,23 +295,35 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
 
-    const [showFirstCard, setShowFirstCard, showSecondCard, setShowSecondCard] = React.useState(true); // Az első Card láthatósága
+    const [showFirstCard, setShowFirstCard] = React.useState(true); // Az első Card láthatósága
+    const [showSecondCard, setShowSecondCard] = React.useState(true); // Az második Card láthatósága
+    const [showThirdCard, setShowThirdCard] = React.useState(true); // Az harmadik Card láthatósága
   
     const handleClickOpenKerd = () => {
       setShowFirstCard(false); // Az első Card elrejtése
       setShowSecondCard(true); // A második Card megjelenítése
+      setShowThirdCard(false);// A harmadik Card elrejtése
     };
   
     const handleCloseKerd = () => {
       setShowFirstCard(true); // Az első Card újra megjelenítése
       setShowSecondCard(false); // A második Card elrejtése
+      setShowThirdCard(false);// A harmadik Card elrejtése
     };
 
 
 
     const handleClickOpenSzuro = () => {
       setShowFirstCard(false); // Az első Card elrejtése
-      setShowSecondCard(false); // A második Card megjelenítése
+      setShowSecondCard(false); // A második Card elrejtése
+      setShowThirdCard(true);// A harmadik Card megjelenítése
+    };
+
+
+    const handleClickCloseSzuro = () => {
+      setShowFirstCard(false); // Az első Card elrejtése
+      setShowSecondCard(true); // A második Card megjelenítése
+      setShowThirdCard(false);// A harmadik Card elrejtése
     };
 
 
@@ -401,7 +413,7 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
       {/* Első Card */}
-      {showFirstCard && (
+      { showFirstCard && (
         <Card
           variant="outlined"
           sx={{
@@ -450,7 +462,7 @@ const handleRemoveOption = (questionId, optionId) => {
       )}
 
       {/* Második Card */}
-      {!showFirstCard && showSecondCard && (
+      {!showThirdCard && !showFirstCard && showSecondCard && (
         <Card
           noValidate
           autoComplete="off"
@@ -656,7 +668,7 @@ const handleRemoveOption = (questionId, optionId) => {
         backgroundColor: (theme) => theme.palette.background.paper,
         color: (theme) => theme.palette.text.primary,
         "&:hover": {
-          backgroundColor: "#243642",
+          backgroundColor: "#eaeaea",
         },
       }}
     >
@@ -733,7 +745,7 @@ const handleRemoveOption = (questionId, optionId) => {
             backgroundColor: (theme) => theme.palette.background.paper,
             color: (theme) => theme.palette.text.primary,
             "&:hover": {
-              backgroundColor: "#243642",
+              backgroundColor: "#eaeaea",
             },
           }}
         >
@@ -776,7 +788,7 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
         {/* Harmadik Card */}
-        {!showFirstCard && !showSecondCard && (
+        {!showFirstCard && !showSecondCard && showThirdCard && (
         <Card
         variant="outlined"
         sx={{
@@ -786,42 +798,39 @@ const handleRemoveOption = (questionId, optionId) => {
           maxWidth: "700px !important",
         }}>
           
-          <Button
-            sx={{
-              height: "20% !important",
-              justifyContent: "flex-start",
-              textAlign: "left",
-              pl: 4,
-              fontSize: "1.2rem",
-            }}
-            variant="outlined"
-            startIcon={
-              <AddCircleOutlineIcon
-                sx={{
-                  width: "32px",
-                  height: "32px",
-                  mr: 2,
-                }}
-              />
-            }
-          >
-            Kérdőív létrehozása
-          </Button>
 
-          <Button
-            sx={{
-              height: "20% !important",
-              justifyContent: "flex-start",
-              textAlign: "left",
-              pl: 4,
-              fontSize: "1.2rem",
-            }}
-            variant="outlined"
-          >
-            Cím
-          </Button>
+          <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center", // Vízszintesen középre igazítás
+          alignItems: "center", // Függőlegesen középre igazítás
+          height: "100vh", // Teljes magasságú konténer (ha szükséges)
+        }}
+      >
+        <Button
+          onClick={handleClickCloseSzuro}
+          variant="outlined"
+          sx={{
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            width: "82px",
+            mb: 2,
+            border: "none", // Körvonal (ha szükséges)
+            borderRadius: "10px", // Lekerekített sarkok
+            backgroundColor: (theme) => theme.palette.background.paper,
+            color: (theme) => theme.palette.text.primary,
+            "&:hover": {
+              backgroundColor: "#eaeaea",
+            },
+          }}
+        >
+          Vissza
+        </Button>
+      </Box>
+          
         </Card>
-        )};
+        )}
 
       
       
