@@ -50,6 +50,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { v4 as uuidv4 } from 'uuid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Szuro from './Szuro';
+import Mintavetel from './Mintavetel';
 
 
 const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
@@ -300,17 +301,21 @@ const handleRemoveOption = (questionId, optionId) => {
     const [showFirstCard, setShowFirstCard] = React.useState(true); // Az első Card láthatósága
     const [showSecondCard, setShowSecondCard] = React.useState(true); // Az második Card láthatósága
     const [showThirdCard, setShowThirdCard] = React.useState(true); // Az harmadik Card láthatósága
+    const [showFourthCard, setShowFourthCard] = React.useState(true);
+    const [filteredCount, setFilteredCount] = useState(0);
   
     const handleClickOpenKerd = () => {
       setShowFirstCard(false); // Az első Card elrejtése
       setShowSecondCard(true); // A második Card megjelenítése
       setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFourthCard(false);
     };
   
     const handleCloseKerd = () => {
       setShowFirstCard(true); // Az első Card újra megjelenítése
       setShowSecondCard(false); // A második Card elrejtése
       setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFourthCard(false);
     };
 
 
@@ -319,6 +324,7 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowFirstCard(false); // Az első Card elrejtése
       setShowSecondCard(false); // A második Card elrejtése
       setShowThirdCard(true);// A harmadik Card megjelenítése
+      setShowFourthCard(false);
     };
 
 
@@ -326,9 +332,34 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowFirstCard(false); // Az első Card elrejtése
       setShowSecondCard(true); // A második Card megjelenítése
       setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFourthCard(false);
     };
 
 
+    const handleCloseIconClick = () => {
+      setShowFirstCard(true);
+      setShowSecondCard(false);
+      setShowThirdCard(false);
+      setShowFourthCard(false);
+    };
+
+
+    const handleShowMintavetel = (count) => {
+      setFilteredCount(count);
+      setShowFirstCard(false);
+      setShowSecondCard(false);
+      setShowThirdCard(false);
+      setShowFourthCard(true);
+    };
+
+
+    const handleClickCloseMintavetel = () => {
+      setShowFirstCard(false);
+      setShowSecondCard(false);
+      setShowThirdCard(true);
+      setShowFourthCard(false);
+    };
+    
 
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
@@ -793,24 +824,24 @@ const handleRemoveOption = (questionId, optionId) => {
 
         {/* Harmadik Card */}
         {!showFirstCard && !showSecondCard && showThirdCard && (
-        <Card
-        variant="outlined"
-        sx={{
-          mt: 7, // Margin-top
-          width: "95% !important",
-          height: "60% !important",
-          maxWidth: "700px !important",
-        }}>
-          
-
-          <Szuro onClose={handleClickCloseSzuro}>
+          <Szuro 
+          onClose={handleCloseIconClick}
+          onBack={handleClickCloseSzuro}
+          onShowMintavetel={handleShowMintavetel}
+          >
           </Szuro>
-          
-        </Card>
         )}
 
-      
-      
+
+
+        {/* Negyedik Card */}
+        {!showFirstCard && !showSecondCard && !showThirdCard && showFourthCard && (
+          <Mintavetel 
+            userCount={filteredCount}
+            onClose={handleCloseIconClick}
+            onBack={handleClickCloseMintavetel}
+          />
+        )}
 
 
 

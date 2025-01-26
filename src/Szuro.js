@@ -3,39 +3,35 @@ import { styled } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
-import Stack from '@mui/material/Stack';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import MuiCard from '@mui/material/Card';
 
 
 
-
-const SzuroContainer = styled(Stack)(({ theme }) => ({
-    height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-    minHeight: '100%',
-    padding: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      padding: theme.spacing(4),
-    },
-    '&::before': {
-      content: '""',
-      display: 'block',
-      position: 'absolute',
-      zIndex: -1,
-      inset: 0,
-      backgroundImage:
-        'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-      backgroundRepeat: 'no-repeat',
-      ...theme.applyStyles('dark', {
-        backgroundImage:
-          'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
+const SzuroContainer = styled(MuiCard)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignSelf: 'center',
+  width: '100%',
+  padding: theme.spacing(4),
+  gap: theme.spacing(2),
+  margin: 'auto',
+  boxShadow:
+    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+  [theme.breakpoints.up('sm')]: {
+    width: '450px',
+  },
+  ...theme.applyStyles('dark', {
+    boxShadow:
+      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
       }),
-    },
   }));
 
 
-  const Szurooldal = ({ onReceiveData, onClose }) => {
+  const Szurooldal = ({ onReceiveData, onClose, onBack, onShowMintavetel }) => {
 
 
 
@@ -99,8 +95,7 @@ const [vegzettseg, setVegzettseg] = React.useState('');
           }
       
         const data = await response.json();
-        console.log('Filtered count:', data.count);
-        alert(`Találatok száma: ${data.count}`);
+        onShowMintavetel(data.count);
         } catch (error) {
           console.error('Hiba a szűrés során:', error);
         }
@@ -113,9 +108,22 @@ const [vegzettseg, setVegzettseg] = React.useState('');
 
 
 return (
-  <SzuroContainer>
+  <SzuroContainer 
+  noValidate
+  autoComplete="off"
+  variant="outlined"
+  sx={{
+    top: "4px",
+    mt: 7, // Margin-top
+    width: "95% !important",
+    height: "60% !important",
+    maxWidth: "700px !important",
+    position: "relative",
+    padding: "10px",
+    overflow: "auto",
+  }}>
 
-<FormControl sx={{ m: 1, minWidth: 240 }}>
+<FormControl sx={{ m: 1, minWidth: 240, mt: 8 }}>
   <InputLabel
     id="demo-simple-select-autowidth-label"
     sx={{
@@ -349,7 +357,7 @@ return (
 
 
         <Button
-          onClick={onClose}
+          onClick={onBack}
           variant="outlined"
           sx={{
             alignItems: "center",
@@ -369,6 +377,32 @@ return (
           Vissza
         </Button>
         </Box>
+
+        <Button
+            onClick={onClose}
+            sx={{
+              position: "absolute", // Abszolút pozicionálás
+              top: "8px", // Távolság a Card tetejétől
+              right: "8px",
+              width: "22px", // A gomb szélessége és magassága
+              height: "22px",
+              minWidth: "0px", // Minimalizálja a gomb alapértelmezett paddingjét
+              padding: "0px", // Eltávolítja az extra belső térközt
+              display: "flex", // Középre igazításhoz
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            >
+            
+              <CloseIcon
+                sx={{
+                  width: "22px",
+                  height: "22px",
+                }}
+              />
+            
+          
+          </Button>
         </SzuroContainer>
     );
     };
