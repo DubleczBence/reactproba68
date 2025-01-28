@@ -6,7 +6,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import MuiCard from '@mui/material/Card';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
-
+import Grid from '@mui/material/Grid';
+import MuiInput from '@mui/material/Input';
 
 
 const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
@@ -30,39 +31,34 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
 
 
 
-
-  const marks = [
-    {
-      value: 50,
-      label: '50 fő',
-    },
-    {
-      value: 100,
-      label: '100 fő',
-    },
-    {
-      value: 200,
-      label: '200 fő',
-    },
-    {
-      value: 500,
-      label: '500 fő',
-    },
-    {
-        value: 1000,
-        label: '1000 fő',
-      },
-  ];
-  
-  function valuetext(value) {
-    return `${value} fő`;
-  }
-
-
-
+  const Input = styled(MuiInput)`
+  width: 42px;
+`;
 
 
   const Mintavetel = ({ userCount, onClose, onBack }) => {
+
+
+
+
+
+  const [value, setValue] = React.useState(50);
+
+  const handleSliderChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleInputChange = (event) => {
+    setValue(event.target.value === '' ? 0 : Number(event.target.value));
+  };
+
+  const handleBlur = () => {
+    if (value < 0) {
+      setValue(0);
+    } else if (value > 100) {
+      setValue(100);
+    }
+  };
 
 
 
@@ -87,19 +83,41 @@ return (
     </Typography>
 
 
-    <Box sx={{ width: 400, mx: 'auto' }}>
-      <Slider
-        aria-label="Restricted values"
-        defaultValue={50}
-        getAriaValueText={valuetext}
-        step={null}
-        valueLabelDisplay="auto"
-        marks={marks}
-        min={50}        // Added min value
-        max={1000}      // Added max value
-      />
-    </Box>
 
+
+    <Box sx={{ width: '90%', mx: 'auto', mt: 4, mb: 4 }}>
+      <Typography id="input-slider" gutterBottom>
+        Mintavetel
+      </Typography>
+      <Grid container spacing={2} sx={{ alignItems: 'center' }}>
+        <Grid item>
+        </Grid>
+        <Grid item xs>
+          <Slider
+            value={typeof value === 'number' ? value : 50}
+            onChange={handleSliderChange}
+            aria-labelledby="input-slider"
+            min={50}    // Setting minimum to 50
+            max={1000}  // Setting maximum to 1000
+          />
+        </Grid>
+        <Grid item>
+          <Input
+            value={value}
+            size="small"
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            inputProps={{
+              step: 10,
+              min: 50,
+              max: 1000,
+              type: 'number',
+              'aria-labelledby': 'input-slider',
+            }}
+          />
+        </Grid>
+      </Grid>
+    </Box>
 
 
       <Box
