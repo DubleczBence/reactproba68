@@ -101,21 +101,22 @@ return (
             max={1000}  // Setting maximum to 1000
           />
         </Grid>
-        <Grid item>
-          <Input
-            value={value}
-            size="small"
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            inputProps={{
-              step: 10,
-              min: 50,
-              max: 1000,
-              type: 'number',
-              'aria-labelledby': 'input-slider',
-            }}
-          />
-        </Grid>
+      </Grid>
+      <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Input
+          value={value}
+          size="small"
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          sx={{ width: '60px' }}
+          inputProps={{
+            step: 10,
+            min: 50,
+            max: 1000,
+            type: 'number',
+            'aria-labelledby': 'input-slider',
+          }}
+        />
       </Grid>
     </Box>
 
