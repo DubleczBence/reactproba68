@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import MuiCard from '@mui/material/Card';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
 import MuiInput from '@mui/material/Input';
 
 
@@ -32,7 +31,8 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
 
 
   const Input = styled(MuiInput)`
-  width: 42px;
+  width: 80px;
+  font-size: 18px;
 `;
 
 
@@ -78,113 +78,122 @@ return (
     overflow: "auto",
   }}>
 
-    <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-        Elérhető felhasználók száma: {userCount}
+    <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
+        Mintavétel
+    </Typography>
+    <Typography variant="h6" sx={{ mt: 2, alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+        A meghatározott célcsoportból
+    </Typography>
+    <Typography variant="h4" sx={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+        {userCount} Fő
+    </Typography>
+    <Typography variant="h6" sx={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+        Érhető el
     </Typography>
 
 
 
 
     <Box sx={{ width: '90%', mx: 'auto', mt: 4, mb: 4 }}>
-      <Typography id="input-slider" gutterBottom>
-        Mintavetel
-      </Typography>
-      <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-        <Grid item>
-        </Grid>
-        <Grid item xs>
+      <Box container spacing={2} sx={{ alignItems: 'center' }}>
+        <Box item>
+        </Box>
+        <Box item xs
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+          <Typography sx={{ mr: 2 }}>50 fő</Typography>
           <Slider
             value={typeof value === 'number' ? value : 50}
             onChange={handleSliderChange}
             aria-labelledby="input-slider"
-            min={50}    // Setting minimum to 50
-            max={1000}  // Setting maximum to 1000
+            min={50}
+            max={1000}
+            sx={{ width: '300px' }}
           />
-        </Grid>
-      </Grid>
-      <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Typography sx={{ ml: 2 }}>1000 fő</Typography>
+        </Box>
+      </Box>
+      <Box item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Input
           value={value}
-          size="small"
+          size="medium"
           onChange={handleInputChange}
           onBlur={handleBlur}
-          sx={{ width: '60px' }}
-          inputProps={{
-            step: 10,
-            min: 50,
-            max: 1000,
-            type: 'number',
-            'aria-labelledby': 'input-slider',
+          sx={{ 
+            width: '100px',  // Increased from 60px
+            '& input': {
+              fontSize: '20px',
+              padding: '5px',
+              textAlign: 'center'
+            }
           }}
         />
-      </Grid>
+      </Box>
     </Box>
 
 
-      <Box
-      sx={{
-        display: "flex",         // Flexbox elrendezés
-        flexDirection: "row",    // Vízszintes elrendezés
-        alignItems: "center",    // Függőleges középre igazítás
-        justifyContent: "center", // Vízszintes középre igazítás
-        gap: 2,                  // Távolság a gombok között
-        mt: 2,  
-      }}>
-      <Button
-          variant="outlined"
-          sx={{
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            width: "82px",
-            mb: 2,
-            border: "none", // Körvonal (ha szükséges)
-            borderRadius: "10px", // Lekerekített sarkok
-            backgroundColor: (theme) => theme.palette.background.paper,
-            color: (theme) => theme.palette.text.primary,
-            "&:hover": {
-              backgroundColor: "#eaeaea",
-            },
-          }}
-        >
-          Tovább
-        </Button>
-
-
-
-        <Button
-          onClick={onBack}
-          variant="outlined"
-          sx={{
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            width: "82px",
-            mb: 2,
-            border: "none", // Körvonal (ha szükséges)
-            borderRadius: "10px", // Lekerekített sarkok
-            backgroundColor: (theme) => theme.palette.background.paper,
-            color: (theme) => theme.palette.text.primary,
-            "&:hover": {
-              backgroundColor: "#eaeaea",
-            },
-          }}
-        >
-          Vissza
-        </Button>
-        </Box>
+    <Box
+  sx={{
+    display: "flex",         
+    flexDirection: "row",    
+    alignItems: "center",    
+    justifyContent: "center", 
+    gap: 2,                  
+    mt: "auto",  // This will push the buttons to the bottom
+    mb: 2,       // Add some margin at the bottom
+  }}>
+  <Button
+    variant="outlined"
+    sx={{
+      alignItems: "center",
+      justifyContent: "center",
+      textAlign: "center",
+      width: "82px",
+      border: "none", 
+      borderRadius: "10px", 
+      backgroundColor: (theme) => theme.palette.background.paper,
+      color: (theme) => theme.palette.text.primary,
+      "&:hover": {
+        backgroundColor: (theme) =>
+          theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
+      },
+    }}
+  >
+    Tovább
+  </Button>
+  <Button
+    onClick={onBack}
+    variant="outlined"
+    sx={{
+      alignItems: "center",
+      justifyContent: "center", 
+      textAlign: "center",
+      width: "82px",
+      border: "none",
+      borderRadius: "10px",
+      backgroundColor: (theme) => theme.palette.background.paper,
+      color: (theme) => theme.palette.text.primary,
+      "&:hover": {
+        backgroundColor: (theme) =>
+          theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
+      },
+    }}
+  >
+    Vissza
+  </Button>
+</Box>
 
         <Button
             onClick={onClose}
             sx={{
-              position: "absolute", // Abszolút pozicionálás
-              top: "8px", // Távolság a Card tetejétől
+              position: "absolute", 
+              top: "8px", 
               right: "8px",
-              width: "22px", // A gomb szélessége és magassága
+              width: "22px", 
               height: "22px",
-              minWidth: "0px", // Minimalizálja a gomb alapértelmezett paddingjét
-              padding: "0px", // Eltávolítja az extra belső térközt
-              display: "flex", // Középre igazításhoz
+              minWidth: "0px", 
+              padding: "0px", 
+              display: "flex", 
               alignItems: "center",
               justifyContent: "center",
             }}

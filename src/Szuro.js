@@ -326,11 +326,11 @@ return (
 
       <Box
       sx={{
-        display: "flex",         // Flexbox elrendezés
-        flexDirection: "row",    // Vízszintes elrendezés
-        alignItems: "center",    // Függőleges középre igazítás
-        justifyContent: "center", // Vízszintes középre igazítás
-        gap: 2,                  // Távolság a gombok között
+        display: "flex",         
+        flexDirection: "row",    
+        alignItems: "center",    
+        justifyContent: "center", 
+        gap: 2,                  
         mt: 2,  
       }}>
       <Button
@@ -342,12 +342,13 @@ return (
             textAlign: "center",
             width: "82px",
             mb: 2,
-            border: "none", // Körvonal (ha szükséges)
-            borderRadius: "10px", // Lekerekített sarkok
+            border: "none", 
+            borderRadius: "10px", 
             backgroundColor: (theme) => theme.palette.background.paper,
             color: (theme) => theme.palette.text.primary,
             "&:hover": {
-              backgroundColor: "#eaeaea",
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
             },
           }}
         >
@@ -365,12 +366,13 @@ return (
             textAlign: "center",
             width: "82px",
             mb: 2,
-            border: "none", // Körvonal (ha szükséges)
-            borderRadius: "10px", // Lekerekített sarkok
+            border: "none", 
+            borderRadius: "10px", 
             backgroundColor: (theme) => theme.palette.background.paper,
             color: (theme) => theme.palette.text.primary,
             "&:hover": {
-              backgroundColor: "#eaeaea",
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
             },
           }}
         >
