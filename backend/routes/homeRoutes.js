@@ -13,6 +13,11 @@ router.post('/home', async (req, res) => {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
 
+   // Ellenőrzés hogy a dátum valid
+   if (!Date.parse(korcsoport)) {
+    return res.status(400).json({ error: 'Érvénytelen dátum formátum!' });
+  }
+
   try {
 
     // JWT token dekódolása
@@ -23,7 +28,7 @@ router.post('/home', async (req, res) => {
     // Adatok beszúrása a users_responses táblába
     await db.promise().query(
       'INSERT INTO users_responses (user_id, korcsoport, vegzettseg, regio, nem, anyagi_helyzet) VALUES (?, ?, ?, ?, ?, ?)',
-      [userId, korcsoport, vegzettseg, regio, nem, anyagi]
+      [userId, new Date(korcsoport), vegzettseg, regio, nem, anyagi]
     );
 
     res.status(201).json({ message: 'Küldés sikeres!' });

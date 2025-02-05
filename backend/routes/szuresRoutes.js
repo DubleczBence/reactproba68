@@ -18,8 +18,9 @@ router.post('/szures', (req, res) => {
       params.push(vegzettseg);
     }
     if (korcsoport) {
-      sql += ' AND korcsoport = ?';
-      params.push(korcsoport);
+      const [minAge, maxAge] = korcsoport.split('-').map(Number);
+      sql += ` AND TIMESTAMPDIFF(YEAR, korcsoport, CURDATE()) BETWEEN ? AND ?`;
+      params.push(minAge, maxAge);
     }
     if (regio) {
       sql += ' AND regio = ?';

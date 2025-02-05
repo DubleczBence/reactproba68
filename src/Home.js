@@ -27,6 +27,10 @@ import Divider from '@mui/material/Divider';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -83,7 +87,7 @@ const Home = ({ onSignOut, onSendData }) => {
 
 
   const [vegzettseg, setVegzettseg] = React.useState('');
-  const [korcsoport, setKorcsoport] = React.useState('');
+  const [korcsoport, setKorcsoport] = React.useState(dayjs());
   const [regio, setRegio] = React.useState('');
   const [nem, setNem] = React.useState('');
   const [anyagi, setAnyagi] = React.useState('');
@@ -102,8 +106,8 @@ const Home = ({ onSignOut, onSendData }) => {
 
   
 
-  const handleKorcsoport = (event) => {
-    setKorcsoport(event.target.value);
+  const handleKorcsoport = (newValue) => {
+    setKorcsoport(newValue);
   };
 
 
@@ -394,46 +398,26 @@ const [open, setOpen] = React.useState(false);
 
 
 
-      <FormControl sx={{ m: 1, minWidth: 130 }}>
-        <InputLabel
-         id="demo-simple-select-autowidth-label"
-         sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
-          
-          '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
-          },
-        }}
-         >
-          Korcsoport
-         </InputLabel>
-        <Select
-          labelId="demo-simple-select-autowidth-label"
-          id="demo-simple-select-autowidth"
-          value={korcsoport}
-          onChange={handleKorcsoport}
-          autoWidth
-          label="Korcsoport"
-          sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
-          }}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={7}>16 évesnél fiatalabb</MenuItem>
-          <MenuItem value={8}>16-15</MenuItem>
-          <MenuItem value={9}>26-35</MenuItem>
-          <MenuItem value={10}>36-45</MenuItem>
-          <MenuItem value={11}>46-55</MenuItem>
-          <MenuItem value={12}>56-65</MenuItem>
-          <MenuItem value={13}>66 éves vagy idősebb</MenuItem>
-        </Select>
-      </FormControl>
+
+<LocalizationProvider dateAdapter={AdapterDayjs}>
+  <DatePicker 
+    label="Születési dátum"
+    value={korcsoport}
+    onChange={handleKorcsoport}
+    sx={{
+      '& .MuiInputBase-root': {
+        fontSize: '1.2rem',
+        padding: '10px',
+        height: '60px',
+      },
+      '& .MuiInputLabel-root': {
+        fontSize: '1.2rem',
+        fontWeight: 'bold',
+        lineHeight: '1.5',
+      }
+    }}
+  />
+</LocalizationProvider>
 
 
       <FormControl sx={{ m: 1, minWidth: 100 }}>

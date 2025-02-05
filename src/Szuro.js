@@ -196,13 +196,12 @@ return (
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={7}>16 évesnél fiatalabb</MenuItem>
-          <MenuItem value={8}>16-15</MenuItem>
-          <MenuItem value={9}>26-35</MenuItem>
-          <MenuItem value={10}>36-45</MenuItem>
-          <MenuItem value={11}>46-55</MenuItem>
-          <MenuItem value={12}>56-65</MenuItem>
-          <MenuItem value={13}>66 éves vagy idősebb</MenuItem>
+          <MenuItem value="16-25">16-25 év</MenuItem>
+          <MenuItem value="26-35">26-35 év</MenuItem>
+          <MenuItem value="36-45">36-45 év</MenuItem>
+          <MenuItem value="46-55">46-55 év</MenuItem>
+          <MenuItem value="56-65">56-65 év</MenuItem>
+          <MenuItem value="66-120">66 év felett</MenuItem>
         </Select>
       </FormControl>
 
