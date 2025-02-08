@@ -51,6 +51,7 @@ import { v4 as uuidv4 } from 'uuid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Szuro from './Szuro';
 import Mintavetel from './Mintavetel';
+import Attekintes from './Attekintes';
 
 
 const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
@@ -172,6 +173,7 @@ const CompHome = ({ onSignOut }) => {
 const [questions, setQuestions] = useState([{
   id: 1,
   selectedButton: "radio",
+  questionText: "",
   options: [{ id: 1, label: "" }]
 }]);
 
@@ -302,6 +304,7 @@ const handleRemoveOption = (questionId, optionId) => {
     const [showSecondCard, setShowSecondCard] = React.useState(true); // Az második Card láthatósága
     const [showThirdCard, setShowThirdCard] = React.useState(true); // Az harmadik Card láthatósága
     const [showFourthCard, setShowFourthCard] = React.useState(true);
+    const [showFifthCard, setShowFifthCard] = React.useState(true);
     const [filteredCount, setFilteredCount] = useState(0);
   
     const handleClickOpenKerd = () => {
@@ -359,7 +362,27 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowThirdCard(true);
       setShowFourthCard(false);
     };
+
+
+    const handleClickOpenAttekintes = () => {
+      setShowFirstCard(false); // Az első Card elrejtése
+      setShowSecondCard(false); // A második Card elrejtése
+      setShowThirdCard(false);// A harmadik Card megjelenítése
+      setShowFourthCard(false);
+      setShowFifthCard(true);
+    };
+
+    const handleCloseAttekintes = () => {
+      setShowFirstCard(false); // Az első Card elrejtése
+      setShowSecondCard(false); // A második Card elrejtése
+      setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFourthCard(true);
+      setShowFifthCard(false);
+    };
     
+
+    const [surveyTitle, setSurveyTitle] = useState('');
+
 
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
@@ -522,7 +545,7 @@ const handleRemoveOption = (questionId, optionId) => {
                 fontSize: '1.2rem', // Növeli a label méretét
               },
             }}
-            id='valami' label="Kérdőív címe" variant="standard" 
+            id='valami' label="Kérdőív címe" variant="standard" value={surveyTitle} onChange={(e) => setSurveyTitle(e.target.value)}
            />
 
 {questions.map((question) => (
@@ -553,7 +576,13 @@ const handleRemoveOption = (questionId, optionId) => {
                 fontSize: '1.1rem', // Növeli a label méretét
               },
             }}
-            id={`question-${question.id}-label`} label="Kérdés" variant="standard" 
+            id={`question-${question.id}-label`} label="Kérdés" variant="standard" value={question.questionText || ''} onChange={(e) => {
+              setQuestions(prev => prev.map(q => 
+                q.id === question.id 
+                  ? {...q, questionText: e.target.value}
+                  : q
+              ));
+            }}
            />
 
 
@@ -840,10 +869,20 @@ const handleRemoveOption = (questionId, optionId) => {
             userCount={filteredCount}
             onClose={handleCloseIconClick}
             onBack={handleClickCloseMintavetel}
+            onNext={handleClickOpenAttekintes}
           />
         )}
 
 
+        {/* Ötödik Card */}
+        {!showFirstCard && !showSecondCard && !showThirdCard && !showFourthCard && showFifthCard && (
+          <Attekintes
+            surveyTitle={surveyTitle}
+            questions={questions}
+            onClose={handleCloseIconClick}
+            onBack={handleCloseAttekintes}
+          />
+        )}
 
 
   <Tooltip title="Account settings">

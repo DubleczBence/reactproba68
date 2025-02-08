@@ -36,7 +36,7 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
 `;
 
 
-  const Mintavetel = ({ userCount, onClose, onBack }) => {
+  const Mintavetel = ({ userCount, onClose, onBack, onNext }) => {
 
 
 
@@ -143,6 +143,7 @@ return (
     mb: 2,       // Add some margin at the bottom
   }}>
   <Button
+    onClick={onNext}
     variant="outlined"
     sx={{
       alignItems: "center",
