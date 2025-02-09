@@ -162,11 +162,7 @@ const CompHome = ({ onSignOut }) => {
   console.log(location);
   const name = location.state?.userName || location.state?.companyName;
 
-
-
-  
-  
-
+  const [selectedParticipants, setSelectedParticipants] = useState(50);
 
 
 
@@ -364,18 +360,19 @@ const handleRemoveOption = (questionId, optionId) => {
     };
 
 
-    const handleClickOpenAttekintes = () => {
-      setShowFirstCard(false); // Az első Card elrejtése
-      setShowSecondCard(false); // A második Card elrejtése
-      setShowThirdCard(false);// A harmadik Card megjelenítése
+    const handleClickOpenAttekintes = (participantCount) => {
+      setSelectedParticipants(participantCount);
+      setShowFirstCard(false); 
+      setShowSecondCard(false); 
+      setShowThirdCard(false);
       setShowFourthCard(false);
       setShowFifthCard(true);
     };
 
     const handleCloseAttekintes = () => {
-      setShowFirstCard(false); // Az első Card elrejtése
-      setShowSecondCard(false); // A második Card elrejtése
-      setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFirstCard(false); 
+      setShowSecondCard(false);
+      setShowThirdCard(false);
       setShowFourthCard(true);
       setShowFifthCard(false);
     };
@@ -881,6 +878,8 @@ const handleRemoveOption = (questionId, optionId) => {
             questions={questions}
             onClose={handleCloseIconClick}
             onBack={handleCloseAttekintes}
+            participantCount={selectedParticipants}
+            creditCost={120 - credit}
           />
         )}
 

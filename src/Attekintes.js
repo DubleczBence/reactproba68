@@ -5,13 +5,13 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
-import Divider from '@mui/material/Divider';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import TextField from '@mui/material/TextField';
+import Container from '@mui/material/Container';
 
 const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -32,7 +32,7 @@ const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-const Attekintes = ({ surveyTitle, questions, onClose, onBack, onNext }) => {
+const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, onNext, creditCost }) => {
   return (
     <AttekintesContainer
       noValidate
@@ -48,12 +48,31 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, onNext }) => {
         overflow: "auto"
       }}
     >
-      <Typography variant="h4" sx={{ mb: 4 }}>
+      <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
+        Áttekintés
+      </Typography>
+      <Typography variant="h6" sx={{ ml: 2, mt: 2 }}>
         {surveyTitle}
       </Typography>
 
       {questions.map((question, index) => (
-        <Box key={index} sx={{ mb: 4 }}>
+        <Container
+        sx={{
+          padding: "16px", // Belső térköz a Containerben
+          borderRadius: "16px", // Lekerekített sarkok
+          backgroundColor: (theme) =>
+            theme.palette.mode === "light"
+              ? theme.palette.background.paper
+              : "#1B2430",
+          height: "auto",
+          maxHeight: "calc(70vh - 100px)", // Maximális magasság a Card magasságához igazítva
+          width: "98%",
+          
+          
+          position: "relative",
+        }}
+        >
+        <Box key={index} sx={{ mb: 4, ml: 2 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             {question.questionText}
           </Typography>
@@ -88,14 +107,69 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, onNext }) => {
               fullWidth
               placeholder="Írja ide válaszát..."
               multiline
-              rows={3}
               sx={{ mt: 1 }}
             />
           )}
-
-          <Divider sx={{ mt: 3 }} />
         </Box>
+        </Container>
       ))}
+
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          gap: 25, 
+          mt: 5,
+          mb: 5
+        }}>
+          
+          <Box>
+            <Typography variant="h6" sx={{ textAlign: 'center', mb: 0.5, lineHeight: 1 }}>
+              Mintavétel
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline' }}>
+              <Typography variant="h4" sx={{ mr: 1, lineHeight: 1 }}>
+                {participantCount}
+              </Typography>
+              <Typography variant="h6" sx={{ lineHeight: 1 }}>
+                fő
+              </Typography>
+            </Box>
+          </Box>
+
+          
+          <Box>
+            <Typography variant="h6" sx={{ textAlign: 'center', mb: 0.5, lineHeight: 1 }}>
+              Költség
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline' }}>
+              <Typography variant="h4" sx={{ mr: 1, lineHeight: 1 }}>
+                {creditCost}
+              </Typography>
+              <Typography variant="h6" sx={{ lineHeight: 1 }}>
+                kredit
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+
+
+                <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          mt: 2,
+          mb: 2
+        }}>
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Elfogadom a feltételeket"
+            sx={{
+              '& .MuiTypography-root': {
+                fontSize: '1rem'
+              }
+            }}
+          />
+        </Box>
 
 <Box
   sx={{

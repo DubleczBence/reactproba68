@@ -52,12 +52,9 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
     setValue(event.target.value === '' ? 0 : Number(event.target.value));
   };
 
-  const handleBlur = () => {
-    if (value < 0) {
-      setValue(0);
-    } else if (value > 100) {
-      setValue(100);
-    }
+
+  const handleNext = () => {
+    onNext(value); 
   };
 
 
@@ -69,7 +66,7 @@ return (
   variant="outlined"
   sx={{
     top: "4px",
-    mt: 7, // Margin-top
+    mt: 7, 
     width: "95% !important",
     height: "60% !important",
     maxWidth: "700px !important",
@@ -118,9 +115,8 @@ return (
           value={value}
           size="medium"
           onChange={handleInputChange}
-          onBlur={handleBlur}
           sx={{ 
-            width: '100px',  // Increased from 60px
+            width: '100px',  
             '& input': {
               fontSize: '20px',
               padding: '5px',
@@ -139,11 +135,11 @@ return (
     alignItems: "center",    
     justifyContent: "center", 
     gap: 2,                  
-    mt: "auto",  // This will push the buttons to the bottom
-    mb: 2,       // Add some margin at the bottom
+    mt: "auto",
+    mb: 2,       
   }}>
   <Button
-    onClick={onNext}
+    onClick={handleNext}
     variant="outlined"
     sx={{
       alignItems: "center",
