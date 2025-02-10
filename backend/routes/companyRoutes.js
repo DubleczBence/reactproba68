@@ -81,11 +81,48 @@ router.post('/sign-in', async (req, res) => {
       message: 'Bejelentkezés sikeres!',
       token,
       cegnev: company.cegnev,
+      cegId: company.id
     });
   } catch (error) {
     console.error('Hiba történt a bejelentkezés során:', error);
     res.status(500).json({ error: 'Hiba történt a bejelentkezés során.' });
   }
 });
+
+
+router.post('/create-survey', async (req, res) => {
+  const { title, questions } = req.body;
+
+  try {
+    // JWT token dekódolása
+    const token = req.headers.authorization.split(' ')[1]; 
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const cegId = decoded.id; // Company ID from JWT token
+
+
+
+    // Insert into survey_set
+    const [surveyResult] = await db.promise().query(
+      'INSERT INTO survey_set (title, ceg_id) VALUES (?, ?)',
+      [title, cegId]
+    );
+
+    const surveyId = surveyResult.insertId;
+
+    // Insert questions and options
+    for (const question of questions) {
+      const [questionResult] = await db.promise().query(
+        'INSERT INTO questions (question, frm_option, type, survey_id) VALUES (?, ?, ?, ?)',
+        [question.questionText, JSON.stringify(question.options), question.selectedButton, surveyId]
+      );
+    }
+
+    res.status(201).json({ message: 'Survey created successfully' });
+  } catch (error) {
+    console.error('Error creating survey:', error);
+    res.status(500).json({ error: 'Failed to create survey' });
+  }
+});
+
 
 module.exports = router;

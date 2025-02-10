@@ -32,7 +32,30 @@ const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, onNext, creditCost }) => {
+const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost }) => {
+  const handleSubmit = async () => {
+    const token = localStorage.getItem('token');
+    
+    try {
+      const response = await fetch('http://localhost:3001/api/companies/create-survey', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: surveyTitle,
+          questions: questions
+        })
+      });
+  
+      if (response.ok) {
+        // Handle success (e.g., show success message, redirect)
+      }
+    } catch (error) {
+      console.error('Error submitting survey:', error);
+    }
+  };
   return (
     <AttekintesContainer
       noValidate
@@ -182,7 +205,7 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
     mb: 2,       // Add some margin at the bottom
   }}>
   <Button
-    onClick={onNext}
+    onClick={handleSubmit}
     variant="outlined"
     sx={{
       alignItems: "center",

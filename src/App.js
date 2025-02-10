@@ -120,7 +120,7 @@ function App() {
         if (type === 'user') {
           navigate('/home', { state: { userName: result.name } }); // Felhasználói név
         } else if (type === 'company') {
-          navigate('/comp_home', { state: { companyName: result.cegnev } }); // Céges név
+          navigate('/comp_home', { state: { companyName: result.cegnev, cegId: result.cegId } }); // Céges név
         }
 
       } else {
