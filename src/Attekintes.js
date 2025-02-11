@@ -32,9 +32,15 @@ const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost }) => {
+const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost, onSuccess, onError }) => {
   const handleSubmit = async () => {
     const token = localStorage.getItem('token');
+
+
+    if (!surveyTitle || questions.some(q => !q.questionText)) {
+      onError('Minden mező kitöltése kötelező!');
+      return;
+    }
     
     try {
       const response = await fetch('http://localhost:3001/api/companies/create-survey', {
@@ -50,7 +56,9 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
       });
   
       if (response.ok) {
-        // Handle success (e.g., show success message, redirect)
+        onSuccess();
+      } else {
+        onError('Hiba történt a kérdőív létrehozása során');
       }
     } catch (error) {
       console.error('Error submitting survey:', error);

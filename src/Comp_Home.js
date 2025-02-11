@@ -52,6 +52,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Szuro from './Szuro';
 import Mintavetel from './Mintavetel';
 import Attekintes from './Attekintes';
+import Helyzet from './Helyzet';
+import CustomizedSnackbars from './CustomizedSnackbars';
 
 
 const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
@@ -161,8 +163,10 @@ const CompHome = ({ onSignOut }) => {
   const location = useLocation();
   console.log(location);
   const name = location.state?.userName || location.state?.companyName;
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const [selectedParticipants, setSelectedParticipants] = useState(50);
+
 
 
 
@@ -301,6 +305,7 @@ const handleRemoveOption = (questionId, optionId) => {
     const [showThirdCard, setShowThirdCard] = React.useState(true); // Az harmadik Card láthatósága
     const [showFourthCard, setShowFourthCard] = React.useState(true);
     const [showFifthCard, setShowFifthCard] = React.useState(true);
+    const [showSixthCard, setShowSixthCard] = React.useState(true);
     const [filteredCount, setFilteredCount] = useState(0);
   
     const handleClickOpenKerd = () => {
@@ -308,6 +313,8 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowSecondCard(true); // A második Card megjelenítése
       setShowThirdCard(false);// A harmadik Card elrejtése
       setShowFourthCard(false);
+      setShowFifthCard(false);
+      setShowSixthCard(false);
     };
   
     const handleCloseKerd = () => {
@@ -315,6 +322,8 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowSecondCard(false); // A második Card elrejtése
       setShowThirdCard(false);// A harmadik Card elrejtése
       setShowFourthCard(false);
+      setShowFifthCard(false);
+      setShowSixthCard(false);
     };
 
 
@@ -324,6 +333,8 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowSecondCard(false); // A második Card elrejtése
       setShowThirdCard(true);// A harmadik Card megjelenítése
       setShowFourthCard(false);
+      setShowFifthCard(false);
+      setShowSixthCard(false);
     };
 
 
@@ -332,6 +343,8 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowSecondCard(true); // A második Card megjelenítése
       setShowThirdCard(false);// A harmadik Card elrejtése
       setShowFourthCard(false);
+      setShowFifthCard(false);
+      setShowSixthCard(false);
     };
 
 
@@ -340,6 +353,8 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowSecondCard(false);
       setShowThirdCard(false);
       setShowFourthCard(false);
+      setShowFifthCard(false);
+      setShowSixthCard(false);
     };
 
 
@@ -349,6 +364,7 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowSecondCard(false);
       setShowThirdCard(false);
       setShowFourthCard(true);
+      setShowFifthCard(false);
     };
 
 
@@ -357,6 +373,8 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowSecondCard(false);
       setShowThirdCard(true);
       setShowFourthCard(false);
+      setShowFifthCard(false);
+      setShowSixthCard(false);
     };
 
 
@@ -367,6 +385,7 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowThirdCard(false);
       setShowFourthCard(false);
       setShowFifthCard(true);
+      setShowSixthCard(false);
     };
 
     const handleCloseAttekintes = () => {
@@ -375,8 +394,37 @@ const handleRemoveOption = (questionId, optionId) => {
       setShowThirdCard(false);
       setShowFourthCard(true);
       setShowFifthCard(false);
+      setShowSixthCard(false);
     };
     
+
+
+    const handleSurveySuccess = () => {
+      setSnackbar({ 
+        open: true, 
+        message: 'Kérdőív sikeresen létrehozva', 
+        severity: 'success' 
+      });
+      setShowFifthCard(false);
+      setShowFourthCard(false);
+      setShowThirdCard(false);
+      setShowSecondCard(false);
+      setShowFirstCard(false);
+      setShowSixthCard(true);
+    };
+  
+  
+  
+    const handleSurveyError = (errorMessage) => {
+      setSnackbar({
+        open: true,
+        message: errorMessage,
+        severity: 'error'
+      });
+    };
+
+
+
 
     const [surveyTitle, setSurveyTitle] = useState('');
 
@@ -880,8 +928,26 @@ const handleRemoveOption = (questionId, optionId) => {
             onBack={handleCloseAttekintes}
             participantCount={selectedParticipants}
             creditCost={120 - credit}
+            onSuccess={handleSurveySuccess}
+            onError={handleSurveyError}
           />
         )}
+
+
+        {/* Hatodik Card */}
+        {!showFirstCard && !showSecondCard && !showThirdCard && !showFourthCard && !showFifthCard && showSixthCard && (
+          <Helyzet
+          onClose={handleCloseIconClick}
+          />
+        )}
+
+
+        <CustomizedSnackbars
+          open={snackbar.open}
+          handleClose={() => setSnackbar({ ...snackbar, open: false })}
+          message={snackbar.message}
+          severity={snackbar.severity}
+        />
 
 
   <Tooltip title="Account settings">
