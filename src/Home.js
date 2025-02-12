@@ -170,6 +170,8 @@ const [open, setOpen] = React.useState(false);
   console.log(location);
 
 
+  const [availableSurveys, setAvailableSurveys] = useState([]);
+
 
   useEffect(() => {
     const checkIfSignedIn = async () => {
@@ -190,6 +192,31 @@ const [open, setOpen] = React.useState(false);
     };
     checkIfSignedIn();
   }, []);
+
+
+
+
+  useEffect(() => {
+    const fetchAvailableSurveys = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/main/available-surveys', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        const data = await response.json();
+        setAvailableSurveys(data.surveys || []);
+      } catch (error) {
+        console.error('Error fetching available surveys:', error);
+        setAvailableSurveys([]);
+      }
+    };
+  
+    fetchAvailableSurveys();
+  }, []);
+
+
+
 
   useEffect(() => {
     if (location.state) {
@@ -215,6 +242,18 @@ const [open, setOpen] = React.useState(false);
       >
         Köszöntjük az oldalon, {name}!
       </Typography>
+
+
+      {availableSurveys.length > 0 && (
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {/* Handle survey start */}}
+      >
+        Elérhető új kérdőív ({availableSurveys.length})
+      </Button>
+      )}
+
       
       <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
       <Tooltip title="Account settings">

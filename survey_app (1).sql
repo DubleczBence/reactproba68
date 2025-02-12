@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Feb 08. 20:31
+-- Létrehozás ideje: 2025. Feb 12. 20:30
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -63,7 +63,9 @@ CREATE TABLE `companies` (
 --
 
 INSERT INTO `companies` (`id`, `cegnev`, `telefon`, `ceg_email`, `jelszo`, `telepules`, `megye`, `ceges_szamla`, `hitelkartya`, `adoszam`, `cegjegyzek`, `helyrajziszam`, `createdAt`) VALUES
-(1, 'Ploba.kft', 2147483647, 'plobakft@gmail.com', '$2b$10$eT1rYnYOFLVGLj7uhQhkeuUbiDiBc5K2wjOCkL3Pq5lgHzL6A4y26', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23131313, '1233124536', '1243-3', '2025-02-05 19:22:44');
+(1, 'Ploba.kft', 2147483647, 'plobakft@gmail.com', '$2b$10$eT1rYnYOFLVGLj7uhQhkeuUbiDiBc5K2wjOCkL3Pq5lgHzL6A4y26', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23131313, '1233124536', '1243-3', '2025-02-05 19:22:44'),
+(2, 'cselszegKft', 2147483647, 'cselszeg@gmail.com', '$2b$10$EquHGzFOap22ijVtMAgNVOaCmYG5eTkIwv1TxDNrsv7PBikP.QaVK', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23432563, '2353252622', '2232-1', '2025-02-11 17:42:43'),
+(3, 'ValamiCég', 2147483647, 'valamikft@gmail.com', '$2b$10$T6a2nj8BoESwmvLF0y96B.twIB9sbrVaSGinQ2w6lab.jS1HMa0Fa', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23432563, '2353252622', '2345-2', '2025-02-12 16:52:20');
 
 -- --------------------------------------------------------
 
@@ -81,6 +83,24 @@ CREATE TABLE `questions` (
   `date_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- A tábla adatainak kiíratása `questions`
+--
+
+INSERT INTO `questions` (`id`, `question`, `frm_option`, `type`, `order_by`, `survey_id`, `date_created`) VALUES
+(63, 'wdadaw', '[{\"id\":1,\"label\":\"dwada\"},{\"id\":\"d4107d0e-2182-4841-aca7-41a895274de5\",\"label\":\"dawdwa\"},{\"id\":\"82205c59-8c2f-4ab7-8665-bcc9ec9f82e5\",\"label\":\"awd\"},{\"id\":\"96869347-02c5-4ba7-93a2-9a85a907a027\",\"label\":\"awda\"}]', 'radio', 0, 18, '2025-02-12 20:02:38'),
+(64, 'daw', '[{\"id\":\"fbb3435d-b684-40ec-9027-38d792d1ab53\",\"label\":\"dawd\"},{\"id\":\"cf21b2db-33f6-4e09-9531-c5f6247fa486\",\"label\":\"adwa\"},{\"id\":\"318e4f6b-9e87-4a1b-b7f9-e9118dc4eb49\",\"label\":\"awdda\"},{\"id\":\"4f007f3d-c6de-41d9-a889-2cbd165ad267\",\"label\":\"adw\"}]', 'checkbox', 0, 18, '2025-02-12 20:02:38'),
+(65, 'dad', '[{\"id\":\"5055bbad-bf2d-4d5c-8610-62703fabb4f5\",\"label\":\"\"},{\"id\":\"a5ddc31d-4f01-4659-a32f-275761d0dff4\",\"label\":\"Option 2\"}]', 'text', 0, 18, '2025-02-12 20:02:38'),
+(66, 'dawd', '[{\"id\":\"6790db23-7b48-48b7-951a-f536bc1af4ea\",\"label\":\"daw\"},{\"id\":\"0c5ed2bc-bd07-4f99-aa26-b489adf708b6\",\"label\":\"awda\"},{\"id\":\"887d2a38-9130-49c4-a2f7-159c2cf97598\",\"label\":\"awda\"},{\"id\":\"00e2c87f-466d-4c86-b31d-fbe2858c3425\",\"label\":\"daw\"}]', 'checkbox', 0, 18, '2025-02-12 20:02:39'),
+(67, 'wdadawdawd', '[{\"id\":1,\"label\":\"d\"},{\"id\":\"d4107d0e-2182-4841-aca7-41a895274de5\",\"label\":\"dawdwaa\"},{\"id\":\"82205c59-8c2f-4ab7-8665-bcc9ec9f82e5\",\"label\":\"awdda\"},{\"id\":\"96869347-02c5-4ba7-93a2-9a85a907a027\",\"label\":\"awdad\"},{\"id\":\"fd20b8b1-7ac5-4cc2-94b9-6285458b194f\",\"label\":\"dawdd\"}]', 'radio', 0, 19, '2025-02-12 20:04:14'),
+(68, 'dawddd', '[{\"id\":\"fbb3435d-b684-40ec-9027-38d792d1ab53\",\"label\":\"dawda\"},{\"id\":\"cf21b2db-33f6-4e09-9531-c5f6247fa486\",\"label\":\"adwad\"},{\"id\":\"318e4f6b-9e87-4a1b-b7f9-e9118dc4eb49\",\"label\":\"awddaa\"},{\"id\":\"4f007f3d-c6de-41d9-a889-2cbd165ad267\",\"label\":\"adw\"}]', 'checkbox', 0, 19, '2025-02-12 20:04:14'),
+(69, 'daddd', '[{\"id\":\"5055bbad-bf2d-4d5c-8610-62703fabb4f5\",\"label\":\"\"},{\"id\":\"a5ddc31d-4f01-4659-a32f-275761d0dff4\",\"label\":\"Option 2\"}]', 'text', 0, 19, '2025-02-12 20:04:14'),
+(70, 'dawdaaa', '[{\"id\":\"6790db23-7b48-48b7-951a-f536bc1af4ea\",\"label\":\"dawda\"},{\"id\":\"0c5ed2bc-bd07-4f99-aa26-b489adf708b6\",\"label\":\"awdada\"},{\"id\":\"887d2a38-9130-49c4-a2f7-159c2cf97598\",\"label\":\"awdaad\"},{\"id\":\"00e2c87f-466d-4c86-b31d-fbe2858c3425\",\"label\":\"dawda\"},{\"id\":\"192a9cc4-bb44-44b7-9dcb-9a233c667907\",\"label\":\"adad\"}]', 'checkbox', 0, 19, '2025-02-12 20:04:14'),
+(71, 'dwad', '[{\"id\":1,\"label\":\"waddwa\"},{\"id\":\"2bd2eb88-a755-4cc5-a5b2-592739e2ac22\",\"label\":\"dwadaw\"},{\"id\":\"713bd0ac-ed0f-48b6-b12f-6eb8637f86d4\",\"label\":\"dwa\"},{\"id\":\"2c638023-0f66-4243-8d54-3cd0071012c8\",\"label\":\"daw\"}]', 'radio', 0, 20, '2025-02-12 20:28:31'),
+(72, 'da', '[{\"id\":\"ebae6fbf-1170-4aa4-983a-c1dd021ccbd0\",\"label\":\"dwad\"},{\"id\":\"72170922-da17-4e45-a488-e48470ab2aa7\",\"label\":\"adw\"},{\"id\":\"f684875c-54c1-4da7-8595-494b1dfa06d8\",\"label\":\"daw\"}]', 'checkbox', 0, 20, '2025-02-12 20:28:31'),
+(73, 'da', '[{\"id\":\"be7c7ed4-6407-4a1f-8b7c-53b09a9b7209\",\"label\":\"\"}]', 'text', 0, 20, '2025-02-12 20:28:31'),
+(74, 'dwa', '[{\"id\":\"a19a421e-5e13-470e-a4ef-8f7a087e07d2\",\"label\":\"dwa\"},{\"id\":\"de35b21b-c183-4867-a812-b7bd533ed42d\",\"label\":\"daw\"},{\"id\":\"35ce03a6-dedd-4ad1-9b99-05251abe6b4f\",\"label\":\"ddd\"}]', 'radio', 0, 20, '2025-02-12 20:28:31');
+
 -- --------------------------------------------------------
 
 --
@@ -94,8 +114,23 @@ CREATE TABLE `survey_set` (
   `ceg_id` int(11) NOT NULL,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
-  `date_created` datetime NOT NULL DEFAULT current_timestamp()
+  `date_created` datetime NOT NULL DEFAULT current_timestamp(),
+  `mintavetel` int(11) NOT NULL DEFAULT 0,
+  `vegzettseg` varchar(255) DEFAULT NULL,
+  `korcsoport` varchar(255) DEFAULT NULL,
+  `regio` varchar(255) DEFAULT NULL,
+  `nem` varchar(255) DEFAULT NULL,
+  `anyagi` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- A tábla adatainak kiíratása `survey_set`
+--
+
+INSERT INTO `survey_set` (`id`, `title`, `description`, `ceg_id`, `start_date`, `end_date`, `date_created`, `mintavetel`, `vegzettseg`, `korcsoport`, `regio`, `nem`, `anyagi`) VALUES
+(18, 'dadaw', '', 1, '0000-00-00', '0000-00-00', '2025-02-12 20:02:38', 148, NULL, NULL, NULL, '21', NULL),
+(19, 'dadawda', '', 1, '0000-00-00', '0000-00-00', '2025-02-12 20:04:14', 173, NULL, NULL, NULL, '20', NULL),
+(20, 'dadw', '', 1, '0000-00-00', '0000-00-00', '2025-02-12 20:28:31', 182, NULL, NULL, NULL, '20', NULL);
 
 -- --------------------------------------------------------
 
@@ -1121,7 +1156,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`) VALUES
 (1002, 'Teszt Nő 1002', 'teszt1002@example.com', '$2b$10$RllGmfZYegAVWdG1cIkf2OgzPKlZxv9U5t1AWIheBirlyGf5Uy2ei'),
 (1003, 'Teszt Férfi 1003', 'teszt1003@example.com', '$2b$10$RllGmfZYegAVWdG1cIkf2OgzPKlZxv9U5t1AWIheBirlyGf5Uy2ei'),
 (1004, 'Teszt Nő 1004', 'teszt1004@example.com', '$2b$10$RllGmfZYegAVWdG1cIkf2OgzPKlZxv9U5t1AWIheBirlyGf5Uy2ei'),
-(1005, 'Teszt Férfi 1005', 'teszt1005@example.com', '$2b$10$RllGmfZYegAVWdG1cIkf2OgzPKlZxv9U5t1AWIheBirlyGf5Uy2ei');
+(1005, 'Teszt Férfi 1005', 'teszt1005@example.com', '$2b$10$RllGmfZYegAVWdG1cIkf2OgzPKlZxv9U5t1AWIheBirlyGf5Uy2ei'),
+(1006, 'Vlaki Vam', 'vauvau@]mail.com', '$2b$10$eAhrrbAI4BNYY0d48cOVjeZYOJo7EZwDMsAD8o3FfkQ7SZpXAlQCq');
 
 -- --------------------------------------------------------
 
@@ -2150,7 +2186,8 @@ INSERT INTO `users_responses` (`id`, `user_id`, `korcsoport`, `vegzettseg`, `reg
 (1002, 1002, '2011-07-29', '4', '20', '21', '27', '2025-02-08 19:23:02'),
 (1003, 1003, '1965-05-26', '4', '17', '20', '23', '2025-02-08 19:23:02'),
 (1004, 1004, '1989-06-18', '4', '15', '21', '26', '2025-02-08 19:23:02'),
-(1005, 1005, '1991-06-01', '5', '16', '20', '24', '2025-02-08 19:23:02');
+(1005, 1005, '1991-06-01', '5', '16', '20', '24', '2025-02-08 19:23:02'),
+(1006, 1006, '2004-07-14', '1', '15', '21', '24', '2025-02-12 17:34:12');
 
 --
 -- Indexek a kiírt táblákhoz
@@ -2214,31 +2251,31 @@ ALTER TABLE `answers`
 -- AUTO_INCREMENT a táblához `companies`
 --
 ALTER TABLE `companies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT a táblához `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT a táblához `survey_set`
 --
 ALTER TABLE `survey_set`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1029;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1007;
 
 --
 -- AUTO_INCREMENT a táblához `users_responses`
 --
 ALTER TABLE `users_responses`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1029;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1007;
 
 --
 -- Megkötések a kiírt táblákhoz

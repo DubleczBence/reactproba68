@@ -91,20 +91,31 @@ router.post('/sign-in', async (req, res) => {
 
 
 router.post('/create-survey', async (req, res) => {
-  const { title, questions } = req.body;
-
+  const { title, questions, participantCount, filterCriteria } = req.body;
+  console.log("Received request body:", req.body);
+  console.log("Filter criteria:", req.body.filterCriteria);
   try {
     // JWT token dekódolása
     const token = req.headers.authorization.split(' ')[1]; 
     const decoded = jwt.verify(token, SECRET_KEY);
-    const cegId = decoded.id; // Company ID from JWT token
+    const cegId = decoded.id;
 
 
 
     // Insert into survey_set
     const [surveyResult] = await db.promise().query(
-      'INSERT INTO survey_set (title, ceg_id) VALUES (?, ?)',
-      [title, cegId]
+      `INSERT INTO survey_set (
+        title, ceg_id, mintavetel, 
+        vegzettseg, korcsoport, regio, nem, anyagi
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title, cegId, participantCount,
+        filterCriteria.vegzettseg || null,
+        filterCriteria.korcsoport || null,
+        filterCriteria.regio || null,
+        filterCriteria.nem || null,
+        filterCriteria.anyagi || null
+      ]
     );
 
     const surveyId = surveyResult.insertId;

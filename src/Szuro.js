@@ -72,6 +72,7 @@ const [vegzettseg, setVegzettseg] = React.useState('');
   
   
     const ReceiveData = async () => {
+      
         const filterData = {
           vegzettseg,
           korcsoport,
@@ -79,6 +80,7 @@ const [vegzettseg, setVegzettseg] = React.useState('');
           nem,
           anyagi
         };
+        console.log("Filter data being sent:", filterData);
       
         try {
           const response = await fetch('http://localhost:3001/api/main/szures', {
@@ -95,7 +97,7 @@ const [vegzettseg, setVegzettseg] = React.useState('');
           }
       
         const data = await response.json();
-        onShowMintavetel(data.count);
+        onShowMintavetel(data.count, filterData);
         } catch (error) {
           console.error('Hiba a szűrés során:', error);
         }

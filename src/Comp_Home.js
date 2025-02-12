@@ -169,6 +169,14 @@ const CompHome = ({ onSignOut }) => {
 
 
 
+  const [filterData, setFilterData] = useState({
+    vegzettseg: null,
+    korcsoport: null,
+    regio: null,
+    nem: null,
+    anyagi: null
+  });
+
 
 const [questions, setQuestions] = useState([{
   id: 1,
@@ -358,8 +366,10 @@ const handleRemoveOption = (questionId, optionId) => {
     };
 
 
-    const handleShowMintavetel = (count) => {
+    const handleShowMintavetel = (count, filterCriteria) => {
       setFilteredCount(count);
+      setFilterData(filterCriteria);
+      console.log("Filter data in Comp_Home:", filterCriteria);
       setShowFirstCard(false);
       setShowSecondCard(false);
       setShowThirdCard(false);
@@ -902,6 +912,7 @@ const handleRemoveOption = (questionId, optionId) => {
           onClose={handleCloseIconClick}
           onBack={handleClickCloseSzuro}
           onShowMintavetel={handleShowMintavetel}
+          onFilterChange={setFilterData}
           >
           </Szuro>
         )}
@@ -930,6 +941,7 @@ const handleRemoveOption = (questionId, optionId) => {
             creditCost={120 - credit}
             onSuccess={handleSurveySuccess}
             onError={handleSurveyError}
+            filterData={filterData}
           />
         )}
 

@@ -32,8 +32,9 @@ const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost, onSuccess, onError }) => {
+const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost, onSuccess, onError, filterData }) => {
   const handleSubmit = async () => {
+    console.log("Filter data in handleSubmit:", filterData);
     const token = localStorage.getItem('token');
 
 
@@ -51,7 +52,15 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
         },
         body: JSON.stringify({
           title: surveyTitle,
-          questions: questions
+          questions: questions,
+          participantCount: participantCount,
+          filterCriteria: {
+            vegzettseg: filterData.vegzettseg,
+            korcsoport: filterData.korcsoport,
+            regio: filterData.regio,
+            nem: filterData.nem,
+            anyagi: filterData.anyagi
+          }
         })
       });
   

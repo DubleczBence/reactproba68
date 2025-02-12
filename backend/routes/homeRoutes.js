@@ -62,4 +62,50 @@ router.get('/check-form-filled', async (req, res) => {
   }
 });
 
+
+router.get('/available-surveys', async (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const decoded = jwt.verify(token, SECRET_KEY);
+  const userId = decoded.id;
+
+  try {
+    // Get user's demographic data
+    const [userResponse] = await db.promise().query(
+      'SELECT * FROM users_responses WHERE user_id = ?',
+      [userId]
+    );
+
+    if (userResponse.length === 0) {
+      return res.status(200).json({ surveys: [] });
+    }
+
+    const userData = userResponse[0];
+
+    // Get surveys with matching criteria
+    const [surveys] = await db.promise().query(`
+      SELECT * FROM survey_set s
+      WHERE s.id NOT IN (SELECT survey_id FROM answers WHERE user_id = ?)
+      AND (s.vegzettseg IS NULL OR s.vegzettseg = ?)
+      AND (s.korcsoport IS NULL OR s.korcsoport = ?)
+      AND (s.regio IS NULL OR s.regio = ?)
+      AND (s.nem IS NULL OR s.nem = ?)
+      AND (s.anyagi IS NULL OR s.anyagi = ?)`,
+      [
+        userId,
+        userData.vegzettseg,
+        userData.korcsoport,
+        userData.regio,
+        userData.nem,
+        userData.anyagi_helyzet
+      ]
+    );
+
+    res.status(200).json({ surveys });
+  } catch (error) {
+    console.error('Error fetching available surveys:', error);
+    res.status(500).json({ error: 'Failed to fetch available surveys' });
+  }
+});
+
+
 module.exports = router;

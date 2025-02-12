@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiCard from '@mui/material/Card';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import Typography from '@mui/material/Typography';
 
 const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -62,7 +63,7 @@ return (
       startAngle={0}
       endAngle={360}
       innerRadius="50%"
-      outerRadius="60%"
+      outerRadius="58%"
       sx={(theme) => ({
         [`& .${gaugeClasses.valueText}`]: {
           fontSize: 60,
@@ -74,7 +75,16 @@ return (
           fill: theme.palette.text.disabled,
         },
       })}
+      text={
+        ({ value }) => `${value}%`
+     }
     />
+
+
+      <Typography variant="h5" 
+       sx={{ }}>
+        
+      </Typography>
 
 
     <Box
