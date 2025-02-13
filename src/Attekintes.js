@@ -98,14 +98,14 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
       {questions.map((question, index) => (
         <Container
         sx={{
-          padding: "16px", // Belső térköz a Containerben
-          borderRadius: "16px", // Lekerekített sarkok
+          padding: "16px", 
+          borderRadius: "16px", 
           backgroundColor: (theme) =>
             theme.palette.mode === "light"
               ? theme.palette.background.paper
               : "#1B2430",
           height: "auto",
-          maxHeight: "calc(70vh - 100px)", // Maximális magasság a Card magasságához igazítva
+          maxHeight: "calc(70vh - 100px)", 
           width: "98%",
           
           
@@ -218,8 +218,8 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
     alignItems: "center",    
     justifyContent: "center", 
     gap: 2,                  
-    mt: "auto",  // This will push the buttons to the bottom
-    mb: 2,       // Add some margin at the bottom
+    mt: "auto",  
+    mb: 2,       
   }}>
   <Button
     onClick={handleSubmit}

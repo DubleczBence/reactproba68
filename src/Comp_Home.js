@@ -84,9 +84,6 @@ function MyFormControlLabel(props) {
 }
 
 MyFormControlLabel.propTypes = {
-  /**
-   * The value of the component.
-   */
   value: PropTypes.any,
 };
 
@@ -137,10 +134,10 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
       value={value}
       onChange={onChange}
       sx={{
-        mt: 2, // Margin a tetejétől
+        mt: 2, 
         backgroundColor: theme.palette.background.default, 
         boxShadow: theme.shadows[1],
-        width: '18%', // Szélesség növelése (arányos a konténerhez)
+        width: '18%', 
       }}
     >
       <BottomNavigationAction label="Új kérdőív" icon={<AddBoxIcon />} />
@@ -206,9 +203,9 @@ const handleAddQuestion = () => {
   setQuestions((prev) => [
     ...prev,
     {
-      id: uuidv4(), // Egyedi azonosító
+      id: uuidv4(),
       selectedButton: "radio",
-      options: [{ id: uuidv4(), label: "" }], // Opció egyedi azonosítója
+      options: [{ id: uuidv4(), label: "" }], 
     },
   ]);
   setCredit(credit - 30);
@@ -254,7 +251,7 @@ const handleAddOption = (questionId) => {
     prev.map((q) => {
       if (q.id === questionId) {
         if (q.options.length >= 4 && credit >= 10) {
-          // Hitelcsökkentés és új opció hozzáadása
+          
           setCredit((prevCredit) => prevCredit - 10);
           return {
             ...q,
@@ -264,7 +261,7 @@ const handleAddOption = (questionId) => {
             ],
           };
         } else if (q.options.length < 4) {
-          // Új opció hozzáadása hitel nélkül
+          
           return {
             ...q,
             options: [
@@ -285,14 +282,14 @@ const handleRemoveOption = (questionId, optionId) => {
   setQuestions((prev) =>
     prev.map((question) => {
       if (question.id === questionId) {
-        const wasAboveLimit = question.options.length > 4; // Ellenőrizni, hogy 4 fölött volt-e
+        const wasAboveLimit = question.options.length > 4; 
         const updatedOptions = question.options.filter(
           (option) => option.id !== optionId
         );
 
-        // Ha korábban több mint 4 opció volt, növeljük a kreditet
+        
         if (wasAboveLimit) {
-          setCredit((prevCredit) => prevCredit + 10); // Hozzáadjuk a kreditet
+          setCredit((prevCredit) => prevCredit + 10); 
         }
 
         return {
@@ -308,27 +305,27 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
 
-    const [showFirstCard, setShowFirstCard] = React.useState(true); // Az első Card láthatósága
-    const [showSecondCard, setShowSecondCard] = React.useState(true); // Az második Card láthatósága
-    const [showThirdCard, setShowThirdCard] = React.useState(true); // Az harmadik Card láthatósága
+    const [showFirstCard, setShowFirstCard] = React.useState(true); 
+    const [showSecondCard, setShowSecondCard] = React.useState(true); 
+    const [showThirdCard, setShowThirdCard] = React.useState(true); 
     const [showFourthCard, setShowFourthCard] = React.useState(true);
     const [showFifthCard, setShowFifthCard] = React.useState(true);
     const [showSixthCard, setShowSixthCard] = React.useState(true);
     const [filteredCount, setFilteredCount] = useState(0);
   
     const handleClickOpenKerd = () => {
-      setShowFirstCard(false); // Az első Card elrejtése
-      setShowSecondCard(true); // A második Card megjelenítése
-      setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFirstCard(false);
+      setShowSecondCard(true);
+      setShowThirdCard(false);
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
     };
   
     const handleCloseKerd = () => {
-      setShowFirstCard(true); // Az első Card újra megjelenítése
-      setShowSecondCard(false); // A második Card elrejtése
-      setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFirstCard(true);
+      setShowSecondCard(false);
+      setShowThirdCard(false);
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
@@ -337,9 +334,9 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
     const handleClickOpenSzuro = () => {
-      setShowFirstCard(false); // Az első Card elrejtése
-      setShowSecondCard(false); // A második Card elrejtése
-      setShowThirdCard(true);// A harmadik Card megjelenítése
+      setShowFirstCard(false);
+      setShowSecondCard(false);
+      setShowThirdCard(true);
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
@@ -347,9 +344,9 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
     const handleClickCloseSzuro = () => {
-      setShowFirstCard(false); // Az első Card elrejtése
-      setShowSecondCard(true); // A második Card megjelenítése
-      setShowThirdCard(false);// A harmadik Card elrejtése
+      setShowFirstCard(false);
+      setShowSecondCard(true);
+      setShowThirdCard(false);
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
@@ -473,7 +470,7 @@ const handleRemoveOption = (questionId, optionId) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        pt: 4, // Padding a tetején
+        pt: 4, 
       }}
     >
 
@@ -488,7 +485,7 @@ const handleRemoveOption = (questionId, optionId) => {
     </IconButton>
     
 
-      {/* Tetején középen: "Ez a kezdőoldal." */}
+      
       <Typography
         component="h1"
         variant="h6"
@@ -500,13 +497,13 @@ const handleRemoveOption = (questionId, optionId) => {
         Köszöntjük az oldalon, {name}!
       </Typography>
 
-      {/* Tetején középen, alatta a navigációs sáv */}
+      
       <SimpleBottomNavigation
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
       />
 
-      {/* Bal felső sarok: "Köszöntjük az oldalon, {name}!" */}
+      
       <Typography
         component="h1"
         variant="h3"
@@ -597,7 +594,7 @@ const handleRemoveOption = (questionId, optionId) => {
               height: '7ch',
               mb: "20px",
               '& .MuiInputLabel-root': {
-                fontSize: '1.2rem', // Növeli a label méretét
+                fontSize: '1.2rem', 
               },
             }}
             id='valami' label="Kérdőív címe" variant="standard" value={surveyTitle} onChange={(e) => setSurveyTitle(e.target.value)}
@@ -608,17 +605,17 @@ const handleRemoveOption = (questionId, optionId) => {
     key={question.id}
     maxWidth="fix"
     sx={{
-      padding: "16px", // Belső térköz a Containerben
-      borderRadius: "16px", // Lekerekített sarkok
+      padding: "16px", 
+      borderRadius: "16px", 
       backgroundColor: (theme) =>
         theme.palette.mode === "light"
           ? theme.palette.background.paper
           : "#1B2430",
       height: "auto",
-      maxHeight: "calc(70vh - 100px)", // Maximális magasság a Card magasságához igazítva
+      maxHeight: "calc(70vh - 100px)", 
       width: "98%",
       minHeight: "300px",
-      overflow: "auto", // Görgetősáv megjelenítése
+      overflow: "auto", 
       position: "relative",
     }}
   >
@@ -628,7 +625,7 @@ const handleRemoveOption = (questionId, optionId) => {
               width: '25ch',
               height: '7ch',
               '& .MuiInputLabel-root': {
-                fontSize: '1.1rem', // Növeli a label méretét
+                fontSize: '1.1rem', 
               },
             }}
             id={`question-${question.id}-label`} label="Kérdés" variant="standard" value={question.questionText || ''} onChange={(e) => {
@@ -780,8 +777,8 @@ const handleRemoveOption = (questionId, optionId) => {
       startIcon={<AddCircleOutlineIcon />}
       variant="outlined"
       sx={{
-        border: "none", // Körvonal (ha szükséges)
-        borderRadius: "16px", // Lekerekített sarkok
+        border: "none", 
+        borderRadius: "16px", 
         backgroundColor: (theme) => theme.palette.background.paper,
         color: (theme) => theme.palette.text.primary,
         "&:hover": {
@@ -798,12 +795,12 @@ const handleRemoveOption = (questionId, optionId) => {
 <Button
     onClick={() => handleRemoveQuestion(question.id)}
     sx={{
-      position: "absolute", // A gomb abszolút pozíciója
-      top: "8px",           // A Container tetejétől számított távolság
-      right: "16px",        // A Container jobb szélétől számított távolság
+      position: "absolute", 
+      top: "8px",           
+      right: "16px",        
       width: "22px",
       height: "22px",
-      minWidth: "0px",       // Kis méretű gomb
+      minWidth: "0px",      
       padding: "0px",
     }}
   >
@@ -844,9 +841,9 @@ const handleRemoveOption = (questionId, optionId) => {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center", // Vízszintesen középre igazítás
-          alignItems: "center", // Függőlegesen középre igazítás
-          height: "100vh", // Teljes magasságú konténer (ha szükséges)
+          justifyContent: "center", 
+          alignItems: "center", 
+          height: "100vh", 
         }}
       >
         <Button
@@ -858,8 +855,8 @@ const handleRemoveOption = (questionId, optionId) => {
             textAlign: "center",
             width: "82px",
             mb: 2,
-            border: "none", // Körvonal (ha szükséges)
-            borderRadius: "10px", // Lekerekített sarkok
+            border: "none", 
+            borderRadius: "10px", 
             backgroundColor: (theme) => theme.palette.background.paper,
             color: (theme) => theme.palette.text.primary,
             "&:hover": {
@@ -876,14 +873,14 @@ const handleRemoveOption = (questionId, optionId) => {
           <Button
             onClick={handleCloseKerd}
             sx={{
-              position: "absolute", // Abszolút pozicionálás
-              top: "8px", // Távolság a Card tetejétől
+              position: "absolute", 
+              top: "8px", 
               right: "8px",
-              width: "22px", // A gomb szélessége és magassága
+              width: "22px", 
               height: "22px",
-              minWidth: "0px", // Minimalizálja a gomb alapértelmezett paddingjét
-              padding: "0px", // Eltávolítja az extra belső térközt
-              display: "flex", // Középre igazításhoz
+              minWidth: "0px", 
+              padding: "0px", 
+              display: "flex", 
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -970,11 +967,11 @@ const handleRemoveOption = (questionId, optionId) => {
         position: 'absolute',
         top: 16,
         right: 16,
-        padding: 0, // Eltávolítja a belső margót
-        width: 40, // Azonos szélesség, mint az Avatar
-        height: 40, // Azonos magasság, mint az Avatar
-        borderRadius: '50%', // Kör alakúvá teszi az IconButton-t
-        overflow: 'hidden', // Eltünteti az esetleges tartalmi túllógást
+        padding: 0, 
+        width: 40, 
+        height: 40, 
+        borderRadius: '50%', 
+        overflow: 'hidden', 
       }}
       aria-controls={openprofile ? 'account-menu' : undefined}
       aria-haspopup="true"

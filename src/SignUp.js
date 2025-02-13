@@ -136,10 +136,10 @@ export default function SignUp(props) {
   
 
   const handleAdoszamChange = (e) => {
-    const input = e.target.value.replace(/[^0-9]/g, ""); // Csak számok engedélyezése
+    const input = e.target.value.replace(/[^0-9]/g, ""); 
     let formatted = input;
   
-    // Formázás kötőjelekkel
+    
     if (input.length > 8) {
       formatted = `${input.slice(0, 8)}-${input.slice(8, 9)}-${input.slice(9, 11)}`;
     } else if (input.length > 8) {
@@ -186,7 +186,7 @@ export default function SignUp(props) {
 
 
     else{
-    // Ha céges form van kiválasztva, további mezők validálása
+    
       if (!cegnev || cegnev.length < 1) {
         setCompanyNameError(true);
         setCompanyNameErrorMessage('Company name is required.');
@@ -313,7 +313,7 @@ export default function SignUp(props) {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault(); // Az űrlap alapértelmezett viselkedésének megakadályozása
+    event.preventDefault(); 
     if (!validateInputs()) {
       return;
     }
@@ -321,7 +321,7 @@ export default function SignUp(props) {
     const data = new FormData(event.currentTarget);
 
     if (!checked) {
-      // User adatok összegyűjtése
+      
       const userData = {
         name: data.get('name'),
         email: data.get('email'),
@@ -332,7 +332,7 @@ export default function SignUp(props) {
         onSignUp({ type: 'user', data: userData });
       }
     } else {
-      // Céges adatok összegyűjtése
+      
       const cegData = {
         cegnev: data.get('cegnev'),
         telefon: data.get('telefon'),
@@ -373,9 +373,9 @@ export default function SignUp(props) {
               display: 'flex', 
               flexDirection: 'column', 
               gap: 2,
-              maxHeight: '80vh', // Fix magasság, hogy a képernyőn belül maradjon
-              overflowY: 'auto', // Görgetés engedélyezése
-              paddingRight: 2,  // Scrollbar helyének biztosítása
+              maxHeight: '80vh', 
+              overflowY: 'auto', 
+              paddingRight: 2,  
              }}
           >
             <Stack direction="row" alignItems="center" spacing={2}>

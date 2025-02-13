@@ -116,7 +116,7 @@ return (
   variant="outlined"
   sx={{
     top: "4px",
-    mt: 7, // Margin-top
+    mt: 7, 
     width: "95% !important",
     height: "60% !important",
     maxWidth: "700px !important",
@@ -129,12 +129,12 @@ return (
   <InputLabel
     id="demo-simple-select-autowidth-label"
     sx={{
-      fontSize: '1.2rem', // Betűméret növelése
-      fontWeight: 'bold', // Félkövér szöveg
-      lineHeight: '1.5',  // Sorköz méretének növelése
+      fontSize: '1.2rem', 
+      fontWeight: 'bold', 
+      lineHeight: '1.5',  
       
       '&.MuiInputLabel-shrink': {
-        transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+        transform: 'translate(0, -1.8rem)', 
       },
     }}
   >
@@ -148,9 +148,9 @@ return (
   autoWidth
   label="Legmagasabb végzettség"
   sx={{
-    fontSize: '1.2rem', // Betűméret
-    padding: '10px',    // Belső margó
-    height: '60px',     // Gomb magassága
+    fontSize: '1.2rem', 
+    padding: '10px',    
+    height: '60px',     
   }}
 >
     <MenuItem value="">
@@ -171,12 +171,12 @@ return (
         <InputLabel
          id="demo-simple-select-autowidth-label"
          sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
+          fontSize: '1.2rem', 
+          fontWeight: 'bold', 
+          lineHeight: '1.5',  
           
           '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+            transform: 'translate(0, -1.8rem)', 
           },
         }}
          >
@@ -190,9 +190,9 @@ return (
           autoWidth
           label="Korcsoport"
           sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
+            fontSize: '1.2rem', 
+            padding: '10px',    
+            height: '60px',     
           }}
         >
           <MenuItem value="">
@@ -214,12 +214,12 @@ return (
       <FormControl sx={{ m: 1, minWidth: 100 }}>
         <InputLabel id="demo-simple-select-autowidth-label"
         sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
+          fontSize: '1.2rem', 
+          fontWeight: 'bold', 
+          lineHeight: '1.5',  
           
           '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+            transform: 'translate(0, -1.8rem)', 
           },
         }}
         >
@@ -232,9 +232,9 @@ return (
           autoWidth
           label="Régió"
           sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
+            fontSize: '1.2rem', 
+            padding: '10px',    
+            height: '60px',     
           }}
         >
           <MenuItem value="">
@@ -252,12 +252,12 @@ return (
       <FormControl sx={{ m: 1, minWidth: 100 }}>
         <InputLabel id="demo-simple-select-autowidth-label"
         sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
+          fontSize: '1.2rem', 
+          fontWeight: 'bold', 
+          lineHeight: '1.5',  
           
           '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+            transform: 'translate(0, -1.8rem)', 
           },
         }}
         >
@@ -270,9 +270,9 @@ return (
           autoWidth
           label="Neme"
           sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
+            fontSize: '1.2rem', 
+            padding: '10px',    
+            height: '60px',     
           }}
         >
           <MenuItem value="">
@@ -289,12 +289,12 @@ return (
       <FormControl sx={{ m: 1, minWidth: 220 }}>
         <InputLabel id="demo-simple-select-autowidth-label"
         sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
+          fontSize: '1.2rem', 
+          fontWeight: 'bold', 
+          lineHeight: '1.5', 
           
           '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+            transform: 'translate(0, -1.8rem)', 
           },
         }}
         >
@@ -307,9 +307,9 @@ return (
           autoWidth
           label="Havi nettó átlagkereset"
           sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
+            fontSize: '1.2rem', 
+            padding: '10px',    
+            height: '60px',     
           }}
         >
           <MenuItem value="">
@@ -384,14 +384,14 @@ return (
         <Button
             onClick={onClose}
             sx={{
-              position: "absolute", // Abszolút pozicionálás
-              top: "8px", // Távolság a Card tetejétől
+              position: "absolute", 
+              top: "8px", 
               right: "8px",
-              width: "22px", // A gomb szélessége és magassága
+              width: "22px", 
               height: "22px",
-              minWidth: "0px", // Minimalizálja a gomb alapértelmezett paddingjét
-              padding: "0px", // Eltávolítja az extra belső térközt
-              display: "flex", // Középre igazításhoz
+              minWidth: "0px", 
+              padding: "0px", 
+              display: "flex", 
               alignItems: "center",
               justifyContent: "center",
             }}

@@ -1,31 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Importáld az adatbázis konfigurációt
+const db = require('../db'); 
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f';
 
-// Regisztrációs végpont
+
 router.post('/home', async (req, res) => {
   const { vegzettseg, korcsoport, regio, nem, anyagi } = req.body;
 
-  // Ellenőrzés
+  
   if (!vegzettseg || !korcsoport || !regio || !nem || !anyagi) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
 
-   // Ellenőrzés hogy a dátum valid
+  
    if (!Date.parse(korcsoport)) {
     return res.status(400).json({ error: 'Érvénytelen dátum formátum!' });
   }
 
   try {
 
-    // JWT token dekódolása
-    const token = req.headers.authorization.split(' ')[1]; // Bearer token
+   
+    const token = req.headers.authorization.split(' ')[1]; 
     const decoded = jwt.verify(token, SECRET_KEY);
-    const userId = decoded.id; // Azonosító a JWT tokenből
+    const userId = decoded.id; 
 
-    // Adatok beszúrása a users_responses táblába
+ 
     await db.promise().query(
       'INSERT INTO users_responses (user_id, korcsoport, vegzettseg, regio, nem, anyagi_helyzet) VALUES (?, ?, ?, ?, ?, ?)',
       [userId, new Date(korcsoport), vegzettseg, regio, nem, anyagi]
@@ -69,7 +69,7 @@ router.get('/available-surveys', async (req, res) => {
   const userId = decoded.id;
 
   try {
-    // Get user's demographic data
+    
     const [userResponse] = await db.promise().query(
       'SELECT * FROM users_responses WHERE user_id = ?',
       [userId]
@@ -81,7 +81,7 @@ router.get('/available-surveys', async (req, res) => {
 
     const userData = userResponse[0];
 
-    // Get surveys with matching criteria
+    
     const [surveys] = await db.promise().query(`
       SELECT * FROM survey_set s
       WHERE s.id NOT IN (SELECT survey_id FROM answers WHERE user_id = ?)

@@ -1,22 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Importáld az adatbázis konfigurációt
-const bcrypt = require('bcrypt'); // Jelszó hash-eléshez
-const jwt = require('jsonwebtoken'); // JWT token generáláshoz
+const db = require('../db'); 
+const bcrypt = require('bcrypt'); 
+const jwt = require('jsonwebtoken'); 
 
-const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f'; // Ezt cseréld le egy biztonságos kulcsra!
+const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f'; 
 
 // Regisztrációs végpont
 router.post('/sign-up', async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Ellenőrzés
+  
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
 
   try {
-    // Ellenőrizd, hogy az email már létezik-e
+    
     const [existingUser] = await db.promise().query(
       'SELECT * FROM users WHERE email = ?',
       [email]
@@ -25,7 +25,7 @@ router.post('/sign-up', async (req, res) => {
       return res.status(409).json({ error: 'Ez az email cím már használatban van.' });
     }
 
-    // Jelszó hash-elése
+    
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Felhasználó hozzáadása az adatbázishoz
@@ -45,7 +45,7 @@ router.post('/sign-up', async (req, res) => {
 router.post('/sign-in', async (req, res) => {
   const { email, password } = req.body;
 
-  // Ellenőrzés
+  
   if (!email || !password) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
@@ -63,16 +63,16 @@ router.post('/sign-in', async (req, res) => {
 
     const user = users[0];
 
-    // Jelszó ellenőrzése
+    
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Helytelen email vagy jelszó.' });
     }
 
-    // JWT token generálása
+    
     const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
-      expiresIn: '1h', // Token lejárati idő
+      expiresIn: '1h', 
     });
 
     res.status(200).json({ message: 'Bejelentkezés sikeres!', token, name: user.name });

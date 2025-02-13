@@ -121,7 +121,7 @@ export default function SignIn(props) {
     }
   }
 
-    // Ha céges form van kiválasztva, további mezők validálása
+    
     else{
       if (!ceg_email || ceg_email.length < 1) {
         alert('Email is required.');
@@ -138,16 +138,16 @@ export default function SignIn(props) {
 
 
   const handleSubmit = (event) => {
-    event.preventDefault(); // Megakadályozza az alapértelmezett űrlap elküldést
+    event.preventDefault(); 
     if (!validateInputs()) {
-      return; // Ha van hiba, ne küldd el az űrlapot
+      return; 
     }
     
     const data = new FormData(event.currentTarget);
 
 
     if (!checked) {
-    // User adatok összegyűjtése
+   
 
     const userData = {
       email: data.get('email'),
@@ -155,10 +155,10 @@ export default function SignIn(props) {
     };
     console.log('Sending data to App.js:', userData);
     if (onSignIn) {
-      onSignIn({ type: 'user', data: userData }); // Hívd meg a bejelentkezési függvényt
+      onSignIn({ type: 'user', data: userData }); 
     }
   } else {
-    // Céges adatok összegyűjtése
+    
     const cegData = {
       ceg_email: data.get('ceg_email'),
       jelszo: data.get('jelszo'),

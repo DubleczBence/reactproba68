@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Importáld az adatbázis konfigurációt
+const db = require('../db'); 
 
 
 
@@ -9,7 +9,7 @@ const db = require('../db'); // Importáld az adatbázis konfigurációt
 router.post('/szures', (req, res) => {
     const { vegzettseg, korcsoport, regio, nem, anyagi } = req.body;
   
-    // Dinamikus SQL feltétel generálása
+    
     let sql = 'SELECT COUNT(*) AS count FROM users_responses WHERE 1=1';
     const params = [];
   

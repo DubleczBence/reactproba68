@@ -91,7 +91,7 @@ const Home = ({ onSignOut, onSendData }) => {
   const [regio, setRegio] = React.useState('');
   const [nem, setNem] = React.useState('');
   const [anyagi, setAnyagi] = React.useState('');
-  const [isFormFilled, setIsFormFilled] = useState(false); // Itt hozd létre az állapotot
+  const [isFormFilled, setIsFormFilled] = useState(false); 
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [name, setName] = useState('');
   
@@ -248,7 +248,7 @@ const [open, setOpen] = React.useState(false);
       <Button
         variant="contained"
         color="primary"
-        onClick={() => {/* Handle survey start */}}
+        onClick={() => {}}
       >
         Elérhető új kérdőív ({availableSurveys.length})
       </Button>
@@ -264,11 +264,11 @@ const [open, setOpen] = React.useState(false);
         position: 'absolute',
         top: 16,
         right: 16,
-        padding: 0, // Eltávolítja a belső margót
-        width: 40, // Azonos szélesség, mint az Avatar
-        height: 40, // Azonos magasság, mint az Avatar
-        borderRadius: '50%', // Kör alakúvá teszi az IconButton-t
-        overflow: 'hidden', // Eltünteti az esetleges tartalmi túllógást
+        padding: 0, 
+        width: 40, 
+        height: 40, 
+        borderRadius: '50%', 
+        overflow: 'hidden', 
       }}
       aria-controls={openprofile ? 'account-menu' : undefined}
       aria-haspopup="true"
@@ -398,12 +398,12 @@ const [open, setOpen] = React.useState(false);
   <InputLabel
     id="demo-simple-select-autowidth-label"
     sx={{
-      fontSize: '1.2rem', // Betűméret növelése
-      fontWeight: 'bold', // Félkövér szöveg
-      lineHeight: '1.5',  // Sorköz méretének növelése
+      fontSize: '1.2rem', 
+      fontWeight: 'bold', 
+      lineHeight: '1.5',  
       
       '&.MuiInputLabel-shrink': {
-        transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+        transform: 'translate(0, -1.8rem)', 
       },
     }}
   >
@@ -417,9 +417,9 @@ const [open, setOpen] = React.useState(false);
   autoWidth
   label="Legmagasabb végzettség"
   sx={{
-    fontSize: '1.2rem', // Betűméret
-    padding: '10px',    // Belső margó
-    height: '60px',     // Gomb magassága
+    fontSize: '1.2rem', 
+    padding: '10px',    
+    height: '60px',     
   }}
 >
     <MenuItem value="">
@@ -462,12 +462,12 @@ const [open, setOpen] = React.useState(false);
       <FormControl sx={{ m: 1, minWidth: 100 }}>
         <InputLabel id="demo-simple-select-autowidth-label"
         sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
+          fontSize: '1.2rem', 
+          fontWeight: 'bold', 
+          lineHeight: '1.5',  
           
           '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+            transform: 'translate(0, -1.8rem)', 
           },
         }}
         >
@@ -480,9 +480,9 @@ const [open, setOpen] = React.useState(false);
           autoWidth
           label="Régió"
           sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
+            fontSize: '1.2rem', 
+            padding: '10px',    
+            height: '60px',     
           }}
         >
           <MenuItem value="">
@@ -500,12 +500,12 @@ const [open, setOpen] = React.useState(false);
       <FormControl sx={{ m: 1, minWidth: 100 }}>
         <InputLabel id="demo-simple-select-autowidth-label"
         sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
+          fontSize: '1.2rem', 
+          fontWeight: 'bold', 
+          lineHeight: '1.5',  
           
           '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+            transform: 'translate(0, -1.8rem)', 
           },
         }}
         >
@@ -518,9 +518,9 @@ const [open, setOpen] = React.useState(false);
           autoWidth
           label="Neme"
           sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
+            fontSize: '1.2rem', 
+            padding: '10px',    
+            height: '60px',     
           }}
         >
           <MenuItem value="">
@@ -537,12 +537,12 @@ const [open, setOpen] = React.useState(false);
       <FormControl sx={{ m: 1, minWidth: 220 }}>
         <InputLabel id="demo-simple-select-autowidth-label"
         sx={{
-          fontSize: '1.2rem', // Betűméret növelése
-          fontWeight: 'bold', // Félkövér szöveg
-          lineHeight: '1.5',  // Sorköz méretének növelése
+          fontSize: '1.2rem', 
+          fontWeight: 'bold', 
+          lineHeight: '1.5',  
           
           '&.MuiInputLabel-shrink': {
-            transform: 'translate(0, -1.8rem)', // Ha a mező fókuszált vagy tele van
+            transform: 'translate(0, -1.8rem)', 
           },
         }}
         >
@@ -555,9 +555,9 @@ const [open, setOpen] = React.useState(false);
           autoWidth
           label="Havi nettó átlagkereset"
           sx={{
-            fontSize: '1.2rem', // Betűméret
-            padding: '10px',    // Belső margó
-            height: '60px',     // Gomb magassága
+            fontSize: '1.2rem', 
+            padding: '10px',    
+            height: '60px',     
           }}
         >
           <MenuItem value="">
@@ -592,11 +592,11 @@ const [open, setOpen] = React.useState(false);
         position: 'absolute',
         top: 16,
         right: 16,
-        padding: 0, // Eltávolítja a belső margót
-        width: 40, // Azonos szélesség, mint az Avatar
-        height: 40, // Azonos magasság, mint az Avatar
-        borderRadius: '50%', // Kör alakúvá teszi az IconButton-t
-        overflow: 'hidden', // Eltünteti az esetleges tartalmi túllógást
+        padding: 0, 
+        width: 40, 
+        height: 40, 
+        borderRadius: '50%', 
+        overflow: 'hidden', 
       }}
       aria-controls={openprofile ? 'account-menu' : undefined}
       aria-haspopup="true"

@@ -1,11 +1,11 @@
 const mysql = require('mysql2');
 
-// Kapcsolat létrehozása
+
 const db = mysql.createConnection({
-  host: 'localhost', // Az adatbázis szerver címe
-  user: 'rootee',      // Az adatbázis felhasználónév
-  password: 'jelszo',      // Az adatbázis jelszó (ha van)
-  database: 'survey_app', // Az adatbázis neve
+  host: 'localhost', 
+  user: 'rootee',      
+  password: 'jelszo',      
+  database: 'survey_app', 
 });
 
 db.connect((err) => {

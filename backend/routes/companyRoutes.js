@@ -1,22 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Importáld az adatbázis konfigurációt
-const bcrypt = require('bcrypt'); // Jelszó hash-eléshez
-const jwt = require('jsonwebtoken'); // JWT token generáláshoz
+const db = require('../db'); 
+const bcrypt = require('bcrypt'); 
+const jwt = require('jsonwebtoken'); 
 
-const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f'; // Ezt cseréld le egy biztonságos kulcsra!
+const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f';
 
 // Céges regisztrációs végpont
 router.post('/sign-up', async (req, res) => {
   const { cegnev, telefon, ceg_email, jelszo, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam } = req.body;
 
-  // Ellenőrzés
+  
   if (!cegnev || !telefon || !ceg_email || !jelszo || !telepules || !megye || !ceges_szamla || !hitelkartya || !adoszam || !cegjegyzek || !helyrajziszam) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
 
   try {
-    // Ellenőrizd, hogy az email már létezik-e
+    
     const [existingCompany] = await db.promise().query(
       'SELECT * FROM companies WHERE ceg_email = ?',
       [ceg_email]
@@ -25,7 +25,7 @@ router.post('/sign-up', async (req, res) => {
       return res.status(409).json({ error: 'Ez az email cím már használatban van.' });
     }
 
-    // Jelszó hash-elése
+    
     const hashedPassword = await bcrypt.hash(jelszo, 10);
 
     // Céges felhasználó hozzáadása az adatbázishoz
@@ -45,7 +45,7 @@ router.post('/sign-up', async (req, res) => {
 router.post('/sign-in', async (req, res) => {
   const { ceg_email, jelszo } = req.body;
 
-  // Ellenőrzés
+  
   if (!ceg_email || !jelszo) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
@@ -63,7 +63,7 @@ router.post('/sign-in', async (req, res) => {
 
     const company = companies[0];
 
-    // Jelszó ellenőrzése
+    
     const isPasswordValid = await bcrypt.compare(jelszo, company.jelszo);
 
     if (!isPasswordValid) {
@@ -74,7 +74,7 @@ router.post('/sign-in', async (req, res) => {
     const token = jwt.sign(
       { id: company.id, ceg_email: company.ceg_email },
       SECRET_KEY,
-      { expiresIn: '1h' } // Token lejárati idő
+      { expiresIn: '1h' } 
     );
 
     res.status(200).json({
@@ -102,7 +102,7 @@ router.post('/create-survey', async (req, res) => {
 
 
 
-    // Insert into survey_set
+
     const [surveyResult] = await db.promise().query(
       `INSERT INTO survey_set (
         title, ceg_id, mintavetel, 
@@ -120,7 +120,7 @@ router.post('/create-survey', async (req, res) => {
 
     const surveyId = surveyResult.insertId;
 
-    // Insert questions and options
+  
     for (const question of questions) {
       const [questionResult] = await db.promise().query(
         'INSERT INTO questions (question, frm_option, type, survey_id) VALUES (?, ?, ?, ?)',

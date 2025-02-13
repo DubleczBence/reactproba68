@@ -10,7 +10,7 @@ import CustomizedSnackbars from './CustomizedSnackbars';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate(); // Helyezd a hookot ide
+  const navigate = useNavigate(); 
   
 
 
@@ -21,7 +21,7 @@ function App() {
   const handleSendData = async ({ data }) => {
     console.log('Received data from Home:', { data });
 
-    const token = getToken(); // Token lekérése
+    const token = getToken(); 
     if (!token) {
       alert('Nincs bejelentkezve!');
       return;
@@ -34,7 +34,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Token hozzáadása a fejlécben
+          'Authorization': `Bearer ${token}` 
         },
         body: JSON.stringify(data),
       });
@@ -108,19 +108,19 @@ function App() {
   
       if (response.ok) {
         setSnackbar({ open: true, message: 'Sikeres bejelentkezés!', severity: 'success' });
-        setIsAuthenticated(true); // Frissítsd az autentikáció állapotát
+        setIsAuthenticated(true);
 
 
-         // Token mentése a localStorage-ba
+         
          if (result.token) {
           localStorage.setItem('token', result.token);
         }
 
 
         if (type === 'user') {
-          navigate('/home', { state: { userName: result.name } }); // Felhasználói név
+          navigate('/home', { state: { userName: result.name } }); 
         } else if (type === 'company') {
-          navigate('/comp_home', { state: { companyName: result.cegnev, cegId: result.cegId } }); // Céges név
+          navigate('/comp_home', { state: { companyName: result.cegnev, cegId: result.cegId } }); 
         }
 
       } else {
