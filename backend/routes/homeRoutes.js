@@ -108,4 +108,22 @@ router.get('/available-surveys', async (req, res) => {
 });
 
 
+
+router.get('/survey/:id', async (req, res) => {
+  try {
+    const [survey] = await db.promise().query(
+      `SELECT s.*, q.* 
+       FROM survey_set s
+       LEFT JOIN questions q ON s.id = q.survey_id
+       WHERE s.id = ?`,
+      [req.params.id]
+    );
+    res.json(survey);
+  } catch (error) {
+    console.error('Error fetching survey:', error);
+    res.status(500).json({ error: 'Failed to fetch survey' });
+  }
+});
+
+
 module.exports = router;

@@ -31,6 +31,16 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import Container from '@mui/material/Container';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+
+
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -97,7 +107,15 @@ const Home = ({ onSignOut, onSendData }) => {
   
 
 
+  const [selectedSurvey, setSelectedSurvey] = useState(null);
+  const [showSurvey, setShowSurvey] = useState(false);
 
+
+  const handleCloseSurvey = () => {
+    setShowSurvey(false);
+    setSelectedSurvey(null);
+    fetchAvailableSurveys();
+  };
 
 
   const handleVegzettseg = (event) => {
@@ -196,24 +214,46 @@ const [open, setOpen] = React.useState(false);
 
 
 
-  useEffect(() => {
-    const fetchAvailableSurveys = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/main/available-surveys', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        const data = await response.json();
-        setAvailableSurveys(data.surveys || []);
-      } catch (error) {
-        console.error('Error fetching available surveys:', error);
-        setAvailableSurveys([]);
-      }
-    };
+  const fetchAvailableSurveys = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/main/available-surveys', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const data = await response.json();
+      console.log('Fetched surveys:', data);
+      setAvailableSurveys(data.surveys || []);
+    } catch (error) {
+      console.error('Error fetching available surveys:', error);
+      setAvailableSurveys([]);
+    }
+  };
   
+  useEffect(() => {
     fetchAvailableSurveys();
   }, []);
+
+
+
+
+  const handleSurveyClick = async (surveyId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/main/survey/${surveyId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const surveyData = await response.json();
+      setSelectedSurvey(surveyData);
+      setShowSurvey(true);
+    } catch (error) {
+      console.error('Error opening survey:', error);
+    }
+  };
+
+
+  
 
 
 
@@ -231,8 +271,21 @@ const [open, setOpen] = React.useState(false);
     <AppTheme {...onSendData}>
       <UserContainer direction="column" justifyContent="space-between">
       <React.Fragment>
-          <CssBaseline enableColorScheme />
-          <Typography
+
+      <Typography
+        component="h1"
+        variant="h3"
+        sx={{
+          position: 'absolute',
+          top: 26,
+          left: 26,
+        }}
+      >
+       {120} Kredit
+      </Typography>
+
+
+      <Typography
         component="h1"
         variant="h6"
         sx={{
@@ -242,17 +295,137 @@ const [open, setOpen] = React.useState(false);
       >
         Köszöntjük az oldalon, {name}!
       </Typography>
+      {!showSurvey ? (
+          <Card
+            variant="outlined"
+            sx={{
+              mt: 10, 
+              width: "95% !important",
+              height: "70vh",
+              maxWidth: "700px !important",
+              position: "relative",
+              padding: "20px",
+              overflow: "auto"
+            }}
+          >
+            <Typography variant="h4" sx={{ mt: 1, ml: 2, mb: 3 }}>
+              Elérhető kérdőívek ({availableSurveys.length})
+            </Typography>
+            
+            {availableSurveys.map((survey) => (
+              <Button
+                key={survey.id}
+                onClick={() => handleSurveyClick(survey.id)}
+                sx={{
+                  height: "20% !important",
+                  justifyContent: "flex-start",
+                  textAlign: "left",
+                  pl: 4,
+                  fontSize: "1.2rem",
+                  mb: 2,
+                  width: "100%"
+                }}
+                variant="outlined"
+              >
+                {survey.title}
+              </Button>
+            ))}
+          </Card>
+        ) : (
 
 
-      {availableSurveys.length > 0 && (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => {}}
-      >
-        Elérhető új kérdőív ({availableSurveys.length})
-      </Button>
-      )}
+        selectedSurvey && (
+          <Card
+            variant="outlined"
+            sx={{
+              mt: 3, 
+              width: "95% !important",
+              height: "70vh",
+              maxWidth: "700px !important",
+              position: "relative",
+              padding: "20px",
+              overflow: "auto"
+            }}
+          >
+            <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
+              {selectedSurvey.title}
+            </Typography>
+
+
+            {selectedSurvey.map((question, index) => (
+              <Container
+                key={index}
+                sx={{
+                  padding: "16px",
+                  borderRadius: "16px",
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === "light"
+                      ? theme.palette.background.paper
+                      : "#1B2430",
+                  height: "auto",
+                  width: "98%",
+                  position: "relative",
+                  mt: 2
+                }}
+              >
+                <Box sx={{ mb: 4, ml: 2 }}>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    {question.question}
+                  </Typography>
+
+                  {question.type === "radio" && (
+                    <RadioGroup>
+                      {JSON.parse(question.frm_option).map((option, optIndex) => (
+                        <FormControlLabel
+                          key={optIndex}
+                          value={option.label}
+                          control={<Radio />}
+                          label={option.label}
+                        />
+                      ))}
+                    </RadioGroup>
+                  )}
+
+                  {question.type === "checkbox" && (
+                    <FormGroup>
+                      {JSON.parse(question.frm_option).map((option, optIndex) => (
+                        <FormControlLabel
+                          key={optIndex}
+                          control={<Checkbox />}
+                          label={option.label}
+                        />
+                      ))}
+                    </FormGroup>
+                  )}
+
+                  {question.type === "text" && (
+                    <TextField
+                      fullWidth
+                      placeholder="Írja ide válaszát..."
+                      multiline
+                      sx={{ mt: 1 }}
+                    />
+                  )}
+                </Box>
+              </Container>
+            ))}
+
+            <Button
+              onClick={handleCloseSurvey}
+              variant="outlined"
+              sx={{
+                mt: 2,
+                mb: 2,
+                alignSelf: "center"
+              }}
+            >
+              Vissza a kérdőívekhez
+            </Button>
+          </Card>
+        )
+        )}
+      
+          <CssBaseline enableColorScheme />
 
       
       <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
