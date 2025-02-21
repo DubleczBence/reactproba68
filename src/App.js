@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import SignUp from './SignUp';
 import SignIn from './SignIn';
@@ -12,7 +12,25 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate(); 
   
+  const validateToken = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setIsAuthenticated(false);
+      return false;
+    }
+    try {
+      setIsAuthenticated(true);
+      return true;
+    } catch (error) {
+      setIsAuthenticated(false);
+      localStorage.removeItem('token');
+      return false;
+    }
+  };
 
+  useEffect(() => {
+    validateToken();
+  }, []);
 
   const getToken = () => {
     return localStorage.getItem('token');

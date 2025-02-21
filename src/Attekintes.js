@@ -60,7 +60,8 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
             regio: filterData.regio,
             nem: filterData.nem,
             anyagi: filterData.anyagi
-          }
+          },
+          creditCost: creditCost
         })
       });
   

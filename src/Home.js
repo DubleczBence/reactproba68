@@ -245,7 +245,16 @@ const [open, setOpen] = React.useState(false);
         }
       });
       const surveyData = await response.json();
-      setSelectedSurvey(surveyData);
+
+      const questions = Array.isArray(surveyData) ? surveyData : [];
+
+      const surveyTitle = availableSurveys.find(survey => survey.id === surveyId)?.title;
+
+      setSelectedSurvey({
+        title: surveyTitle,
+        question: questions 
+      });
+
       setShowSurvey(true);
     } catch (error) {
       console.error('Error opening survey:', error);
@@ -281,7 +290,7 @@ const [open, setOpen] = React.useState(false);
           left: 26,
         }}
       >
-       {120} Kredit
+       {0} Kredit
       </Typography>
 
 
@@ -347,12 +356,22 @@ const [open, setOpen] = React.useState(false);
               overflow: "auto"
             }}
           >
-            <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                mt: 1, 
+                ml: 2,
+                fontWeight: 'bold',
+                borderBottom: '2px solid',
+                pb: 2,
+                mb: 3
+              }}
+            >
               {selectedSurvey.title}
             </Typography>
 
 
-            {selectedSurvey.map((question, index) => (
+            {selectedSurvey.question.map((question, index) => (
               <Container
                 key={index}
                 sx={{
