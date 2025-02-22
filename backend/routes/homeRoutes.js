@@ -83,7 +83,7 @@ router.get('/available-surveys', async (req, res) => {
 
     
     const [surveys] = await db.promise().query(`
-      SELECT * FROM survey_set s
+      SELECT s.id, s.title, s.credit_cost FROM survey_set s
       WHERE s.id NOT IN (SELECT survey_id FROM answers WHERE user_id = ?)
       AND (s.vegzettseg IS NULL OR s.vegzettseg = ?)
       AND (s.korcsoport IS NULL OR s.korcsoport = ?)
@@ -125,5 +125,26 @@ router.get('/survey/:id', async (req, res) => {
   }
 });
 
+
+
+router.post('/submit-survey', async (req, res) => {
+  const { surveyId, answers } = req.body;
+  const token = req.headers.authorization.split(' ')[1];
+  const decoded = jwt.verify(token, SECRET_KEY);
+  const userId = decoded.id;
+
+  try {
+    for (const answer of answers) {
+      await db.promise().query(
+        'INSERT INTO answers (user_id, survey_id, question_id, answer) VALUES (?, ?, ?, ?)',
+        [userId, surveyId, answer.questionId, JSON.stringify(answer.value)]
+      );
+    }
+    res.status(200).json({ message: 'Survey submitted successfully' });
+  } catch (error) {
+    console.error('Error submitting survey:', error);
+    res.status(500).json({ error: 'Failed to submit survey' });
+  }
+});
 
 module.exports = router;

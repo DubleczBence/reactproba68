@@ -42,7 +42,6 @@ import Box from '@mui/material/Box';
 
 
 
-
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -105,10 +104,18 @@ const Home = ({ onSignOut, onSendData }) => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [name, setName] = useState('');
   
-
+  const [answers, setAnswers] = useState({});
 
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [showSurvey, setShowSurvey] = useState(false);
+
+
+  const handleAnswerChange = (questionId, value) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
+  };
 
 
   const handleCloseSurvey = () => {
@@ -189,6 +196,32 @@ const [open, setOpen] = React.useState(false);
 
 
   const [availableSurveys, setAvailableSurveys] = useState([]);
+
+
+  const handleSubmitSurvey = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/main/submit-survey', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          surveyId: selectedSurvey.question[0].survey_id,
+          answers: Object.entries(answers).map(([questionId, value]) => ({
+            questionId,
+            value
+          }))
+        })
+      });
+  
+      if (response.ok) {
+        handleCloseSurvey();
+      }
+    } catch (error) {
+      console.error('Error submitting survey:', error);
+    }
+  };
 
 
   useEffect(() => {
@@ -314,7 +347,12 @@ const [open, setOpen] = React.useState(false);
               maxWidth: "700px !important",
               position: "relative",
               padding: "20px",
-              overflow: "auto"
+              overflow: "auto",
+              '& .MuiButton-root': {
+              minHeight: '80px',
+              height: '80px !important',
+              flexShrink: 0
+              }
             }}
           >
             <Typography variant="h4" sx={{ mt: 1, ml: 2, mb: 3 }}>
@@ -326,17 +364,27 @@ const [open, setOpen] = React.useState(false);
                 key={survey.id}
                 onClick={() => handleSurveyClick(survey.id)}
                 sx={{
-                  height: "20% !important",
-                  justifyContent: "flex-start",
+                  height: "80px !important",
                   textAlign: "left",
                   pl: 4,
                   fontSize: "1.2rem",
                   mb: 2,
-                  width: "100%"
+                  width: "100%",
+                  display: 'flex',
+                  justifyContent: 'space-between'
                 }}
                 variant="outlined"
               >
-                {survey.title}
+                <span>{survey.title}</span>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  <Typography sx={{ fontSize: '1rem' }}>+</Typography>
+                  <span style={{ fontSize: '1rem' }}>{Math.floor(survey.credit_cost / 3)}</span>
+                </Box>
+                <Typography variant="caption" sx={{ mt: -0.5 }}>
+                  Kredit
+                </Typography>
+              </Box>
               </Button>
             ))}
           </Card>
@@ -393,7 +441,10 @@ const [open, setOpen] = React.useState(false);
                   </Typography>
 
                   {question.type === "radio" && (
-                    <RadioGroup>
+                    <RadioGroup
+                    value={answers[question.id] || ''}
+                    onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+                    >
                       {JSON.parse(question.frm_option).map((option, optIndex) => (
                         <FormControlLabel
                           key={optIndex}
@@ -410,7 +461,18 @@ const [open, setOpen] = React.useState(false);
                       {JSON.parse(question.frm_option).map((option, optIndex) => (
                         <FormControlLabel
                           key={optIndex}
-                          control={<Checkbox />}
+                          control={
+                            <Checkbox 
+                              checked={answers[question.id]?.includes(option.label) || false}
+                              onChange={(e) => {
+                                const currentAnswers = answers[question.id] || [];
+                                const newAnswers = e.target.checked 
+                                  ? [...currentAnswers, option.label]
+                                  : currentAnswers.filter(value => value !== option.label);
+                                handleAnswerChange(question.id, newAnswers);
+                              }}
+                            />
+                          }
                           label={option.label}
                         />
                       ))}
@@ -419,6 +481,8 @@ const [open, setOpen] = React.useState(false);
 
                   {question.type === "text" && (
                     <TextField
+                      value={answers[question.id] || ''}
+                      onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                       fullWidth
                       placeholder="Írja ide válaszát..."
                       multiline
@@ -429,17 +493,21 @@ const [open, setOpen] = React.useState(false);
               </Container>
             ))}
 
-            <Button
-              onClick={handleCloseSurvey}
-              variant="outlined"
-              sx={{
-                mt: 2,
-                mb: 2,
-                alignSelf: "center"
-              }}
-            >
-              Vissza a kérdőívekhez
-            </Button>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, mb: 2 }}>
+              <Button
+                onClick={handleCloseSurvey}
+                variant="outlined"
+              >
+                Vissza a kérdőívekhez
+              </Button>
+              <Button
+                onClick={handleSubmitSurvey}
+                variant="contained"
+                color="primary"
+              >
+                Küldés
+              </Button>
+            </Box>
           </Card>
         )
         )}
@@ -618,9 +686,9 @@ const [open, setOpen] = React.useState(false);
       <em>None</em>
     </MenuItem>
     <MenuItem value={1}>Egyetem, főiskola stb. oklevéllel</MenuItem>
-    <MenuItem value={2}>Középfokú végzettség éretségi nélkül, szakmai végzetséggel</MenuItem>
-    <MenuItem value={3}>Középfokú végzettség éretségivel (szakmai végzetség nélkül)</MenuItem>
-    <MenuItem value={4}>Középfokú végzettség éretségivel (szakmai végzetségel)</MenuItem>
+    <MenuItem value={2}>Középfokú végzettség érettségi nélkül, szakmai végzettséggel</MenuItem>
+    <MenuItem value={3}>Középfokú végzettség érettségivel (szakmai végzettség nélkül)</MenuItem>
+    <MenuItem value={4}>Középfokú végzettség érettségivel (szakmai végzettségel)</MenuItem>
     <MenuItem value={5}>Általános iskola 8. osztálya</MenuItem>
     <MenuItem value={6}>8 általános iskolánál kevesebb</MenuItem>
   </Select>

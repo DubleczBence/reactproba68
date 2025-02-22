@@ -577,7 +577,7 @@ const handleRemoveOption = (questionId, optionId) => {
           variant="outlined"
           sx={{
             top: "4px",
-            mt: 7, // Margin-top
+            mt: 7,
             width: "95% !important",
             height: "70vh",
             maxWidth: "700px !important",
