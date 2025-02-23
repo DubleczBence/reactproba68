@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -97,6 +97,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
+  overflow: 'auto',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -163,6 +164,19 @@ const CompHome = ({ onSignOut }) => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const [selectedParticipants, setSelectedParticipants] = useState(50);
+
+  const [companySurveys, setCompanySurveys] = useState([]);
+  const [selectedSurveyId, setSelectedSurveyId] = useState(null);
+
+
+  useEffect(() => {
+    const fetchCompanySurveys = async () => {
+      const response = await fetch(`http://localhost:3001/api/main/company-surveys/${location.state.cegId}`);
+      const surveys = await response.json();
+      setCompanySurveys(surveys);
+    };
+    fetchCompanySurveys();
+  }, [location.state.cegId]);
 
 
 
@@ -525,7 +539,7 @@ const handleRemoveOption = (questionId, optionId) => {
         <Card
           variant="outlined"
           sx={{
-            mt: 7, // Margin-top
+            mt: 7,
             width: "95% !important",
             height: "60% !important",
             maxWidth: "700px !important",
@@ -534,11 +548,14 @@ const handleRemoveOption = (questionId, optionId) => {
           <Button
             onClick={handleClickOpenKerd}
             sx={{
-              height: "20% !important",
+              height: "80px !important",
+              width: "100%",
               justifyContent: "flex-start",
               textAlign: "left",
               pl: 4,
               fontSize: "1.2rem",
+              flexShrink: 0,
+              mb: 2
             }}
             variant="outlined"
             startIcon={
@@ -554,18 +571,33 @@ const handleRemoveOption = (questionId, optionId) => {
             Kérdőív létrehozása
           </Button>
 
-          <Button
-            sx={{
-              height: "20% !important",
-              justifyContent: "flex-start",
-              textAlign: "left",
-              pl: 4,
-              fontSize: "1.2rem",
-            }}
-            variant="outlined"
-          >
-            Cím
-          </Button>
+          {companySurveys.map(survey => (
+              <Button
+                key={survey.id}
+                onClick={() => {
+                  setSelectedSurveyId(survey.id);
+                  setShowFirstCard(false);
+                  setShowSecondCard(false);
+                  setShowThirdCard(false);
+                  setShowFourthCard(false);
+                  setShowFifthCard(false);
+                  setShowSixthCard(true);
+                }}
+                sx={{
+                  height: "80px !important",
+                  width: "100%",
+                  justifyContent: "flex-start",
+                  textAlign: "left",
+                  pl: 4,
+                  fontSize: "1.2rem",
+                  flexShrink: 0,
+                  mb: 2
+                }}
+                variant="outlined"
+              >
+                {survey.title}
+              </Button>
+            ))}
         </Card>
       )}
 
@@ -947,6 +979,7 @@ const handleRemoveOption = (questionId, optionId) => {
         {!showFirstCard && !showSecondCard && !showThirdCard && !showFourthCard && !showFifthCard && showSixthCard && (
           <Helyzet
           onClose={handleCloseIconClick}
+          surveyId={selectedSurveyId}
           />
         )}
 

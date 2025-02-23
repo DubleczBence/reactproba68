@@ -147,4 +147,34 @@ router.post('/submit-survey', async (req, res) => {
   }
 });
 
+
+router.get('/survey-status/:surveyId', async (req, res) => {
+  try {
+    const [survey] = await db.promise().query(
+      `SELECT s.title, s.mintavetel, COUNT(DISTINCT a.user_id) as completion_count 
+       FROM survey_set s 
+       LEFT JOIN answers a ON s.id = a.survey_id 
+       WHERE s.id = ? 
+       GROUP BY s.id`,
+      [req.params.surveyId]
+    );
+    res.json(survey[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch survey status' });
+  }
+});
+
+
+router.get('/company-surveys/:companyId', async (req, res) => {
+  try {
+    const [surveys] = await db.promise().query(
+      'SELECT id, title, mintavetel FROM survey_set WHERE ceg_id = ?',
+      [req.params.companyId]
+    );
+    res.json(surveys);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch company surveys' });
+  }
+});
+
 module.exports = router;

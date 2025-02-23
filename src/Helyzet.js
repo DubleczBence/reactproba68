@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -27,15 +27,28 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
   }));
 
 
+  const Helyzet = ({onClose, surveyId, lezaras}) => {
 
-  
+    const [completionData, setCompletionData] = useState({
+      completionCount: 0,
+      targetCount: 100
+    });
 
 
+    useEffect(() => {
+      const fetchSurveyStatus = async () => {
+        const response = await fetch(`http://localhost:3001/api/main/survey-status/${surveyId}`);
+        const data = await response.json();
+        setCompletionData({
+          completionCount: data.completion_count,
+          targetCount: data.mintavetel
+        });
+      };
+      fetchSurveyStatus();
+    }, [surveyId]);
 
-  const Mintavetel = ({onClose, lezaras}) => {
 
-
-
+    const completionPercentage = (completionData.completionCount / completionData.targetCount) * 100;
 
 return (
   <HelyzetContainer
@@ -59,7 +72,7 @@ return (
     
 
 <Gauge
-      value={75}
+      value={completionPercentage}
       startAngle={0}
       endAngle={360}
       innerRadius="50%"
@@ -75,9 +88,7 @@ return (
           fill: theme.palette.text.disabled,
         },
       })}
-      text={
-        ({ value }) => `${value}%`
-     }
+      text={`${Math.round(completionPercentage)}%`}
     />
 
 
@@ -168,4 +179,4 @@ return (
     );
     };
 
-    export default Mintavetel;
+    export default Helyzet;
