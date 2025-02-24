@@ -158,9 +158,24 @@ router.get('/survey-status/:surveyId', async (req, res) => {
        GROUP BY s.id`,
       [req.params.surveyId]
     );
+    
+    if (!survey || survey.length === 0) {
+      return res.json({
+        title: '',
+        mintavetel: 0,
+        completion_count: 0
+      });
+    }
+    
     res.json(survey[0]);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch survey status' });
+    console.error('Error fetching survey status:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch survey status',
+      title: '',
+      mintavetel: 0, 
+      completion_count: 0
+    });
   }
 });
 

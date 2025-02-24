@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiCard from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
 
 
 
@@ -125,7 +126,11 @@ return (
     overflow: "auto",
   }}>
 
-<FormControl sx={{ m: 1, minWidth: 240, mt: 8 }}>
+    <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
+        Célcsoport
+    </Typography>
+
+<FormControl sx={{ m: 1, minWidth: 240, mt: 4 }}>
   <InputLabel
     id="demo-simple-select-autowidth-label"
     sx={{

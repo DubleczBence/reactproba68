@@ -34,6 +34,11 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
       targetCount: 100
     });
 
+    const handleCloseAndRefresh = () => {
+      onClose();
+      window.location.reload();
+    };
+
 
     useEffect(() => {
       const fetchSurveyStatus = async () => {
@@ -48,7 +53,8 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
     }, [surveyId]);
 
 
-    const completionPercentage = (completionData.completionCount / completionData.targetCount) * 100;
+    const completionPercentage = completionData.targetCount > 0 ? 
+  (completionData.completionCount / completionData.targetCount) * 100 : 0;
 
 return (
   <HelyzetContainer
@@ -109,7 +115,7 @@ return (
     mb: 2,       
   }}>
   <Button
-    onClick={onClose}
+    onClick={handleCloseAndRefresh}
     variant="outlined"
     sx={{
       alignItems: "center",
@@ -151,7 +157,7 @@ return (
 </Box>
 
         <Button
-            onClick={onClose}
+            onClick={handleCloseAndRefresh}
             sx={{
               position: "absolute", 
               top: "8px", 
