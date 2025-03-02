@@ -53,7 +53,8 @@ import Szuro from './Szuro';
 import Mintavetel from './Mintavetel';
 import Attekintes from './Attekintes';
 import Helyzet from './Helyzet';
-import CustomizedSnackbars from './CustomizedSnackbars';
+import { Snackbar, Alert } from '@mui/material';
+
 
 
 const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
@@ -209,6 +210,13 @@ const [questions, setQuestions] = useState([{
   };
 
 
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar(prev => ({...prev, open: false}));
+  };
 
 
 
@@ -421,11 +429,12 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
     const handleSurveySuccess = () => {
-      setSnackbar({ 
+      setSnackbar(prev => ({ 
+        ...prev,
         open: true, 
         message: 'Kérdőív sikeresen létrehozva', 
         severity: 'success' 
-      });
+      }));
       setShowFifthCard(false);
       setShowFourthCard(false);
       setShowThirdCard(false);
@@ -437,11 +446,12 @@ const handleRemoveOption = (questionId, optionId) => {
   
   
     const handleSurveyError = (errorMessage) => {
-      setSnackbar({
+      setSnackbar(prev => ({
+        ...prev,
         open: true,
         message: errorMessage,
         severity: 'error'
-      });
+      }));
     };
 
 
@@ -585,17 +595,54 @@ const handleRemoveOption = (questionId, optionId) => {
                 }}
                 sx={{
                   height: "80px !important",
-                  width: "100%",
-                  justifyContent: "flex-start",
+                  minHeight: "80px",
+                  flexShrink: 0,
                   textAlign: "left",
                   pl: 4,
                   fontSize: "1.2rem",
-                  flexShrink: 0,
-                  mb: 2
+                  mb: 2,
+                  width: "100%",
+                  display: 'flex',
+                  justifyContent: 'space-between'
                 }}
                 variant="outlined"
               >
-                {survey.title}
+                <span>{survey.title}</span>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, mr: 2 }}>
+                <Button
+                  component="span"
+                  disableRipple
+                  sx={{
+                    width: "82px",
+                    minWidth: "82px",
+                    height: "37px",
+                    border: "none", 
+                    borderRadius: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    "&.MuiButtonBase-root": {
+                      backgroundColor: (theme) => 
+                        theme.palette.mode === "dark" ? "#424242 !important" : "#e0e0e0 !important",
+                      color: (theme) => theme.palette.text.primary,
+                    },
+                    "&:hover": {
+                      backgroundColor: (theme) =>
+                        theme.palette.mode === "dark" ? "#616161 !important" : "#bdbdbd !important",
+                    }
+                  }}
+                >
+                  Lezárás
+                </Button>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography>{Math.round(survey.completion_percentage)}%</Typography>
+                    <Typography variant="caption" sx={{ mt: -0.5 }}>
+                      Folyamatban
+                    </Typography>
+                  </Box>
+                  
+                </Box>
               </Button>
             ))}
         </Card>
@@ -984,14 +1031,6 @@ const handleRemoveOption = (questionId, optionId) => {
         )}
 
 
-        <CustomizedSnackbars
-          open={snackbar.open}
-          handleClose={() => setSnackbar({ ...snackbar, open: false })}
-          message={snackbar.message}
-          severity={snackbar.severity}
-        />
-
-
   <Tooltip title="Account settings">
     <IconButton
       onClick={handleClickProfile}
@@ -1101,6 +1140,50 @@ const handleRemoveOption = (questionId, optionId) => {
       </Dialog>
       
     </Box>
+
+    <Snackbar 
+      open={snackbar.open} 
+      autoHideDuration={6000} 
+      onClose={handleSnackbarClose}
+    >
+      <Alert 
+        onClose={handleSnackbarClose} 
+        severity={snackbar.severity} 
+        sx={{ 
+          width: '100%',
+          opacity: 0.9,
+          color: 'white',
+          '& .MuiAlert-icon': {
+            color: 'white'
+          },
+          '& .MuiAlert-message': {
+            color: 'white'
+          },
+          '& .MuiAlert-action': {
+            padding: 0,
+            color: 'white',
+            '& .MuiButtonBase-root': {
+              color: 'white',
+              padding: '4px',
+              bgcolor: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              '&:hover': {
+                bgcolor: 'transparent'
+              }
+            }
+          },
+          '&.MuiAlert-standardSuccess': {
+            backgroundColor: 'rgba(46, 125, 50, 0.95)'
+          },
+          '&.MuiAlert-standardError': {
+            backgroundColor: 'rgba(211, 47, 47, 0.95)'
+          }
+        }}
+      >
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
     
     </React.Fragment>
     </AppTheme>

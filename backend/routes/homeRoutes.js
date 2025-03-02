@@ -183,7 +183,13 @@ router.get('/survey-status/:surveyId', async (req, res) => {
 router.get('/company-surveys/:companyId', async (req, res) => {
   try {
     const [surveys] = await db.promise().query(
-      'SELECT id, title, mintavetel FROM survey_set WHERE ceg_id = ?',
+      `SELECT s.id, s.title, s.mintavetel, 
+       COUNT(DISTINCT a.user_id) as completion_count,
+       ROUND((COUNT(DISTINCT a.user_id) / s.mintavetel * 100)) as completion_percentage
+       FROM survey_set s 
+       LEFT JOIN answers a ON s.id = a.survey_id 
+       WHERE s.ceg_id = ? 
+       GROUP BY s.id`,
       [req.params.companyId]
     );
     res.json(surveys);
