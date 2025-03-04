@@ -153,7 +153,7 @@ const Home = ({ onSignOut, onSendData }) => {
 
 
 
-  const sendData = () => {
+  const sendData = async () => {
     const data = {
       vegzettseg,
       korcsoport,
@@ -161,7 +161,24 @@ const Home = ({ onSignOut, onSendData }) => {
       nem,
       anyagi,
     };
-    onSendData({ data });
+
+    try {
+      const response = await fetch('http://localhost:3001/api/main/home', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response.ok) {
+        setIsFormFilled(true);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
   };
 
 
