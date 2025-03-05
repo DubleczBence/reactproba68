@@ -49,6 +49,7 @@ import PropTypes from 'prop-types';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { v4 as uuidv4 } from 'uuid';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Szuro from './Szuro';
 import Mintavetel from './Mintavetel';
 import Attekintes from './Attekintes';
@@ -169,7 +170,15 @@ const CompHome = ({ onSignOut }) => {
   const [companySurveys, setCompanySurveys] = useState([]);
   const [selectedSurveyId, setSelectedSurveyId] = useState(null);
 
-
+  const [openCardDialog, setOpenCardDialog] = useState({
+    first: false,
+    second: false,
+    third: false,
+    fourth: false,
+    fifth: false,
+    sixth: false
+  });
+  
   useEffect(() => {
     const fetchCompanySurveys = async () => {
       const response = await fetch(`http://localhost:3001/api/main/company-surveys/${location.state.cegId}`);
@@ -240,8 +249,13 @@ const handleAddQuestion = () => {
 
 
 const handleRemoveQuestion = (id) => {
-  setQuestions((prev) => prev.filter((q) => q.id !== id));
-  setCredit(credit + 30);
+  setQuestions(prev => {
+    const questionToRemove = prev.find(q => q.id === id);
+    const extraOptions = questionToRemove.options.length > 4 ? questionToRemove.options.length - 4 : 0;
+    const creditToRefund = 30 + (extraOptions * 10);
+    setCredit(prevCredit => prevCredit + creditToRefund);
+    return prev.filter(q => q.id !== id);
+  });
 };
 
 
@@ -279,7 +293,7 @@ const handleAddOption = (questionId) => {
             ...q,
             options: [
               ...q.options,
-              { id: uuidv4(), label: `Option ${q.options.length + 1}` },
+              { id: uuidv4(), label: "" },
             ],
           };
         } else if (q.options.length < 4) {
@@ -288,7 +302,7 @@ const handleAddOption = (questionId) => {
             ...q,
             options: [
               ...q.options,
-              { id: uuidv4(), label: `Option ${q.options.length + 1}` },
+              { id: uuidv4(), label: "" },
             ],
           };
         }
@@ -324,7 +338,13 @@ const handleRemoveOption = (questionId, optionId) => {
   );
 };
 
+const handleCardDialogOpen = (cardName) => {
+  setOpenCardDialog(prev => ({...prev, [cardName]: true}));
+};
 
+const handleCardDialogClose = (cardName) => {
+  setOpenCardDialog(prev => ({...prev, [cardName]: false}));
+};
 
 
     const [showFirstCard, setShowFirstCard] = React.useState(true); 
@@ -650,36 +670,76 @@ const handleRemoveOption = (questionId, optionId) => {
 
       {/* Második Card */}
       {!showThirdCard && !showFirstCard && showSecondCard && (
-        <Card
-          noValidate
-          autoComplete="off"
-          variant="outlined"
-          sx={{
-            top: "4px",
-            mt: 7,
-            width: "95% !important",
-            height: "70vh",
-            maxWidth: "700px !important",
-            position: "relative",
-            padding: "10px",
-            overflow: "auto",
-          }}
-        >
-          
-          <TextField
-            sx={{
-              left: "20px",
-              width: '25ch',
-              height: '7ch',
-              mb: "20px",
-              '& .MuiInputLabel-root': {
-                fontSize: '1.2rem', 
-              },
-            }}
-            id='valami' label="Kérdőív címe" variant="standard" value={surveyTitle} onChange={(e) => setSurveyTitle(e.target.value)}
-           />
+  <Card
+    noValidate
+    autoComplete="off"
+    variant="outlined"
+    sx={{
+      top: "4px",
+      mt: 7,
+      width: "95% !important",
+      height: "70vh",
+      maxWidth: "700px !important",
+      position: "relative",
+      padding: "10px",
+      overflow: "auto",
+    }}
+  >
+    <Button
+      onClick={handleCloseKerd}
+      sx={{
+        position: "absolute",
+        top: "8px",
+        right: "8px",
+        width: "22px",
+        height: "22px",
+        minWidth: "0px",
+        padding: "0px",
+      }}
+    >
+      <CloseIcon />
+    </Button>
+    <Button
+      onClick={() => {
+        setQuestions([{
+          id: 1,
+          selectedButton: "radio",
+          questionText: "",
+          options: [{ id: 1, label: "" }]
+        }]);
+        setCredit(120);
+        setSurveyTitle('');
+      }}
+      sx={{
+        position: "absolute",
+        top: "40px",
+        right: "8px",
+        width: "22px",
+        height: "22px",
+        minWidth: "0px",
+        padding: "0px",
+      }}
+    >
+      <RefreshIcon />
+    </Button>
+    <TextField
+      sx={{
+        left: "20px",
+        width: '25ch',
+        height: '7ch',
+        mb: "20px",
+        '& .MuiInputLabel-root': {
+          fontSize: '1.2rem', 
+        },
+      }}
+      id='valami' 
+      label="Kérdőív címe" 
+      variant="standard" 
+      value={surveyTitle} 
+      onChange={(e) => setSurveyTitle(e.target.value)}
+    />
 
-{questions.map((question) => (
+{questions.map((question, index) => (
 <Container
     key={question.id}
     maxWidth="fix"
@@ -791,7 +851,7 @@ const handleRemoveOption = (questionId, optionId) => {
               <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <Radio />
                 <TextField
-                  placeholder="Label megadása"
+                  placeholder={`Option ${question.options.indexOf(option) + 1}`}
                   value={option.label}
                   onChange={(e) => handleLabelChange(question.id, option.id, e.target.value)}
                   sx={{ ml: 2 }}
@@ -819,7 +879,7 @@ const handleRemoveOption = (questionId, optionId) => {
               <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <Checkbox />
                 <TextField
-                  placeholder="Label megadása"
+                  placeholder={`Option ${question.options.indexOf(option) + 1}`}
                   value={option.label}
                   onChange={(e) => handleLabelChange(question.id, option.id, e.target.value)}
                   sx={{ ml: 2 }}
@@ -871,7 +931,8 @@ const handleRemoveOption = (questionId, optionId) => {
   )}
 
 
-<Button
+{index > 0 && (
+  <Button
     onClick={() => handleRemoveQuestion(question.id)}
     sx={{
       position: "absolute", 
@@ -885,6 +946,7 @@ const handleRemoveOption = (questionId, optionId) => {
   >
     <DeleteIcon />
   </Button>
+)}
 
 
 
@@ -914,7 +976,17 @@ const handleRemoveOption = (questionId, optionId) => {
 
 
 
-      <Typography component="h1" variant="subtitle1" sx={{ textAlign: 'center', mt: 3}}>{credit}/120 Kredit</Typography>
+      <Typography 
+        component="h1" 
+        variant="subtitle1" 
+        sx={{ 
+          textAlign: 'center', 
+          mt: 3,
+          color: 'error.light'  // This makes it red
+        }}
+      >
+        Költség: {120 - credit} kredit
+      </Typography>
 
 
       <Box
@@ -985,12 +1057,11 @@ const handleRemoveOption = (questionId, optionId) => {
         {/* Harmadik Card */}
         {!showFirstCard && !showSecondCard && showThirdCard && (
           <Szuro 
-          onClose={handleCloseIconClick}
-          onBack={handleClickCloseSzuro}
-          onShowMintavetel={handleShowMintavetel}
-          onFilterChange={setFilterData}
-          >
-          </Szuro>
+            onClose={() => handleCardDialogOpen('third')}
+            onBack={handleClickCloseSzuro}
+            onShowMintavetel={handleShowMintavetel}
+            onFilterChange={setFilterData}
+          />
         )}
 
 
@@ -999,7 +1070,7 @@ const handleRemoveOption = (questionId, optionId) => {
         {!showFirstCard && !showSecondCard && !showThirdCard && showFourthCard && (
           <Mintavetel 
             userCount={filteredCount}
-            onClose={handleCloseIconClick}
+            onClose={() => handleCardDialogOpen('fourth')}
             onBack={handleClickCloseMintavetel}
             onNext={handleClickOpenAttekintes}
           />
@@ -1011,7 +1082,7 @@ const handleRemoveOption = (questionId, optionId) => {
           <Attekintes
             surveyTitle={surveyTitle}
             questions={questions}
-            onClose={handleCloseIconClick}
+            onClose={() => handleCardDialogOpen('fifth')}
             onBack={handleCloseAttekintes}
             participantCount={selectedParticipants}
             creditCost={120 - credit}
@@ -1027,7 +1098,9 @@ const handleRemoveOption = (questionId, optionId) => {
           <Helyzet
           onClose={handleCloseIconClick}
           surveyId={selectedSurveyId}
-          />
+          >
+            
+          </Helyzet>
         )}
 
 
@@ -1115,10 +1188,7 @@ const handleRemoveOption = (questionId, optionId) => {
           </ListItemIcon>
           Logout
         </MenuItem>
-      </Menu>
-
-
-      
+      </Menu>     
 
       <Dialog
         open={open}
@@ -1138,7 +1208,72 @@ const handleRemoveOption = (questionId, optionId) => {
           <Button onClick={onSignOut}>Igen</Button>
         </DialogActions>
       </Dialog>
-      
+
+      {/* Third card dialog */}
+      <Dialog
+        open={openCardDialog.third}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => handleCardDialogClose('third')}
+      >
+        <DialogTitle>{"Megerősítés"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Biztosan be szeretné zárni a harmadik card-ot?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleCardDialogClose('third')}>Nem</Button>
+          <Button onClick={() => {
+            handleCardDialogClose('third');
+            handleCloseIconClick();
+          }}>Igen</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Fourth card dialog */}
+      <Dialog
+        open={openCardDialog.fourth}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => handleCardDialogClose('fourth')}
+      >
+        <DialogTitle>{"Megerősítés"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Biztosan be szeretné zárni a negyedik card-ot?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleCardDialogClose('fourth')}>Nem</Button>
+          <Button onClick={() => {
+            handleCardDialogClose('fourth');
+            handleCloseIconClick();
+          }}>Igen</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Fifth card dialog */}
+      <Dialog
+        open={openCardDialog.fifth}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => handleCardDialogClose('fifth')}
+      >
+        <DialogTitle>{"Megerősítés"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Biztosan be szeretné zárni az ötödik card-ot?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleCardDialogClose('fifth')}>Nem</Button>
+          <Button onClick={() => {
+            handleCardDialogClose('fifth');
+            handleCloseIconClick();
+          }}>Igen</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
 
     <Snackbar 
