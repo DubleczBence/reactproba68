@@ -55,6 +55,7 @@ import Mintavetel from './Mintavetel';
 import Attekintes from './Attekintes';
 import Helyzet from './Helyzet';
 import { Snackbar, Alert } from '@mui/material';
+import Kredit from './Kredit';
 
 
 
@@ -164,7 +165,7 @@ const CompHome = ({ onSignOut }) => {
   console.log(location);
   const name = location.state?.userName || location.state?.companyName;
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-
+  const [showCreditPage, setShowCreditPage] = useState(false);
   const [selectedParticipants, setSelectedParticipants] = useState(50);
 
   const [companySurveys, setCompanySurveys] = useState([]);
@@ -555,9 +556,11 @@ const handleCardDialogClose = (cardName) => {
           position: 'absolute',
           top: 26,
           left: 26,
+          cursor: 'pointer'
         }}
+        onClick={() => setShowCreditPage(true)}
       >
-       {120} Kredit
+        {120} Kredit
       </Typography>
 
 
@@ -565,7 +568,7 @@ const handleCardDialogClose = (cardName) => {
 
 
       {/* Első Card */}
-      { showFirstCard && (
+      { showFirstCard && !showCreditPage && (
         <Card
           variant="outlined"
           sx={{
@@ -1101,6 +1104,16 @@ const handleCardDialogClose = (cardName) => {
           >
             
           </Helyzet>
+        )}
+
+
+        {/* Kredit oldal */}
+        {showCreditPage && (
+          <Kredit 
+            onClose={() => setShowCreditPage(false)}
+            currentCredits={credit}
+            setCredit={setCredit}
+          />
         )}
 
 

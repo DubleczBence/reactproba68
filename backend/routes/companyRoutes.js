@@ -204,4 +204,28 @@ router.post('/verify-reset-code', async (req, res) => {
 });
 
 
+router.post('/purchase-credits', async (req, res) => {
+  const { packageAmount, companyId } = req.body;
+  
+  try {
+    await db.promise().query(
+      'UPDATE companies SET credits = credits + ? WHERE id = ?',
+      [packageAmount, companyId]
+    );
+    
+    const [company] = await db.promise().query(
+      'SELECT credits FROM companies WHERE id = ?',
+      [companyId]
+    );
+    
+    res.status(200).json({ 
+      message: 'Credits purchased successfully',
+      currentCredits: company[0].credits 
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to purchase credits' });
+  }
+});
+
+
 module.exports = router;
