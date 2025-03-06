@@ -910,7 +910,7 @@ const handleCardDialogClose = (cardName) => {
         )}
   </Box>
 
-  {(question.selectedButton === "radio" || question.selectedButton === "checkbox" || question.selectedButton === "text") && (
+  {(question.selectedButton === "radio" || question.selectedButton === "checkbox") && (
     <Button
       onClick={() => handleAddOption(question.id)}
       startIcon={<AddCircleOutlineIcon />}

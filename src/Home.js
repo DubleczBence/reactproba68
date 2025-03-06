@@ -204,7 +204,7 @@ const [open, setOpen] = React.useState(false);
     setAnchorEl(null);
   };
 
-
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
 
 
@@ -720,16 +720,32 @@ const [open, setOpen] = React.useState(false);
     label="Születési dátum"
     value={korcsoport}
     onChange={handleKorcsoport}
-    sx={{
-      '& .MuiInputBase-root': {
-        fontSize: '1.2rem',
-        padding: '10px',
-        height: '60px',
+    open={isCalendarOpen}
+    onOpen={() => setIsCalendarOpen(true)}
+    onClose={() => setIsCalendarOpen(false)}
+    slotProps={{
+      textField: {
+        onClick: () => setIsCalendarOpen(true),
+        sx: {
+          width: '100%',
+          '& .MuiInputBase-root': {
+            fontSize: '1.2rem',
+            padding: '10px',
+            height: '60px',
+            cursor: 'pointer'
+          },
+          '& .MuiInputLabel-root': {
+            fontSize: '1.2rem',
+            fontWeight: 'bold',
+            lineHeight: '1.5'
+          },
+          '& .MuiInputAdornment-root': {
+            marginRight: '8px'
+          }
+        }
       },
-      '& .MuiInputLabel-root': {
-        fontSize: '1.2rem',
-        fontWeight: 'bold',
-        lineHeight: '1.5',
+      popper: {
+        sx: { zIndex: 1300 }
       }
     }}
   />
