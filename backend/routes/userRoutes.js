@@ -84,7 +84,7 @@ router.post('/sign-in', async (req, res) => {
       expiresIn: '1h', 
     });
 
-    res.status(200).json({ message: 'Bejelentkezés sikeres!', token, name: user.name });
+    res.status(200).json({ message: 'Bejelentkezés sikeres!', token, name: user.name, id: user.id });
   } catch (error) {
     console.error('Hiba történt a bejelentkezés során:', error);
     res.status(500).json({ error: 'Hiba történt a bejelentkezés során.' });
@@ -148,6 +148,67 @@ router.post('/verify-reset-code', async (req, res) => {
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update password' });
+  }
+});
+
+
+router.get('/credits/:userId', async (req, res) => {
+  try {
+    const [user] = await db.promise().query(
+      'SELECT credits FROM users WHERE id = ?',
+      [req.params.userId]
+    );
+    res.json({ credits: user[0].credits });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch credits' });
+  }
+});
+
+
+
+router.get('/transaction-history/:userId', async (req, res) => {
+  try {
+    const [transactions] = await db.promise().query(
+      `SELECT 
+        uvt.*,
+        v.name as voucher_name,
+        DATE_FORMAT(uvt.created_at, '%Y-%m-%d %H:%i') as formatted_date
+       FROM user_voucher_transactions uvt
+       LEFT JOIN vouchers v ON uvt.voucher_id = v.id
+       WHERE user_id = ?
+       ORDER BY created_at DESC`,
+      [req.params.userId]
+    );
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch transaction history' });
+  }
+});
+
+router.post('/purchase-voucher', async (req, res) => {
+  const { userId, voucherId, creditCost } = req.body;
+  try {
+    await db.promise().query(
+      'INSERT INTO user_voucher_transactions (user_id, voucher_id, amount, transaction_type) VALUES (?, ?, ?, "purchase")',
+      [userId, voucherId, creditCost]
+    );
+
+    await db.promise().query(
+      'UPDATE users SET credits = credits - ? WHERE id = ?',
+      [creditCost, userId]
+    );
+
+    const [user] = await db.promise().query(
+      'SELECT credits FROM users WHERE id = ?',
+      [userId]
+    );
+
+    res.status(200).json({
+      message: 'Voucher purchased successfully',
+      currentCredits: user[0].credits
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to purchase voucher' });
   }
 });
 

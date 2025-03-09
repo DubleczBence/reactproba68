@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { useLocation } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
@@ -56,6 +55,7 @@ import Attekintes from './Attekintes';
 import Helyzet from './Helyzet';
 import { Snackbar, Alert } from '@mui/material';
 import Kredit from './Kredit';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 
 
@@ -139,19 +139,18 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
       onChange={onChange}
       sx={{
         mt: 2, 
+        mb: 2,
         backgroundColor: theme.palette.background.default, 
         boxShadow: theme.shadows[1],
         width: '18%', 
       }}
     >
-      <BottomNavigationAction label="Új kérdőív" icon={<AddBoxIcon />} />
       <BottomNavigationAction label="Kérdőíveim" icon={<DashboardIcon />} />
+      <BottomNavigationAction label="Egyenleg" icon={<AccountBalanceWalletIcon />} />
       <BottomNavigationAction label="Statisztika" icon={<BarChartIcon />} />
     </BottomNavigation>
   );
 };
-
-
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -160,7 +159,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 const CompHome = ({ onSignOut }) => {
-  const [credit, setCredit] = useState(120);
+  const [surveyTotalCost, setSurveyTotalCost] = useState(0);
+  const [credits, setCredits] = useState(0);
   const location = useLocation();
   console.log(location);
   const name = location.state?.userName || location.state?.companyName;
@@ -179,7 +179,26 @@ const CompHome = ({ onSignOut }) => {
     fifth: false,
     sixth: false
   });
-  
+
+
+  useEffect(() => {
+    const fetchCredits = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/companies/credits/${localStorage.getItem('cegId')}`);
+        const data = await response.json();
+        setCredits(data.credits);
+      } catch (error) {
+        console.error('Error fetching credits:', error);
+      }
+    };
+    fetchCredits();
+  }, []);
+
+  const handleCreditPurchase = (newCredits) => {
+    setCredits(newCredits);
+  };
+
+
   useEffect(() => {
     const fetchCompanySurveys = async () => {
       const response = await fetch(`http://localhost:3001/api/main/company-surveys/${location.state.cegId}`);
@@ -231,7 +250,7 @@ const [questions, setQuestions] = useState([{
 
 
 const handleAddQuestion = () => {
-  if (credit >= 30) {
+  if (credits >= 30) {
   setQuestions((prev) => [
     ...prev,
     {
@@ -240,7 +259,7 @@ const handleAddQuestion = () => {
       options: [{ id: uuidv4(), label: "" }], 
     },
   ]);
-  setCredit(credit - 30);
+  setSurveyTotalCost(prev => prev + 30);
   }
   else {
     alert("Nincs elegendő kredit a kérdés hozzáadásához!");
@@ -254,7 +273,7 @@ const handleRemoveQuestion = (id) => {
     const questionToRemove = prev.find(q => q.id === id);
     const extraOptions = questionToRemove.options.length > 4 ? questionToRemove.options.length - 4 : 0;
     const creditToRefund = 30 + (extraOptions * 10);
-    setCredit(prevCredit => prevCredit + creditToRefund);
+    setCredits(prevCredit => prevCredit + creditToRefund);
     return prev.filter(q => q.id !== id);
   });
 };
@@ -287,9 +306,9 @@ const handleAddOption = (questionId) => {
   setQuestions((prev) =>
     prev.map((q) => {
       if (q.id === questionId) {
-        if (q.options.length >= 4 && credit >= 10) {
+        if (q.options.length >= 4 && credits >= 10) {
           
-          setCredit((prevCredit) => prevCredit - 10);
+          setSurveyTotalCost(prev => prev + 10);
           return {
             ...q,
             options: [
@@ -326,7 +345,7 @@ const handleRemoveOption = (questionId, optionId) => {
 
         
         if (wasAboveLimit) {
-          setCredit((prevCredit) => prevCredit + 10); 
+          setCredits((prevCredit) => prevCredit + 10); 
         }
 
         return {
@@ -446,10 +465,33 @@ const handleCardDialogClose = (cardName) => {
       setShowFifthCard(false);
       setShowSixthCard(false);
     };
+
+
+    const handleNavigationChange = (event, newValue) => {
+      setValue(newValue);
+      if (newValue === 0) {
+        setShowCreditPage(false);
+        setShowFirstCard(true);
+        setShowSecondCard(false);
+        setShowThirdCard(false);
+        setShowFourthCard(false);
+        setShowFifthCard(false);
+        setShowSixthCard(false);
+      } else if (newValue === 1) {
+        setShowCreditPage(true);
+        setShowFirstCard(false);
+        setShowSecondCard(false);
+        setShowThirdCard(false);
+        setShowFourthCard(false);
+        setShowFifthCard(false);
+        setShowSixthCard(false);
+      }
+    };
     
 
 
     const handleSurveySuccess = () => {
+      setCredits(prevCredits => prevCredits - surveyTotalCost);
       setSnackbar(prev => ({ 
         ...prev,
         open: true, 
@@ -545,7 +587,7 @@ const handleCardDialogClose = (cardName) => {
       
       <SimpleBottomNavigation
         value={value}
-        onChange={(event, newValue) => setValue(newValue)}
+        onChange={handleNavigationChange}
       />
 
       
@@ -558,9 +600,12 @@ const handleCardDialogClose = (cardName) => {
           left: 26,
           cursor: 'pointer'
         }}
-        onClick={() => setShowCreditPage(true)}
+        onClick={() => {
+          setShowCreditPage(true);
+          setValue(1);
+        }}
       >
-        {120} Kredit
+        {credits} Kredit
       </Typography>
 
 
@@ -710,7 +755,7 @@ const handleCardDialogClose = (cardName) => {
           questionText: "",
           options: [{ id: 1, label: "" }]
         }]);
-        setCredit(120);
+        setCredits(credits);
         setSurveyTitle('');
       }}
       sx={{
@@ -964,7 +1009,7 @@ const handleCardDialogClose = (cardName) => {
 
       <Button
         onClick={handleAddQuestion}
-        disabled={credit < 30}
+        disabled={credits < 30}
         startIcon={<AddCircleOutlineIcon />}
         variant="outlined"
         sx={{ 
@@ -985,10 +1030,10 @@ const handleCardDialogClose = (cardName) => {
         sx={{ 
           textAlign: 'center', 
           mt: 3,
-          color: 'error.light'  // This makes it red
+          color: 'error.light' 
         }}
       >
-        Költség: {120 - credit} kredit
+        Költség: {surveyTotalCost} kredit
       </Typography>
 
 
@@ -1088,7 +1133,7 @@ const handleCardDialogClose = (cardName) => {
             onClose={() => handleCardDialogOpen('fifth')}
             onBack={handleCloseAttekintes}
             participantCount={selectedParticipants}
-            creditCost={120 - credit}
+            creditCost={surveyTotalCost}
             onSuccess={handleSurveySuccess}
             onError={handleSurveyError}
             filterData={filterData}
@@ -1111,8 +1156,8 @@ const handleCardDialogClose = (cardName) => {
         {showCreditPage && (
           <Kredit 
             onClose={() => setShowCreditPage(false)}
-            currentCredits={credit}
-            setCredit={setCredit}
+            currentCredits={credits}
+            onPurchase={handleCreditPurchase}
           />
         )}
 

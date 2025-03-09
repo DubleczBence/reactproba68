@@ -39,7 +39,7 @@ import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-
+import UserKredit from './userKredit';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -94,7 +94,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const Home = ({ onSignOut, onSendData }) => {
 
-
+  const location = useLocation();
+  const userId = location.state?.userId;
+  const [credits, setCredits] = useState(0);
   const [vegzettseg, setVegzettseg] = React.useState('');
   const [korcsoport, setKorcsoport] = React.useState(dayjs());
   const [regio, setRegio] = React.useState('');
@@ -103,11 +105,36 @@ const Home = ({ onSignOut, onSendData }) => {
   const [isFormFilled, setIsFormFilled] = useState(false); 
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [name, setName] = useState('');
+  const [showUserCreditPage, setShowUserCreditPage] = useState(false);
   
   const [answers, setAnswers] = useState({});
 
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [showSurvey, setShowSurvey] = useState(false);
+
+
+
+
+
+
+  useEffect(() => {
+    const fetchCredits = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/users/credits/${userId}`);
+        const data = await response.json();
+        setCredits(data.credits);
+      } catch (error) {
+        console.error('Error fetching credits:', error);
+      }
+    };
+    fetchCredits();
+  }, [userId]);
+
+
+
+  const handleCreditPurchase = (newCredits) => {
+    setCredits(newCredits);
+  };
 
 
   const handleAnswerChange = (questionId, value) => {
@@ -208,8 +235,9 @@ const [open, setOpen] = React.useState(false);
 
 
 
-  const location = useLocation();
+  
   console.log(location);
+  
 
 
   const [availableSurveys, setAvailableSurveys] = useState([]);
@@ -234,6 +262,7 @@ const [open, setOpen] = React.useState(false);
   
       if (response.ok) {
         handleCloseSurvey();
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error submitting survey:', error);
@@ -338,9 +367,14 @@ const [open, setOpen] = React.useState(false);
           position: 'absolute',
           top: 26,
           left: 26,
+          cursor: 'pointer'
+        }}
+        onClick={() => {
+          setShowUserCreditPage(true);
+          setShowSurvey(false);
         }}
       >
-       {0} Kredit
+        {credits} Kredit
       </Typography>
 
 
@@ -354,7 +388,7 @@ const [open, setOpen] = React.useState(false);
       >
         Köszöntjük az oldalon, {name}!
       </Typography>
-      {!showSurvey ? (
+      {!showUserCreditPage && !showSurvey && (
           <Card
             variant="outlined"
             sx={{
@@ -405,10 +439,10 @@ const [open, setOpen] = React.useState(false);
               </Button>
             ))}
           </Card>
-        ) : (
+        )}
 
 
-        selectedSurvey && (
+        {showSurvey && selectedSurvey && (
           <Card
             variant="outlined"
             sx={{
@@ -526,10 +560,22 @@ const [open, setOpen] = React.useState(false);
               </Button>
             </Box>
           </Card>
-        )
         )}
-      
-          <CssBaseline enableColorScheme />
+        
+
+
+
+        {/* user Kredit oldal */}
+        {!showSurvey && showUserCreditPage && (
+        <UserKredit 
+          onClose={() => setShowUserCreditPage(false)}
+          currentCredits={credits}
+          onPurchase={handleCreditPurchase}
+        />
+        )}
+
+        <CssBaseline enableColorScheme />
+
 
       
       <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />

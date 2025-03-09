@@ -134,13 +134,31 @@ router.post('/submit-survey', async (req, res) => {
   const userId = decoded.id;
 
   try {
+
+    const [survey] = await db.promise().query(
+      'SELECT credit_cost FROM survey_set WHERE id = ?',
+      [surveyId]
+    );
+
+    const userCreditReward = Math.floor(survey[0].credit_cost / 3);
+
     for (const answer of answers) {
       await db.promise().query(
         'INSERT INTO answers (user_id, survey_id, question_id, answer) VALUES (?, ?, ?, ?)',
         [userId, surveyId, answer.questionId, JSON.stringify(answer.value)]
       );
     }
-    res.status(200).json({ message: 'Survey submitted successfully' });
+
+
+    await db.promise().query(
+      'UPDATE users SET credits = credits + ? WHERE id = ?',
+      [userCreditReward, userId]
+    );
+
+    res.status(200).json({ 
+      message: 'Survey submitted successfully',
+      creditsEarned: userCreditReward
+    });
   } catch (error) {
     console.error('Error submitting survey:', error);
     res.status(500).json({ error: 'Failed to submit survey' });

@@ -110,6 +110,11 @@ router.post('/create-survey', async (req, res) => {
     const cegId = decoded.id;
 
 
+    await db.promise().query(
+      'UPDATE companies SET credits = credits - ? WHERE id = ?',
+      [creditCost, cegId]
+    );
+
     const [surveyResult] = await db.promise().query(
       `INSERT INTO survey_set (
         title, ceg_id, mintavetel, 
@@ -135,6 +140,12 @@ router.post('/create-survey', async (req, res) => {
         [question.questionText, JSON.stringify(question.options), question.selectedButton, surveyId]
       );
     }
+
+
+    await db.promise().query(
+      'INSERT INTO credit_transactions (company_id, amount, transaction_type, survey_id, survey_title) VALUES (?, ?, "spend", ?, ?)',
+      [cegId, creditCost, surveyId, title]
+    );
 
     res.status(201).json({ message: 'Survey created successfully' });
   } catch (error) {
@@ -204,10 +215,32 @@ router.post('/verify-reset-code', async (req, res) => {
 });
 
 
+
+router.get('/credits/:companyId', async (req, res) => {
+  try {
+    const [company] = await db.promise().query(
+      'SELECT credits FROM companies WHERE id = ?',
+      [req.params.companyId]
+    );
+    
+    res.json({ credits: company[0].credits });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch credits' });
+  }
+});
+
+
+
 router.post('/purchase-credits', async (req, res) => {
   const { packageAmount, companyId } = req.body;
+  console.log("Received request:", { packageAmount, companyId });
   
   try {
+    await db.promise().query(
+      'INSERT INTO credit_transactions (company_id, amount, transaction_type) VALUES (?, ?, "purchase")',
+      [companyId, packageAmount]
+    );
+
     await db.promise().query(
       'UPDATE companies SET credits = credits + ? WHERE id = ?',
       [packageAmount, companyId]
@@ -218,12 +251,32 @@ router.post('/purchase-credits', async (req, res) => {
       [companyId]
     );
     
+    console.log("Updated credits:", company[0].credits);
     res.status(200).json({ 
       message: 'Credits purchased successfully',
       currentCredits: company[0].credits 
     });
   } catch (error) {
+    console.error("Error in purchase-credits:", error);
     res.status(500).json({ error: 'Failed to purchase credits' });
+  }
+});
+
+
+router.get('/credit-history/:companyId', async (req, res) => {
+  try {
+    const [transactions] = await db.promise().query(
+      `SELECT 
+        ct.*,
+        DATE_FORMAT(ct.created_at, '%Y-%m-%d %H:%i') as formatted_date
+       FROM credit_transactions ct
+       WHERE company_id = ?
+       ORDER BY created_at DESC`,
+      [req.params.companyId]
+    );
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch credit history' });
   }
 });
 

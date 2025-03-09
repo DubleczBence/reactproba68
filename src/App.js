@@ -132,11 +132,15 @@ function App() {
          
          if (result.token) {
           localStorage.setItem('token', result.token);
+          if (type === 'company') {
+            localStorage.setItem('cegId', result.cegId);
+          }
         }
 
 
         if (type === 'user') {
-          navigate('/home', { state: { userName: result.name } }); 
+          console.log('User ID:', result.id);
+          navigate('/home', { state: { userName: result.name, userId: result.id } }); 
         } else if (type === 'company') {
           navigate('/comp_home', { state: { companyName: result.cegnev, cegId: result.cegId } }); 
         }
