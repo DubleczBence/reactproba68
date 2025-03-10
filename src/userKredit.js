@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, Button, Box } from "@mui/material";
+import { Card, Typography, Button, Box, CardContent, Grid } from "@mui/material";
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 
@@ -76,9 +76,11 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
         width: "550px",
         flexShrink: 0,
         boxShadow: 'none',
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        maxHeight: "640px",
+        overflowY: "auto"
       }}
-      >
+    >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
         {transactionHistory.map((transaction) => (
           <Button key={transaction.id}
@@ -156,12 +158,77 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
         {/* Voucher Options */}
         {voucherOptions.map((option, index) => (
           <Card key={index} sx={{ marginBottom: 1, boxShadow: 'none',  height:'100%',  width: '100%', backgroundColor: '#f5f5f5', padding: 2 }}>
-            <Typography>{option.name}</Typography>
-            <Typography>{option.description}</Typography>
-            <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>{option.creditCost} Kredit</Typography>
-            <Button variant="contained" size="small" onClick={() => handleVoucherPurchase(option.creditCost, index + 1)} sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}>
-              Vásárlás
-            </Button>
+            <CardContent sx={{ padding: '4px 0 0 0' }}>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              mb: 1, 
+              width: '100%'
+            }}>
+            <Typography variant="subtitle1" fontWeight="bold" sx={{ textAlign: 'left', ml: 2 }}>
+                Kuponok vásárlása
+            </Typography>
+            <Typography 
+                variant="subtitle1" 
+                fontWeight="bold" 
+                sx={{ 
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  fontSize: '0.875rem'
+                }}
+              >
+                {option}
+            </Typography>
+            </Box>
+            <Grid 
+                container 
+                spacing={2} 
+                justifyContent="center" 
+                alignItems="center" 
+                sx={{ 
+                  width: '100%', 
+                  margin: '0 auto',
+                  padding: '0'
+                }}
+              >
+                {UserKredit.map((option, idx) => (
+                  <Grid 
+                    item 
+                    xs={12} 
+                    sm={4} 
+                    key={idx} 
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      padding: '12px'
+                    }}
+                  >
+                  <Card variant="outlined" sx={{ 
+                    textAlign: "center", 
+                    padding: 1, 
+                    border: "1px solid grey",
+                    height: "180px",
+                    width: "100%",
+                    maxWidth: "280px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                  }}>
+                    <Typography variant="h3" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
+                      {option.amount}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>Kredit</Typography>
+                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>
+                      {option.price}
+                    </Typography>
+                    <Button variant="contained" size="small" onClick={() => handleVoucherPurchase(option.creditCost, index + 1)} sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}></Button>
+                  </Card>
+                </Grid>
+                ))}
+              </Grid>
+            </CardContent>
           </Card>
         ))}
       </StyledCard>

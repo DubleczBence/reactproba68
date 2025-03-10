@@ -65,6 +65,10 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
       if (response.ok) {
         const data = await response.json();
         onPurchase(data.currentCredits);
+
+        const historyResponse = await fetch(`http://localhost:3001/api/companies/credit-history/${companyId}`);
+        const historyData = await historyResponse.json();
+        setCreditHistory(historyData);
       }
     } catch (error) {
       console.error('Error purchasing credits:', error);
@@ -82,7 +86,9 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
         width: "550px",
         flexShrink: 0,
         boxShadow: 'none',
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        maxHeight: "640px",
+        overflowY: "auto"
       }}
     >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>
