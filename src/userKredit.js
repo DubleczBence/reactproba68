@@ -1,12 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Typography, Button, Box, CardContent, Grid } from "@mui/material";
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 
 const voucherOptions = [
-  { name: "10% kedvezmény", description: "10% kedvezmény a következő vásárlásból", creditCost: 500, discount: 10 },
-  { name: "20% kedvezmény", description: "20% kedvezmény a következő vásárlásból", creditCost: 1000, discount: 20 },
-  { name: "5000 Ft utalvány", description: "5000 Ft értékű vásárlási utalvány", creditCost: 2000, discount: 5000 },
+  {
+    category: "Utalványok",
+    items: [
+      { name: "4000 Ft", description: "Emag utalvány", creditCost: 2700 },
+      { name: "3000 Ft", description: "Spar utalvány", creditCost: 1300 },
+      { name: "5000 Ft", description: "Decathlon utalvány", creditCost: 2000 },
+    ]
+  },
+  {
+    category: "Ajándékkártyák",
+    items: [
+      { name: "3000 Ft", description: "Steam kártya", creditCost: 100 },
+      { name: "2000 Ft", description: "Xbox kártya", creditCost: 1000 },
+      { name: "6000 Ft", description: "Amazon kártya", creditCost: 2300 },
+    ]
+  }
 ];
 
 const StyledCard = styled(MuiCard)(({ theme }) => ({
@@ -23,25 +36,32 @@ const StyledCard = styled(MuiCard)(({ theme }) => ({
     [theme.breakpoints.up('sm')]: {
       width: '700px',
     },
-    minHeight: '640px'
+    minHeight: '740px'
 }));
 
-const UserKredit = ({ currentCredits, onPurchase }) => {
-  const [transactionHistory, setTransactionHistory] = useState([]);
+const UserKredit = ({ currentCredits, onPurchase, userId }) => {
+  const [creditHistory, setCreditHistory] = useState([]);
+
+
+  const fetchCreditHistory = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/credit-history/${userId}`);
+      const data = await response.json();
+      setCreditHistory(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Error fetching credit history:', error);
+      setCreditHistory([]);
+    }
+  }, [userId]);
+
 
   useEffect(() => {
-    const fetchTransactionHistory = async () => {
-      const userId = localStorage.getItem('userId');
-      const response = await fetch(`http://localhost:3001/api/users/transaction-history/${userId}`);
-      const data = await response.json();
-      setTransactionHistory(data);
-    };
-    fetchTransactionHistory();
-  }, []);
+    fetchCreditHistory();
+  }, [fetchCreditHistory]);
 
-  const handleVoucherPurchase = async (creditCost, voucherId) => {
+
+  const handleVoucherPurchase = async (item) => {
     try {
-      const userId = localStorage.getItem('userId');
       const response = await fetch('http://localhost:3001/api/users/purchase-voucher', {
         method: 'POST',
         headers: {
@@ -50,19 +70,23 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
         },
         body: JSON.stringify({
           userId,
-          voucherId,
-          creditCost
+          voucherName: `${item.name} ${item.description}`,
+          creditCost: item.creditCost
         })
       });
 
       if (response.ok) {
         const data = await response.json();
         onPurchase(data.currentCredits);
+        fetchCreditHistory();
       }
     } catch (error) {
       console.error('Error purchasing voucher:', error);
     }
   };
+
+
+  
 
   return (
     <>
@@ -72,7 +96,7 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
       sx={{
         position: 'absolute',
         left: '20px',
-        top: '165px',
+        top: '145px',
         width: "550px",
         flexShrink: 0,
         boxShadow: 'none',
@@ -82,8 +106,8 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
       }}
     >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
-        {transactionHistory.map((transaction) => (
-          <Button key={transaction.id}
+        {creditHistory.map((transaction, index) => (
+          <Button key={`transaction-${transaction.id}-${index}-${transaction.formatted_date}`}
           sx={{
             height: "80px !important",
             width: "100%",
@@ -97,7 +121,7 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
           >
         <Box>
             <Typography variant="subtitle1">
-              {transaction.transaction_type === 'survey' ? 'Kérdőív kitöltés' : transaction.voucher_name}
+              {transaction.transaction_type === 'survey' ? 'Kérdőív kitöltés' : transaction.title}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {transaction.formatted_date}
@@ -156,8 +180,8 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
 
 
         {/* Voucher Options */}
-        {voucherOptions.map((option, index) => (
-          <Card key={index} sx={{ marginBottom: 1, boxShadow: 'none',  height:'100%',  width: '100%', backgroundColor: '#f5f5f5', padding: 2 }}>
+        {voucherOptions.map((category, categoryIndex) => (
+          <Card key={`category-${categoryIndex}`} sx={{ marginBottom: 1, boxShadow: 'none',  height:'100%',  width: '100%', backgroundColor: '#f5f5f5', padding: 2 }}>
             <CardContent sx={{ padding: '4px 0 0 0' }}>
             <Box sx={{ 
               display: 'flex', 
@@ -178,7 +202,7 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
                   fontSize: '0.875rem'
                 }}
               >
-                {option}
+                {category.category}
             </Typography>
             </Box>
             <Grid 
@@ -192,12 +216,12 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
                   padding: '0'
                 }}
               >
-                {UserKredit.map((option, idx) => (
+                {category.items.map((item, itemIndex) => (
                   <Grid 
                     item 
+                    key={`voucher-${categoryIndex}-${itemIndex}`}
                     xs={12} 
                     sm={4} 
-                    key={idx} 
                     sx={{
                       display: 'flex',
                       justifyContent: 'center',
@@ -216,14 +240,14 @@ const UserKredit = ({ currentCredits, onPurchase }) => {
                     justifyContent: "space-between",
                     alignItems: "center"
                   }}>
-                    <Typography variant="h3" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
-                      {option.amount}
+                    <Typography variant="h5" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
+                      {item.name}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>Kredit</Typography>
+                    <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>{item.description}</Typography>
                     <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>
-                      {option.price}
+                    {item.creditCost} kredit
                     </Typography>
-                    <Button variant="contained" size="small" onClick={() => handleVoucherPurchase(option.creditCost, index + 1)} sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}></Button>
+                    <Button variant="contained" size="small" onClick={() => handleVoucherPurchase(item)} sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}>Vásárlás</Button>
                   </Card>
                 </Grid>
                 ))}

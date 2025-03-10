@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -117,23 +117,25 @@ const Home = ({ onSignOut, onSendData }) => {
 
 
 
-  useEffect(() => {
-    const fetchCredits = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/api/users/credits/${userId}`);
-        const data = await response.json();
-        setCredits(data.credits);
-      } catch (error) {
-        console.error('Error fetching credits:', error);
-      }
-    };
-    fetchCredits();
+  const fetchCredits = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/credits/${userId}`);
+      const data = await response.json();
+      setCredits(data.credits);
+    } catch (error) {
+      console.error('Error fetching credits:', error);
+    }
   }, [userId]);
+    
 
+    useEffect(() => {
+      fetchCredits();
+    }, [userId, fetchCredits]);
 
 
   const handleCreditPurchase = (newCredits) => {
     setCredits(newCredits);
+    fetchCredits()
   };
 
 
@@ -245,6 +247,12 @@ const [open, setOpen] = React.useState(false);
 
   const handleSubmitSurvey = async () => {
     try {
+
+      const surveyDetails = availableSurveys.find(s => s.id === selectedSurvey.question[0].survey_id);
+    const creditAmount = Math.floor(surveyDetails.credit_cost / 3);
+    
+    console.log('Credit amount calculated:', creditAmount);
+
       const response = await fetch('http://localhost:3001/api/main/submit-survey', {
         method: 'POST',
         headers: {
@@ -253,6 +261,7 @@ const [open, setOpen] = React.useState(false);
         },
         body: JSON.stringify({
           surveyId: selectedSurvey.question[0].survey_id,
+          userId: userId,
           answers: Object.entries(answers).map(([questionId, value]) => ({
             questionId,
             value
@@ -261,8 +270,26 @@ const [open, setOpen] = React.useState(false);
       });
   
       if (response.ok) {
+        
+        const transactionResponse = await fetch('http://localhost:3001/api/users/add-survey-transaction', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            userId: userId,
+            amount: creditAmount,
+            title: surveyDetails.title
+          })
+        });
+  
+        if (!transactionResponse.ok) {
+          throw new Error('Transaction failed');
+        }
+  
+        await fetchCredits();
         handleCloseSurvey();
-        window.location.reload();
       }
     } catch (error) {
       console.error('Error submitting survey:', error);
@@ -567,11 +594,12 @@ const [open, setOpen] = React.useState(false);
 
         {/* user Kredit oldal */}
         {!showSurvey && showUserCreditPage && (
-        <UserKredit 
-          onClose={() => setShowUserCreditPage(false)}
-          currentCredits={credits}
-          onPurchase={handleCreditPurchase}
-        />
+          <UserKredit 
+            onClose={() => setShowUserCreditPage(false)}
+            currentCredits={credits}
+            onPurchase={handleCreditPurchase}
+            userId={userId}
+          />
         )}
 
         <CssBaseline enableColorScheme />

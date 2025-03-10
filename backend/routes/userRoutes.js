@@ -154,61 +154,117 @@ router.post('/verify-reset-code', async (req, res) => {
 
 router.get('/credits/:userId', async (req, res) => {
   try {
-    const [user] = await db.promise().query(
+    const [result] = await db.promise().query(
       'SELECT credits FROM users WHERE id = ?',
       [req.params.userId]
     );
-    res.json({ credits: user[0].credits });
+    res.json({ credits: result[0].credits });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch credits' });
+    res.status(500).json({ error: 'Error fetching credits' });
   }
 });
 
-
-
-router.get('/transaction-history/:userId', async (req, res) => {
+router.get('/credit-history/:userId', async (req, res) => {
   try {
     const [transactions] = await db.promise().query(
       `SELECT 
-        uvt.*,
-        v.name as voucher_name,
-        DATE_FORMAT(uvt.created_at, '%Y-%m-%d %H:%i') as formatted_date
-       FROM user_voucher_transactions uvt
-       LEFT JOIN vouchers v ON uvt.voucher_id = v.id
-       WHERE user_id = ?
-       ORDER BY created_at DESC`,
+        id,
+        amount,
+        transaction_type,
+        voucher_name,
+        DATE_FORMAT(transaction_date, '%Y-%m-%d %H:%i') as formatted_date
+      FROM transactions 
+      WHERE user_id = ?
+      ORDER BY transaction_date DESC`,
       [req.params.userId]
     );
     res.json(transactions);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch transaction history' });
+    console.error('Error fetching credit history:', error);
+    res.status(500).json({ error: 'Error fetching credit history' });
   }
 });
 
 router.post('/purchase-voucher', async (req, res) => {
-  const { userId, voucherId, creditCost } = req.body;
+  const { userId, voucherName, creditCost } = req.body;
+  
   try {
-    await db.promise().query(
-      'INSERT INTO user_voucher_transactions (user_id, voucher_id, amount, transaction_type) VALUES (?, ?, ?, "purchase")',
-      [userId, voucherId, creditCost]
-    );
+    await db.promise().query('START TRANSACTION');
 
-    await db.promise().query(
-      'UPDATE users SET credits = credits - ? WHERE id = ?',
-      [creditCost, userId]
-    );
 
+    console.log('Purchase attempt:', { userId, voucherName, creditCost });
+    // Ellenőrizzük a felhasználó kreditjeit
     const [user] = await db.promise().query(
       'SELECT credits FROM users WHERE id = ?',
       [userId]
     );
 
-    res.status(200).json({
+    if (!user.length || user[0].credits < creditCost) {
+      await db.promise().query('ROLLBACK');
+      return res.status(400).json({ error: 'Insufficient credits' });
+    }
+
+    // Kredit levonása
+    await db.promise().query(
+      'UPDATE users SET credits = credits - ? WHERE id = ?',
+      [creditCost, userId]
+    );
+
+    // Tranzakció rögzítése
+    await db.promise().query(
+      `INSERT INTO transactions 
+       (user_id, amount, transaction_type, transaction_date, voucher_name) 
+       VALUES (?, ?, 'purchase', NOW(), ?)`,
+      [userId, creditCost, voucherName]
+    );
+
+
+    await db.promise().query(
+      'INSERT INTO vouchers (user_id, name, credit_cost, purchase_date) VALUES (?, ?, ?, NOW())',
+      [userId, voucherName, creditCost]
+    );
+
+    await db.promise().query('COMMIT');
+
+    // Friss kredit egyenleg lekérése
+    const [updatedUser] = await db.promise().query(
+      'SELECT credits FROM users WHERE id = ?',
+      [userId]
+    );
+
+    res.json({
       message: 'Voucher purchased successfully',
-      currentCredits: user[0].credits
+      currentCredits: updatedUser[0].credits
     });
   } catch (error) {
+    console.error('Purchase error details:', error);
+    await db.promise().query('ROLLBACK');
     res.status(500).json({ error: 'Failed to purchase voucher' });
+  }
+});
+
+
+router.post('/add-survey-transaction', async (req, res) => {
+  const { userId, amount, title } = req.body;
+  
+  console.log('Received transaction data:', { userId, amount, title });
+
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ error: 'Invalid amount' });
+  }
+
+  try {
+    await db.promise().query(
+      `INSERT INTO transactions 
+       (user_id, amount, transaction_type, transaction_date, voucher_name) 
+       VALUES (?, ?, 'survey', NOW(), ?)`,
+      [userId, amount, title]
+    );
+    
+    res.json({ message: 'Survey transaction recorded successfully' });
+  } catch (error) {
+    console.error('Error recording survey transaction:', error);
+    res.status(500).json({ error: 'Failed to record survey transaction' });
   }
 });
 

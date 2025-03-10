@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Már 10. 00:26
+-- Létrehozás ideje: 2025. Már 10. 23:18
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -89,7 +89,85 @@ INSERT INTO `answers` (`id`, `survey_id`, `user_id`, `answer`, `question_id`, `d
 (46, 34, 1, '[\"hgfgh\",\"hf\"]', 129, '2025-03-09 22:01:14'),
 (47, 34, 1, '\"dddg\"', 130, '2025-03-09 22:01:14'),
 (48, 34, 1, '[\"gfdfff\",\"fgdgd\"]', 131, '2025-03-09 22:01:14'),
-(49, 34, 1, '\"gdg\"', 132, '2025-03-09 22:01:14');
+(49, 34, 1, '\"gdg\"', 132, '2025-03-09 22:01:14'),
+(50, 35, 1, '\"aaaaa\"', 133, '2025-03-10 17:42:45'),
+(51, 35, 1, '[\"gdg\",\"jfttf\"]', 134, '2025-03-10 17:42:45'),
+(52, 35, 1, '\"gggg\"', 135, '2025-03-10 17:42:45'),
+(53, 35, 1, '[\"jgz\",\"hjgjg\",\"jghjgggfds\"]', 136, '2025-03-10 17:42:45'),
+(56, 36, 1, '[\"sdadsda\",\"dsaaaaaa\"]', 137, '2025-03-10 21:42:17'),
+(57, 36, 1, '\"wq\"', 138, '2025-03-10 21:42:17'),
+(58, 36, 1, '\"wwwwwwwww\"', 139, '2025-03-10 21:42:17'),
+(59, 36, 1, '\"uztut\"', 140, '2025-03-10 21:42:17'),
+(60, 24, 2, '\"dadawddda\"', 85, '2025-03-10 21:46:09'),
+(61, 24, 2, '[\"aaaaaaaaa\"]', 86, '2025-03-10 21:46:09'),
+(62, 24, 2, '\"ddddddddd\"', 87, '2025-03-10 21:46:10'),
+(63, 24, 2, '\"sasa\"', 88, '2025-03-10 21:46:10'),
+(64, 39, 1, '\"gffd\"', 150, '2025-03-10 21:51:04'),
+(65, 39, 1, '[\"fdsfdf\"]', 151, '2025-03-10 21:51:05'),
+(66, 39, 1, '\"dwa\"', 152, '2025-03-10 21:51:05'),
+(67, 39, 1, '\"we\"', 153, '2025-03-10 21:51:05'),
+(68, 39, 1, '\"daw\"', 154, '2025-03-10 21:51:05'),
+(69, 37, 1, '\"fdsdd\"', 141, '2025-03-10 21:59:48'),
+(70, 37, 1, '\"fse\"', 142, '2025-03-10 21:59:48'),
+(71, 37, 1, '\"fes\"', 143, '2025-03-10 21:59:48'),
+(72, 37, 1, '\"fd\"', 144, '2025-03-10 21:59:48'),
+(73, 37, 1, '[\"h\",\"jgjg\"]', 145, '2025-03-10 21:59:48'),
+(74, 38, 1, '\"gsdg\"', 146, '2025-03-10 22:02:32'),
+(75, 38, 1, '\"dwa\"', 147, '2025-03-10 22:02:32'),
+(76, 38, 1, '\"dawdd\"', 148, '2025-03-10 22:02:32'),
+(77, 38, 1, '[\"ggf\",\"jgjfj\"]', 149, '2025-03-10 22:02:32'),
+(78, 40, 1, '\"gse\"', 155, '2025-03-10 22:11:23'),
+(79, 40, 1, '[\"dgsghfdh\",\"fhf\"]', 156, '2025-03-10 22:11:23'),
+(80, 40, 1, '\"dgr\"', 157, '2025-03-10 22:11:23'),
+(81, 40, 1, '\"grd\"', 158, '2025-03-10 22:11:23'),
+(82, 40, 1, '\"dgrjjh\"', 159, '2025-03-10 22:11:23'),
+(83, 40, 1, '\"dsgdsghgfd\"', 160, '2025-03-10 22:11:23'),
+(84, 40, 1, '\"jhkk\"', 161, '2025-03-10 22:11:23'),
+(85, 41, 1, '\"hrdgjf\"', 162, '2025-03-10 22:33:32'),
+(86, 41, 1, '\"jéijiékjé\"', 163, '2025-03-10 22:33:32'),
+(87, 41, 1, '\"sd\"', 164, '2025-03-10 22:33:32'),
+(88, 41, 1, '\"gs\"', 165, '2025-03-10 22:33:32'),
+(89, 41, 1, '[\"kkk\",\"ékk\"]', 166, '2025-03-10 22:33:32'),
+(90, 42, 1, '\"dwa\"', 167, '2025-03-10 22:41:07'),
+(91, 42, 1, '\"fawfa\"', 168, '2025-03-10 22:41:07'),
+(92, 42, 1, '\"fas\"', 169, '2025-03-10 22:41:07'),
+(93, 42, 1, '[\"hgdd\",\"fdgj\",\"hgghkkhg\"]', 170, '2025-03-10 22:41:08'),
+(94, 31, 2, '\"gdrgdrgg\"', 115, '2025-03-10 22:47:26'),
+(95, 31, 2, '[\"sdadad\",\"fesfsd\"]', 116, '2025-03-10 22:47:26'),
+(96, 31, 2, '\"hgjj\"', 117, '2025-03-10 22:47:26'),
+(97, 31, 2, '\"gd\"', 118, '2025-03-10 22:47:26'),
+(98, 27, 2, '\"dwa\"', 95, '2025-03-10 22:50:42'),
+(99, 27, 2, '[\"adaa\",\"dawddddd\"]', 96, '2025-03-10 22:50:42'),
+(100, 27, 2, '\"gd\"', 97, '2025-03-10 22:50:42'),
+(101, 26, 2, '\"gsegse\"', 92, '2025-03-10 22:54:19'),
+(102, 26, 2, '[\"jjgfj\"]', 93, '2025-03-10 22:54:19'),
+(103, 26, 2, '\"daw\"', 94, '2025-03-10 22:54:19'),
+(104, 43, 1, '\"ghjg\"', 171, '2025-03-10 22:56:25'),
+(105, 43, 1, '\"dwa\"', 172, '2025-03-10 22:56:25'),
+(106, 43, 1, '\"awdwa\"', 173, '2025-03-10 22:56:25'),
+(107, 43, 1, '\"dawd\"', 174, '2025-03-10 22:56:25'),
+(108, 45, 1, '\"khg\"', 175, '2025-03-10 23:10:38'),
+(109, 45, 1, '\"s\"', 176, '2025-03-10 23:10:38'),
+(110, 45, 1, '\"ssss\"', 177, '2025-03-10 23:10:38'),
+(111, 45, 1, '[\"sfedfs\",\"gff\"]', 178, '2025-03-10 23:10:38'),
+(112, 45, 1, '\"efs\"', 179, '2025-03-10 23:10:38'),
+(113, 45, 1, '\"fes\"', 180, '2025-03-10 23:10:38'),
+(114, 45, 1, '\"ff\"', 181, '2025-03-10 23:10:38'),
+(115, 45, 1, '\"fs\"', 182, '2025-03-10 23:10:39'),
+(116, 45, 1, '\"sf\"', 183, '2025-03-10 23:10:39'),
+(117, 45, 1, '\"hrd\"', 184, '2025-03-10 23:10:39'),
+(118, 45, 1, '\"hrdh\"', 185, '2025-03-10 23:10:39'),
+(119, 45, 1, '\"hrdddddd\"', 186, '2025-03-10 23:10:39'),
+(120, 45, 1, '\"hrdh\"', 187, '2025-03-10 23:10:39'),
+(121, 45, 1, '\"rhd\"', 188, '2025-03-10 23:10:39'),
+(122, 45, 1, '\"ff\"', 189, '2025-03-10 23:10:39'),
+(123, 45, 1, '\"fh\"', 190, '2025-03-10 23:10:39'),
+(124, 45, 1, '\"fhh\"', 191, '2025-03-10 23:10:39'),
+(125, 45, 1, '\"fdff\"', 192, '2025-03-10 23:10:39'),
+(126, 45, 1, '\"fffff\"', 193, '2025-03-10 23:10:39'),
+(127, 45, 1, '\"fh\"', 194, '2025-03-10 23:10:39'),
+(128, 45, 1, '\"hh\"', 195, '2025-03-10 23:10:39'),
+(129, 45, 1, '[\"fhffhh\",\"grdgdrg\"]', 196, '2025-03-10 23:10:39');
 
 -- --------------------------------------------------------
 
@@ -121,7 +199,7 @@ CREATE TABLE `companies` (
 --
 
 INSERT INTO `companies` (`id`, `cegnev`, `telefon`, `ceg_email`, `jelszo`, `telepules`, `megye`, `ceges_szamla`, `hitelkartya`, `adoszam`, `cegjegyzek`, `helyrajziszam`, `createdAt`, `reset_code`, `reset_code_expires`, `credits`) VALUES
-(1, 'Ploba.kft', 2147483647, 'plobakft@gmail.com', '$2b$10$eT1rYnYOFLVGLj7uhQhkeuUbiDiBc5K2wjOCkL3Pq5lgHzL6A4y26', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23131313, '1233124536', '1243-3', '2025-02-05 19:22:44', NULL, NULL, 6450),
+(1, 'Ploba.kft', 2147483647, 'plobakft@gmail.com', '$2b$10$eT1rYnYOFLVGLj7uhQhkeuUbiDiBc5K2wjOCkL3Pq5lgHzL6A4y26', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23131313, '1233124536', '1243-3', '2025-02-05 19:22:44', NULL, NULL, 4210),
 (2, 'cselszegKft', 2147483647, 'cselszeg@gmail.com', '$2b$10$EquHGzFOap22ijVtMAgNVOaCmYG5eTkIwv1TxDNrsv7PBikP.QaVK', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23432563, '2353252622', '2232-1', '2025-02-11 17:42:43', NULL, NULL, 0),
 (3, 'ValamiCég', 2147483647, 'valamikft@gmail.com', '$2b$10$T6a2nj8BoESwmvLF0y96B.twIB9sbrVaSGinQ2w6lab.jS1HMa0Fa', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23432563, '2353252622', '2345-2', '2025-02-12 16:52:20', NULL, NULL, 0),
 (4, 'hhdsdh.kft', 2147483647, 'elod@]mail.com', '$2b$10$1kyRepEjOGhK9iDVHwBu2.XDT7iwrplSIR1FWU8fktyBYTYEdDttO', 'Cserszegtomaj', 'Zala', 2147483647, 2147483647, 23432563, '2353252633', '3233/3', '2025-02-19 14:42:03', NULL, NULL, 0);
@@ -150,7 +228,19 @@ INSERT INTO `credit_transactions` (`id`, `company_id`, `amount`, `transaction_ty
 (1, 1, 1000, 'purchase', NULL, NULL, '2025-03-08 22:46:17'),
 (2, 1, 100, 'spend', 32, 'da', '2025-03-08 23:11:51'),
 (3, 1, 170, 'spend', 33, 'aaa', '2025-03-09 20:49:15'),
-(4, 1, 160, 'spend', 34, 'nana', '2025-03-09 20:50:14');
+(4, 1, 160, 'spend', 34, 'nana', '2025-03-09 20:50:14'),
+(5, 1, 120, 'spend', 35, 'aaaas', '2025-03-10 16:41:42'),
+(6, 1, 90, 'spend', 36, 'nhhh', '2025-03-10 16:42:23'),
+(7, 1, 140, 'spend', 37, 'fes', '2025-03-10 20:48:23'),
+(8, 1, 100, 'spend', 38, 'wwww', '2025-03-10 20:49:14'),
+(9, 1, 120, 'spend', 39, 'grgr', '2025-03-10 20:50:17'),
+(10, 1, 180, 'spend', 40, 'ddd', '2025-03-10 21:09:44'),
+(11, 1, 120, 'spend', 41, 'sad', '2025-03-10 21:10:20'),
+(12, 1, 100, 'spend', 42, 'll', '2025-03-10 21:10:52'),
+(13, 1, 90, 'spend', 43, 'd', '2025-03-10 21:55:22'),
+(14, 1, 120, 'spend', 44, 'ddd', '2025-03-10 21:56:04'),
+(15, 1, 550, 'spend', 45, 'sq', '2025-03-10 22:07:36'),
+(16, 1, 510, 'spend', 46, 'hr', '2025-03-10 22:09:43');
 
 -- --------------------------------------------------------
 
@@ -242,7 +332,80 @@ INSERT INTO `questions` (`id`, `question`, `frm_option`, `type`, `order_by`, `su
 (129, 'hhhf', '[{\"id\":\"9f2f1612-e5c7-42b5-ba42-3f3544de6a2a\",\"label\":\"hf\"},{\"id\":\"da053468-05fc-4805-8a5f-aff78100294b\",\"label\":\"hhftf\"},{\"id\":\"4a48d1de-5700-4fe8-8d80-fe09290e5071\",\"label\":\"hf\"},{\"id\":\"9a670bfe-df61-4bed-a616-ac73ab52c3ab\",\"label\":\"ggf\"},{\"id\":\"e9524772-501c-4fbb-a732-e9339fe8801a\",\"label\":\"hgfgh\"},{\"id\":\"30ed926c-090d-4436-8330-203aff6177d6\",\"label\":\"hfhfh\"}]', 'checkbox', 0, 34, '2025-03-09 21:50:13'),
 (130, 'hgfhf', '[{\"id\":\"7d4d07b7-b943-449d-b586-1153c8bb2280\",\"label\":\"\"}]', 'text', 0, 34, '2025-03-09 21:50:13'),
 (131, 'hfghf', '[{\"id\":\"1444da33-106d-403a-95e2-92ed8d082465\",\"label\":\"fhgfg\"},{\"id\":\"734cc109-0816-42c1-9959-6172e7ebcb71\",\"label\":\"gfdfff\"},{\"id\":\"8111d9f3-608e-445c-a260-671c81eef251\",\"label\":\"fgdgd\"}]', 'checkbox', 0, 34, '2025-03-09 21:50:13'),
-(132, 'fgdfd', '[{\"id\":\"4c4341b5-e190-4bb2-8e89-3dc8c31ed305\",\"label\":\"\"}]', 'text', 0, 34, '2025-03-09 21:50:13');
+(132, 'fgdfd', '[{\"id\":\"4c4341b5-e190-4bb2-8e89-3dc8c31ed305\",\"label\":\"\"}]', 'text', 0, 34, '2025-03-09 21:50:13'),
+(133, 'sasa', '[{\"id\":1,\"label\":\"sdad\"},{\"id\":\"9401eae5-365c-434a-87ff-2565f37e6847\",\"label\":\"ddddddddd\"},{\"id\":\"a0a9d8cf-615f-450e-84a8-5330e659befd\",\"label\":\"aaaaa\"},{\"id\":\"3bd685c5-47b7-4e29-8826-6adfad9a73fa\",\"label\":\"aaaas\"},{\"id\":\"c92a30fa-786e-4ff6-8173-39ede4d6e510\",\"label\":\"dssaddddddd\"}]', 'radio', 0, 35, '2025-03-10 17:41:42'),
+(134, 'dsad', '[{\"id\":\"83ad74b1-289e-4a85-a813-7651a1a93703\",\"label\":\"gdg\"},{\"id\":\"646ecb9b-710d-4376-b71c-98331b0ae828\",\"label\":\"jfttf\"},{\"id\":\"1ad1d1c0-68dd-45f2-8eec-b89635cb9064\",\"label\":\"utkzg\"},{\"id\":\"80781fb4-9cea-41bf-8864-9d321f938e4d\",\"label\":\"gzkgz\"},{\"id\":\"c98be4c5-6c52-4580-bfad-35037927eefd\",\"label\":\"kgzkg\"}]', 'checkbox', 0, 35, '2025-03-10 17:41:42'),
+(135, 'gjjgzjg', '[{\"id\":\"32c362f3-7539-4be5-ba06-7c2860391838\",\"label\":\"\"}]', 'text', 0, 35, '2025-03-10 17:41:42'),
+(136, 'jgzjgzj', '[{\"id\":\"3c414085-351d-4c70-b6ef-e792cc4712fc\",\"label\":\"jgz\"},{\"id\":\"4813b93d-99bc-4562-a38e-564c8c51f0d9\",\"label\":\"hjgjg\"},{\"id\":\"6ee4266a-a2e8-4f38-8b72-083e3724c16a\",\"label\":\"jghj\"},{\"id\":\"31ef0431-e4d7-43a6-bd37-f35a7b460bab\",\"label\":\"jghjgggfds\"},{\"id\":\"027561f1-5b35-4552-a4bf-9247c4a5e692\",\"label\":\"fdsfs\"}]', 'checkbox', 0, 35, '2025-03-10 17:41:42'),
+(137, 'nhnhhh', '[{\"id\":1,\"label\":\"wadwa\"},{\"id\":\"41036029-ab86-4cca-83b3-d32491a9402d\",\"label\":\"dwadsad\"},{\"id\":\"86b82514-26df-4cbb-901f-43019bf32661\",\"label\":\"sdadsda\"},{\"id\":\"8c871f74-2de6-4c63-926d-9741558d0924\",\"label\":\"dsaaaaaa\"}]', 'checkbox', 0, 36, '2025-03-10 17:42:23'),
+(138, 'dsasdadff', '[{\"id\":\"2cd13aa2-ef1f-4616-8dde-3f36fd24a5c3\",\"label\":\"\"}]', 'text', 0, 36, '2025-03-10 17:42:23'),
+(139, 'gdsggsdg', '[{\"id\":\"8c69da70-11d7-415b-ad53-245fb429af51\",\"label\":\"\"}]', 'text', 0, 36, '2025-03-10 17:42:23'),
+(140, 'ttttttt', '[{\"id\":\"b8796a7d-30cf-4871-851b-6bfa81e688ae\",\"label\":\"uzt\"},{\"id\":\"58a77f14-1bc3-4522-8994-caf4d82f0503\",\"label\":\"uztut\"},{\"id\":\"457b38d2-1ea9-4e37-aa3b-8974f7e5d1c3\",\"label\":\"ztuhhhh\"}]', 'radio', 0, 36, '2025-03-10 17:42:23'),
+(141, 'fessss', '[{\"id\":1,\"label\":\"fdsdd\"},{\"id\":\"f491e531-ad15-41c4-a872-8649ecfc7267\",\"label\":\"fdfd\"},{\"id\":\"8a3945a7-9047-40ae-8b92-c040c0fe2047\",\"label\":\"dfdfff\"}]', 'radio', 0, 37, '2025-03-10 21:48:23'),
+(142, 'fds', '[{\"id\":\"54dcab53-ba8b-47cb-8257-7bb9bb1198da\",\"label\":\"\"}]', 'text', 0, 37, '2025-03-10 21:48:23'),
+(143, 'fhhfh', '[{\"id\":\"dd05d563-a6ff-4748-8543-cdaac4d9e112\",\"label\":\"\"}]', 'text', 0, 37, '2025-03-10 21:48:23'),
+(144, 'hfdfdd', '[{\"id\":\"f65872f1-7c0f-4937-be4e-4e94e95a509e\",\"label\":\"\"}]', 'text', 0, 37, '2025-03-10 21:48:23'),
+(145, 'gfdddddf', '[{\"id\":\"6c094eeb-e475-41cf-a053-db9a14eb2c6e\",\"label\":\"fffdddddddddddh\"},{\"id\":\"75c9b143-af1b-474d-a83c-1f37e741f443\",\"label\":\"h\"},{\"id\":\"b069c572-d027-4bd7-9c86-1c161f9b1056\",\"label\":\"dd\"},{\"id\":\"344f44ca-4489-4017-b45b-2f47ae3f5113\",\"label\":\"sfe\"},{\"id\":\"020f4e0c-b68c-4057-baf6-1459d4e7fa2b\",\"label\":\"jj\"},{\"id\":\"98a53956-125e-4f31-b463-b0e4e3e1130f\",\"label\":\"jgjg\"}]', 'checkbox', 0, 37, '2025-03-10 21:48:23'),
+(146, 'dsa', '[{\"id\":1,\"label\":\"sdadd\"},{\"id\":\"4fabd9aa-6c55-4478-a4f5-17cc51a5dfa0\",\"label\":\"gsdg\"},{\"id\":\"018053a2-56a6-47ff-8f92-7283e0db3636\",\"label\":\"gdsdsds\"}]', 'radio', 0, 38, '2025-03-10 21:49:14'),
+(147, 'gds', '[{\"id\":\"2566af18-e9ee-44be-a4fd-c677628cd5e8\",\"label\":\"\"}]', 'text', 0, 38, '2025-03-10 21:49:14'),
+(148, 'hfdfffhf', '[{\"id\":\"667caaf1-bed9-419c-bb3d-ad00f11d9dd8\",\"label\":\"\"}]', 'text', 0, 38, '2025-03-10 21:49:14'),
+(149, 'gfdf', '[{\"id\":\"fa396585-ae83-45c4-8f44-89ada67a3fd6\",\"label\":\"gfdgf\"},{\"id\":\"e3789123-78e7-4482-be64-4835061ac9ec\",\"label\":\"ggf\"},{\"id\":\"f7b291e4-67f2-4743-8419-08fc592b1806\",\"label\":\"gdf\"},{\"id\":\"05789370-ebce-4175-86bd-fee1ef84d933\",\"label\":\"gfhhh\"},{\"id\":\"da63db97-c3cb-419a-beb4-7dca2f4f155a\",\"label\":\"jgjfj\"}]', 'checkbox', 0, 38, '2025-03-10 21:49:14'),
+(150, 'gfdf', '[{\"id\":1,\"label\":\"gfgdgg\"},{\"id\":\"0b1a32e4-9785-4f1d-abf5-d8b68648a73a\",\"label\":\"gddddddddfg\"},{\"id\":\"0249cd1c-fdde-4e56-8d1c-67ce7cbf528c\",\"label\":\"gffd\"}]', 'radio', 0, 39, '2025-03-10 21:50:17'),
+(151, 'fesfs', '[{\"id\":\"1e857a11-c271-47b4-8651-f66c5ea541aa\",\"label\":\"dsf\"},{\"id\":\"2520aad2-4a09-417c-9828-ad3f5f61d829\",\"label\":\"sdffds\"},{\"id\":\"46d49950-2b40-470d-89ee-3dc811530e85\",\"label\":\"fdsfdf\"}]', 'checkbox', 0, 39, '2025-03-10 21:50:17'),
+(152, 'hfhh', '[{\"id\":\"89e9b355-b68b-49e8-bd85-9c956c5ba38a\",\"label\":\"\"}]', 'text', 0, 39, '2025-03-10 21:50:17'),
+(153, 'hfff', '[{\"id\":\"d09ddeff-9f71-44ac-a202-07ded00a9db0\",\"label\":\"\"}]', 'text', 0, 39, '2025-03-10 21:50:17'),
+(154, 'gfddddd', '[{\"id\":\"f2c66af5-b978-48d5-96f4-9b053cb49211\",\"label\":\"\"}]', 'text', 0, 39, '2025-03-10 21:50:17'),
+(155, 'ges', '[{\"id\":1,\"label\":\"gse\"},{\"id\":\"368584ae-b0ad-408d-b0cb-118c315c8263\",\"label\":\"ggseges\"}]', 'radio', 0, 40, '2025-03-10 22:09:44'),
+(156, 'gegesgseg', '[{\"id\":\"c7f43e5a-de34-4ce9-add1-1e29b3f3e343\",\"label\":\"gsd\"},{\"id\":\"cdf6af19-36b1-4f3e-8e28-804bb787c538\",\"label\":\"dgsghfdh\"},{\"id\":\"3cab3e13-966e-4d29-8020-14e4e114e5b8\",\"label\":\"dfhfdf\"},{\"id\":\"91b1be28-0320-4fc2-b16c-f3bd14a57d4f\",\"label\":\"fhf\"}]', 'checkbox', 0, 40, '2025-03-10 22:09:44'),
+(157, 'hfdjj', '[{\"id\":\"b1f60ddc-379a-4c97-ab84-3a88766bfa19\",\"label\":\"\"}]', 'text', 0, 40, '2025-03-10 22:09:44'),
+(158, 'luhluhl', '[{\"id\":\"5f1b8a20-9dce-4796-a2cc-121c20f6ee4e\",\"label\":\"\"}]', 'text', 0, 40, '2025-03-10 22:09:44'),
+(159, 'luhjljhljh', '[{\"id\":\"65fc72d1-98d8-43d3-8c1b-10c9a391ad0f\",\"label\":\"\"}]', 'text', 0, 40, '2025-03-10 22:09:44'),
+(160, 'dawsds', '[{\"id\":\"c2939870-4812-4dfa-b44b-30407eaa18db\",\"label\":\"gdsg\"},{\"id\":\"ead9995f-d7a6-411f-802b-39510e29c6c8\",\"label\":\"dsgdsghgfd\"},{\"id\":\"c2b5a069-0cc9-4aa7-8373-6b7668d5d9d5\",\"label\":\"jgfjfgj\"},{\"id\":\"fbe6a530-1ebe-4f42-924f-9cf7f03dc1c3\",\"label\":\"gfjgfgj\"}]', 'radio', 0, 40, '2025-03-10 22:09:44'),
+(161, 'gfjgjgj', '[{\"id\":\"b0220458-ed3e-4a12-a1ae-67a230c500b9\",\"label\":\"\"}]', 'text', 0, 40, '2025-03-10 22:09:44'),
+(162, 'dwa', '[{\"id\":1,\"label\":\"hdrh\"},{\"id\":\"a1606723-79c3-4a14-9566-dc8c16e412a5\",\"label\":\"hrdgjf\"}]', 'radio', 0, 41, '2025-03-10 22:10:20'),
+(163, 'kuhé', '[{\"id\":\"2b931176-9697-48a1-8754-bb4271b44814\",\"label\":\"iéjéji\"},{\"id\":\"2230eff7-0966-4183-8e95-1d275ef2e881\",\"label\":\"jéijiékjé\"}]', 'radio', 0, 41, '2025-03-10 22:10:20'),
+(164, 'kéjékjék', '[{\"id\":\"ed4a8ee5-c520-49b3-ac77-1fc382cd45cc\",\"label\":\"\"}]', 'text', 0, 41, '2025-03-10 22:10:20'),
+(165, 'ékjéékjéjké', '[{\"id\":\"4ef9f3e5-1c23-48ab-928b-f677d7fb87b4\",\"label\":\"\"}]', 'text', 0, 41, '2025-03-10 22:10:20'),
+(166, 'kéjék', '[{\"id\":\"bd0aa135-0538-489f-971c-c1606cae8dc9\",\"label\":\"ékjk\"},{\"id\":\"abd2ef2b-ae4b-483c-9775-b5ed5f933540\",\"label\":\"ékk\"},{\"id\":\"c060f5bd-2f37-42d3-b4f1-5036a308a5e5\",\"label\":\"kkk\"},{\"id\":\"5e5bd376-08c0-4f56-a1d6-0f74769d8598\",\"label\":\"kjh\"}]', 'checkbox', 0, 41, '2025-03-10 22:10:20'),
+(167, 'élké', '[{\"id\":1,\"label\":\"\"}]', 'text', 0, 42, '2025-03-10 22:10:52'),
+(168, 'élk', '[{\"id\":\"e6792310-751a-402b-a1a6-4a5a8d7f9abe\",\"label\":\"\"}]', 'text', 0, 42, '2025-03-10 22:10:52'),
+(169, 'fdd', '[{\"id\":\"37f5281c-6eb8-44f4-b8bb-b851f06960fb\",\"label\":\"\"}]', 'text', 0, 42, '2025-03-10 22:10:52'),
+(170, 'gdr', '[{\"id\":\"8326e3f6-5f9e-4c75-8d4e-4c29842c8f2e\",\"label\":\"jhgj\"},{\"id\":\"9c156f7f-73ce-4d28-945f-ecb217b36f56\",\"label\":\"hgdd\"},{\"id\":\"5f4c2c8d-0466-4c03-a4f8-dc06e74da639\",\"label\":\"dfgfgdf\"},{\"id\":\"ebadec08-82dc-4873-8d4e-4a899962fdc4\",\"label\":\"fdgj\"},{\"id\":\"829f00e9-255c-4180-a075-e6c8b0518ad0\",\"label\":\"hgghkkhg\"}]', 'checkbox', 0, 42, '2025-03-10 22:10:52'),
+(171, 'gg', '[{\"id\":1,\"label\":\"gds\"},{\"id\":\"4fe52077-b7d3-4d7e-9eea-2c7504c9d583\",\"label\":\"sdgd\"},{\"id\":\"d5cfb69e-47dc-4b29-8f99-44a4e4fdfe71\",\"label\":\"ghjg\"},{\"id\":\"57b3b8d1-6de2-4de6-a95e-dccdbf868209\",\"label\":\"jgffg\"}]', 'radio', 0, 43, '2025-03-10 22:55:22'),
+(172, 'gfj', '[{\"id\":\"6ffa7917-2c30-4567-acc8-c9d746346dae\",\"label\":\"\"}]', 'text', 0, 43, '2025-03-10 22:55:22'),
+(173, 'khgl', '[{\"id\":\"a5845a87-f74d-47d8-b591-fc551a41e3af\",\"label\":\"\"}]', 'text', 0, 43, '2025-03-10 22:55:22'),
+(174, 'jlh', '[{\"id\":\"b47ec72f-053e-45bf-82dd-9e22ade24ad5\",\"label\":\"\"}]', 'text', 0, 43, '2025-03-10 22:55:22'),
+(175, 'dddddddd', '[{\"id\":1,\"label\":\"dddddd\"},{\"id\":\"eaf51193-54f8-4f49-8bbb-0c86a08049d3\",\"label\":\"fhhd\"},{\"id\":\"b9636edd-cabf-4d51-9a72-9b641e8e6cef\",\"label\":\"fhdhj\"},{\"id\":\"98af66e1-97fe-47b6-b7f3-a4d97025b8d3\",\"label\":\"khg\"},{\"id\":\"66db94c4-8194-4a1e-81c5-9122b68ed658\",\"label\":\"khgggg\"},{\"id\":\"4e3d923a-c6fd-47a1-bc8b-86eba79df504\",\"label\":\"khgkg\"},{\"id\":\"d3d2d01e-3ae2-4431-b549-af5e67e367a0\",\"label\":\"ssaw\"}]', 'radio', 0, 44, '2025-03-10 22:56:04'),
+(176, 'drhrd', '[{\"id\":\"1975f337-b016-4b18-9f1b-e610578f47f2\",\"label\":\"\"}]', 'text', 0, 44, '2025-03-10 22:56:04'),
+(177, 'jftt', '[{\"id\":\"c8fc8dc3-6503-4c92-a697-58e4143d04f6\",\"label\":\"\"}]', 'text', 0, 44, '2025-03-10 22:56:04'),
+(178, 'jtfjf', '[{\"id\":\"f98bac24-5766-4363-a899-992fc5910533\",\"label\":\"jftgjjg\"},{\"id\":\"6a0a94bb-431c-42a7-8b15-5941ced70130\",\"label\":\"gff\"},{\"id\":\"d2fe6f91-693c-4aef-8285-5e43458acfe5\",\"label\":\"sfedfs\"},{\"id\":\"b9629a2f-a7fc-42e4-a1f2-ac7e8b570aea\",\"label\":\"sdf\"}]', 'checkbox', 0, 44, '2025-03-10 22:56:04'),
+(179, 'SQ', '[{\"id\":1,\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:35'),
+(180, 'sq', '[{\"id\":\"970f287a-3824-4349-abb3-84a9d4c1df45\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:35'),
+(181, 'DWA', '[{\"id\":\"75f91b70-ca66-4d04-88b3-ac7581fe2937\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:35'),
+(182, 'GS', '[{\"id\":\"66a2f942-f4a7-4472-a3a6-f3da6370c756\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:35'),
+(183, 'GES', '[{\"id\":\"31d98728-4bd6-460c-a45e-1dc5aeb59692\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:35'),
+(184, 'GES', '[{\"id\":\"d7b292eb-7549-443b-8c30-427df0f8d734\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:35'),
+(185, 'GESSA', '[{\"id\":\"17426f1d-6746-46e4-bf35-f2a5802f6a0b\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:35'),
+(186, 'B', '[{\"id\":\"068cbd55-0e68-4a56-b771-e3416f8fd90b\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(187, 'GFJGJF', '[{\"id\":\"e4c2f371-7167-4d20-9476-3d5258f3c283\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(188, 'GFJGF', '[{\"id\":\"f1d417f6-528d-48ea-aecb-dd7774094964\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(189, 'EEEEEEEEE', '[{\"id\":\"e6c71207-8078-4c19-a332-f3832fe67a72\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(190, 'EESF', '[{\"id\":\"a2963f07-ebab-4be1-804f-e68b7eaeadff\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(191, 'SEFES', '[{\"id\":\"fe47457b-4755-4f0e-a6d0-5e2cc9aa1db4\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(192, 'grdgg', '[{\"id\":\"743e256e-b8f7-4530-ab5d-ff453b645507\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(193, 'fhdf', '[{\"id\":\"b5100a2e-afcf-4bbc-9d6b-e8e804cc2dc9\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(194, 'ffffffff', '[{\"id\":\"55e215ca-4a4a-4d38-b280-367d38698267\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(195, 'ioi', '[{\"id\":\"10524715-95ea-4613-b778-8fa14c7a6fe2\",\"label\":\"\"}]', 'text', 0, 45, '2025-03-10 23:07:36'),
+(196, 'grd', '[{\"id\":\"8aa91014-4e05-4097-bfd6-e1bdeb65043e\",\"label\":\"grd\"},{\"id\":\"0e8999aa-a808-43b4-b94e-f0e97cfb5045\",\"label\":\"drrgd\"},{\"id\":\"1ce0ee24-6993-4365-b7da-bf91ac82e1b0\",\"label\":\"grdgdrg\"},{\"id\":\"50cacef7-d0c0-4b60-a3ea-30f8cfe097e3\",\"label\":\"hfdf\"},{\"id\":\"4e680f37-1bcf-4f79-a7c6-186bbe929802\",\"label\":\"fhffhh\"},{\"id\":\"6bb58c22-26cd-45a5-84fd-4be56b06d90f\",\"label\":\"hjkhgkhg\"},{\"id\":\"86ff82ac-bc53-4da0-b43a-49a5a8873202\",\"label\":\"khgkgk\"},{\"id\":\"c5e30d05-e0d1-461f-87d9-2d76ff59717d\",\"label\":\"gdrrrrrrr\"}]', 'checkbox', 0, 45, '2025-03-10 23:07:36'),
+(197, 'ffd', '[{\"id\":1,\"label\":\"rh\"},{\"id\":\"46a9d372-5c54-4374-bfdd-e3e3fa4b0d34\",\"label\":\"hrd\"},{\"id\":\"34c340ac-c095-46a1-b95d-4f49815c0899\",\"label\":\"hr\"},{\"id\":\"18a56206-4e2b-43dd-a047-dcf9a85b7b2b\",\"label\":\"hrdhf\"},{\"id\":\"e632a245-956b-4953-aa5d-176b5a071c5e\",\"label\":\"hfd\"},{\"id\":\"879d3029-496e-4525-b7c2-9ecda6e2de73\",\"label\":\"f\"},{\"id\":\"62f62f20-ac21-4e40-b06b-3b5a1d1e7679\",\"label\":\"fh\"},{\"id\":\"41191dfb-d110-4e36-8d2e-c4053857080d\",\"label\":\"hkg\"},{\"id\":\"8e877591-a6ad-43f4-ba0e-a84aa85d28d7\",\"label\":\"j\"},{\"id\":\"526503a2-301d-4492-bb4a-1d28e7e103fd\",\"label\":\"kh\"},{\"id\":\"8a18bbe4-592a-456c-b830-95caab63dd88\",\"label\":\"ké\"},{\"id\":\"263d0487-5f15-4cc1-aee8-0eeb8fce53ca\",\"label\":\"jék\"},{\"id\":\"dee14b3f-71f9-42aa-bacf-1caa67721599\",\"label\":\"éu\"},{\"id\":\"82c28577-50d8-4475-9491-5e596097e5df\",\"label\":\"uuh\"},{\"id\":\"625603d5-97ff-44cc-97de-b8332b651462\",\"label\":\"fff\"},{\"id\":\"5b0cd8ea-d831-4ec0-a768-045191414cfa\",\"label\":\"jhg\"},{\"id\":\"7fa4fb9e-64ed-4f9a-b840-0cd244904e64\",\"label\":\"hg\"},{\"id\":\"085649ad-84b0-41ac-bf43-9a8cede8ad90\",\"label\":\"gg\"},{\"id\":\"f607d5c5-e2fc-430a-b37f-d1956790f615\",\"label\":\"zghl\"},{\"id\":\"850c3414-ecea-403e-ac36-2bb9718649f4\",\"label\":\"kz\"},{\"id\":\"be0e82c0-9fd7-4f33-be26-bd6b38d58f59\",\"label\":\"lkkk\"},{\"id\":\"980383c2-40b0-4218-9ee9-fd96bb748977\",\"label\":\"lk\"},{\"id\":\"b30e4303-1204-4cf0-9ae2-27f01164adcb\",\"label\":\"jlllf\"},{\"id\":\"9986dad1-7a63-412b-8b32-3fbe3cd4df9a\",\"label\":\"fg\"},{\"id\":\"f2e2a9a8-782d-4978-b299-4af7194678e3\",\"label\":\"hgf\"},{\"id\":\"cd304f81-b9ec-416a-b85a-0e0e4fbced96\",\"label\":\"jllh\"},{\"id\":\"6bbb753d-c9f1-478b-9c3d-e357f99f5154\",\"label\":\"lu\"},{\"id\":\"cb2293dc-e899-42b1-a53f-ed3c9abf8760\",\"label\":\"hl\"},{\"id\":\"41f52d7f-d905-47be-b523-408b3ce2d6e0\",\"label\":\"jlhlj\"},{\"id\":\"bb779ac0-6a5c-4b94-9d05-45e06ee116de\",\"label\":\"m\"},{\"id\":\"b21911fd-3379-4999-ba65-4af8e1ee052f\",\"label\":\"cnv\"}]', 'radio', 0, 46, '2025-03-10 23:09:43'),
+(198, 'f', '[{\"id\":\"68b7aad7-f611-498e-aac2-3e71bfe9a2fb\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43'),
+(199, 'fdfdfdfdfdfdfdfdfdfdf', '[{\"id\":\"1eb3f612-5e86-44a3-81c9-e1da4262a5ba\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43'),
+(200, 'fddddddd', '[{\"id\":\"5b0e4441-2468-48a5-8ee9-48ab5144c434\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43'),
+(201, 'effffffff', '[{\"id\":\"42089b57-447e-42a4-8de0-570eb5d8d32c\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43'),
+(202, 'hhjg', '[{\"id\":\"82fa65f2-af43-4e54-b227-fa8d9fb88883\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43'),
+(203, 'aaaaaaaaa', '[{\"id\":\"fe1cdf55-60d0-4125-a201-80786100f57b\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43'),
+(204, 'ggesgsg', '[{\"id\":\"7d0d5b47-0ad6-496b-8f8b-d45a9f5cbc4b\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43'),
+(205, 'ges', '[{\"id\":\"6a1c7251-554e-44e7-b7cc-fcd1bb297871\",\"label\":\"\"}]', 'text', 0, 46, '2025-03-10 23:09:43');
 
 -- --------------------------------------------------------
 
@@ -288,7 +451,47 @@ INSERT INTO `survey_set` (`id`, `title`, `description`, `ceg_id`, `start_date`, 
 (31, 'dwadwa', '', 1, '0000-00-00', '0000-00-00', '2025-03-08 19:50:31', 309, NULL, NULL, NULL, '20', NULL, 120),
 (32, 'da', '', 1, '0000-00-00', '0000-00-00', '2025-03-09 00:11:51', 309, NULL, NULL, NULL, '20', NULL, 100),
 (33, 'aaa', '', 1, '0000-00-00', '0000-00-00', '2025-03-09 21:49:15', 182, NULL, NULL, NULL, '20', NULL, 170),
-(34, 'nana', '', 1, '0000-00-00', '0000-00-00', '2025-03-09 21:50:13', 452, NULL, NULL, NULL, '20', NULL, 160);
+(34, 'nana', '', 1, '0000-00-00', '0000-00-00', '2025-03-09 21:50:13', 452, NULL, NULL, NULL, '20', NULL, 160),
+(35, 'aaaas', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 17:41:42', 224, NULL, NULL, NULL, '20', NULL, 120),
+(36, 'nhhh', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 17:42:23', 265, NULL, NULL, NULL, '20', NULL, 90),
+(37, 'fes', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 21:48:23', 246, NULL, NULL, NULL, '20', NULL, 140),
+(38, 'wwww', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 21:49:14', 477, NULL, NULL, NULL, '20', NULL, 100),
+(39, 'grgr', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 21:50:17', 439, NULL, NULL, NULL, '20', NULL, 120),
+(40, 'ddd', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 22:09:44', 224, NULL, NULL, NULL, '20', NULL, 180),
+(41, 'sad', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 22:10:20', 429, NULL, NULL, NULL, '20', NULL, 120),
+(42, 'll', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 22:10:52', 426, NULL, NULL, NULL, '20', NULL, 100),
+(43, 'd', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 22:55:22', 265, NULL, NULL, NULL, '20', NULL, 90),
+(44, 'ddd', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 22:56:04', 448, NULL, NULL, NULL, '20', NULL, 120),
+(45, 'sq', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 23:07:35', 309, NULL, NULL, NULL, '20', NULL, 550),
+(46, 'hr', '', 1, '0000-00-00', '0000-00-00', '2025-03-10 23:09:43', 464, NULL, NULL, NULL, '20', NULL, 510);
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `transactions`
+--
+
+CREATE TABLE `transactions` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `transaction_type` enum('purchase','survey') NOT NULL,
+  `transaction_date` datetime NOT NULL,
+  `voucher_name` varchar(255) DEFAULT NULL,
+  `survey_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- A tábla adatainak kiíratása `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `user_id`, `amount`, `transaction_type`, `transaction_date`, `voucher_name`, `survey_id`) VALUES
+(1, 2, 20, 'survey', '2025-03-10 22:54:19', 'gessg', NULL),
+(2, 1, 30, 'survey', '2025-03-10 22:56:25', 'd', NULL),
+(3, 1, 183, 'survey', '2025-03-10 23:10:39', 'sq', NULL),
+(6, 1, 100, 'purchase', '2025-03-10 23:15:47', '3000 Ft Steam kártya', NULL),
+(7, 1, 100, 'purchase', '2025-03-10 23:16:04', '3000 Ft Steam kártya', NULL),
+(8, 1, 100, 'purchase', '2025-03-10 23:16:05', '3000 Ft Steam kártya', NULL);
 
 -- --------------------------------------------------------
 
@@ -311,8 +514,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `reset_code`, `reset_code_expires`, `credits`) VALUES
-(1, 'Bence Dublecz', 'dubleczbence@gmail.com', '$2b$10$Ywrk5Vhq2SMcbIs4RgjWB.0cSGFsL4S7hYfqzO2sIaFVWcgqSei8O', NULL, NULL, 2519),
-(2, 'Nagy Tamás', 'nagytamas@gmail.com', '$2b$10$S1VSaCdog4mIIfBRTrxsvOhjn03PzDjcb3tHyW80ptULRATL7TjaK', NULL, NULL, 0),
+(1, 'Bence Dublecz', 'dubleczbence@gmail.com', '$2b$10$Ywrk5Vhq2SMcbIs4RgjWB.0cSGFsL4S7hYfqzO2sIaFVWcgqSei8O', NULL, NULL, 165),
+(2, 'Nagy Tamás', 'nagytamas@gmail.com', '$2b$10$S1VSaCdog4mIIfBRTrxsvOhjn03PzDjcb3tHyW80ptULRATL7TjaK', NULL, NULL, 110),
 (3, 'Balogh Árpád', 'balogharpi@gmail.com', '$2b$10$hI4zm1PqeY5uaLkaLvO6uOKi40eQs/.7fbPAHvCaO/BL8Ri9aymru', NULL, NULL, 0),
 (4, 'Kiss Béla', 'kissbela@gmail.com', '$2b$10$8pWD2eJO3jWY.o6BskNkNutDNNeu3OAwaHybR8CZdV7.VUBFLhtLm', NULL, NULL, 0),
 (5, 'Horváth István', 'isti@gmail.com', '$2b$10$BTC.DPLHAYi9pKE38mHGLOcUVZCJho3clGsz3PCiYXD5CxNktajWK', NULL, NULL, 0),
@@ -2368,31 +2571,25 @@ INSERT INTO `users_responses` (`id`, `user_id`, `korcsoport`, `vegzettseg`, `reg
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `user_voucher_transactions`
---
-
-CREATE TABLE `user_voucher_transactions` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `voucher_id` int(11) DEFAULT NULL,
-  `amount` int(11) DEFAULT NULL,
-  `transaction_type` varchar(50) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Tábla szerkezet ehhez a táblához `vouchers`
 --
 
 CREATE TABLE `vouchers` (
   `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
   `credit_cost` int(11) NOT NULL,
-  `discount_amount` int(11) NOT NULL
+  `purchase_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- A tábla adatainak kiíratása `vouchers`
+--
+
+INSERT INTO `vouchers` (`id`, `user_id`, `name`, `credit_cost`, `purchase_date`) VALUES
+(1, 1, '3000 Ft Steam kártya', 100, '2025-03-10 23:15:47'),
+(2, 1, '3000 Ft Steam kártya', 100, '2025-03-10 23:16:04'),
+(3, 1, '3000 Ft Steam kártya', 100, '2025-03-10 23:16:05');
 
 --
 -- Indexek a kiírt táblákhoz
@@ -2437,6 +2634,13 @@ ALTER TABLE `survey_set`
   ADD KEY `ceg_id` (`ceg_id`);
 
 --
+-- A tábla indexei `transactions`
+--
+ALTER TABLE `transactions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- A tábla indexei `users`
 --
 ALTER TABLE `users`
@@ -2451,18 +2655,11 @@ ALTER TABLE `users_responses`
   ADD KEY `user_id` (`user_id`);
 
 --
--- A tábla indexei `user_voucher_transactions`
---
-ALTER TABLE `user_voucher_transactions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `voucher_id` (`voucher_id`);
-
---
 -- A tábla indexei `vouchers`
 --
 ALTER TABLE `vouchers`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- A kiírt táblák AUTO_INCREMENT értéke
@@ -2472,7 +2669,7 @@ ALTER TABLE `vouchers`
 -- AUTO_INCREMENT a táblához `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=130;
 
 --
 -- AUTO_INCREMENT a táblához `companies`
@@ -2484,19 +2681,25 @@ ALTER TABLE `companies`
 -- AUTO_INCREMENT a táblához `credit_transactions`
 --
 ALTER TABLE `credit_transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT a táblához `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=206;
 
 --
 -- AUTO_INCREMENT a táblához `survey_set`
 --
 ALTER TABLE `survey_set`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+
+--
+-- AUTO_INCREMENT a táblához `transactions`
+--
+ALTER TABLE `transactions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT a táblához `users`
@@ -2511,16 +2714,10 @@ ALTER TABLE `users_responses`
   MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1015;
 
 --
--- AUTO_INCREMENT a táblához `user_voucher_transactions`
---
-ALTER TABLE `user_voucher_transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT a táblához `vouchers`
 --
 ALTER TABLE `vouchers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Megkötések a kiírt táblákhoz
@@ -2554,17 +2751,22 @@ ALTER TABLE `survey_set`
   ADD CONSTRAINT `survey_set_ibfk_1` FOREIGN KEY (`ceg_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE;
 
 --
+-- Megkötések a táblához `transactions`
+--
+ALTER TABLE `transactions`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
 -- Megkötések a táblához `users_responses`
 --
 ALTER TABLE `users_responses`
   ADD CONSTRAINT `users_responses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Megkötések a táblához `user_voucher_transactions`
+-- Megkötések a táblához `vouchers`
 --
-ALTER TABLE `user_voucher_transactions`
-  ADD CONSTRAINT `user_voucher_transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  ADD CONSTRAINT `user_voucher_transactions_ibfk_2` FOREIGN KEY (`voucher_id`) REFERENCES `vouchers` (`id`);
+ALTER TABLE `vouchers`
+  ADD CONSTRAINT `vouchers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
