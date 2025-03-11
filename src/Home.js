@@ -50,6 +50,7 @@ import { useTheme } from '@mui/material/styles';
 
 const SimpleBottomNavigation = ({ value, onChange }) => {
   const theme = useTheme();
+
   return (
     <BottomNavigation
       showLabels
@@ -57,11 +58,10 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
       onChange={onChange}
       sx={{
         mt: 2, 
-        mb: 2,
-        backgroundColor: theme.palette.background.default, 
+        mb: 3,
+        backgroundColor: 'hsla(210, 100%, 10%, 0.1)', 
         boxShadow: theme.shadows[1],
         width: '18%',
-        margin: '0 auto'
       }}
     >
       <BottomNavigationAction label="Főoldal" icon={<DashboardIcon />} />
@@ -477,7 +477,7 @@ const [open, setOpen] = React.useState(false);
           <Card
             variant="outlined"
             sx={{
-              mt: 15,  // Here
+              mt: 3,
               width: "95% !important",
               height: "70vh",
               maxWidth: "700px !important",

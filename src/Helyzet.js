@@ -4,8 +4,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiCard from '@mui/material/Card';
-import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -38,13 +38,40 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
   
     const completionPercentage = completionData.targetCount > 0 ? 
       (completionData.completionCount / completionData.targetCount) * 100 : 0;
+
+      
   
       useEffect(() => {
-        setAnimatedValue(100);
-        const timer = setTimeout(() => {
-          setAnimatedValue(completionPercentage);
-        }, 2000);  // Increased from 1000 to 2000
-        return () => clearTimeout(timer);
+        const duration = 3000;
+        const steps = 60;
+        const interval = duration / steps;
+        let currentStep = 0;
+      
+        const timer1 = setInterval(() => {
+          currentStep++;
+          const progress = (currentStep / steps) * 100;
+          setAnimatedValue(progress);
+          
+          if (currentStep >= steps) {
+            clearInterval(timer1);
+            
+            
+            setTimeout(() => {
+              currentStep = 0;
+              const timer2 = setInterval(() => {
+                currentStep++;
+                const finalProgress = 100 - ((currentStep / steps) * (100 - completionPercentage));
+                setAnimatedValue(finalProgress);
+                
+                if (currentStep >= steps) {
+                  clearInterval(timer2);
+                }
+              }, interval);
+            }, 500);
+          }
+        }, interval);
+      
+        return () => clearInterval(timer1);
       }, [completionPercentage]);
   
 
@@ -86,37 +113,36 @@ return (
   }}>
 
     
-
-<Gauge
-  value={animatedValue}
-  startAngle={0}
-  endAngle={360}
-  innerRadius="50%"
-  outerRadius="58%"
-  animationDuration={1500}  // Increased duration
-  sx={(theme) => ({
-    [`& .${gaugeClasses.valueText}`]: {
-      fontSize: 60,
-      transition: 'all 1.5s ease-in-out'  // Slower text transition
-    },
-    [`& .${gaugeClasses.valueArc}`]: {
-      fill: '',
-      transition: 'all 1.5s ease-in-out'  // Slower arc transition
-    },
-    [`& .${gaugeClasses.referenceArc}`]: {
-      fill: theme.palette.text.disabled
-    },
-  })}
-  text={`${Math.round(animatedValue)}%`}
-/>
-
-
-      <Typography variant="h5" 
-       sx={{ }}>
-        
-      </Typography>
+<Box position="relative" display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{ mt: 6 }}>
+<Box position="relative" display="flex" alignItems="center" justifyContent="center">
+  <CircularProgress
+    variant="determinate"
+    value={animatedValue}
+    size={250}
+    thickness={3}
+    sx={{
+      transition: 'all 0.5s ease-in-out',
+      color: (theme) => theme.palette.primary.main
+    }}
+  />
+  <Box
+    position="absolute"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+  >
+    <Typography variant="h2" component="div">
+      {`${Math.round(animatedValue)}%`}
+    </Typography>
+  </Box>
+</Box>
 
 
+<Typography variant="h5" sx={{ mt: 6, textAlign: 'center' }}>
+    {`${completionData.completionCount} / ${completionData.targetCount} kitöltő`}
+  </Typography>
+
+      </Box>
     <Box
   sx={{
     display: "flex",         
