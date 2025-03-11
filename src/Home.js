@@ -40,7 +40,35 @@ import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import UserKredit from './userKredit';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { useTheme } from '@mui/material/styles';
 
+
+
+const SimpleBottomNavigation = ({ value, onChange }) => {
+  const theme = useTheme();
+  return (
+    <BottomNavigation
+      showLabels
+      value={value}
+      onChange={onChange}
+      sx={{
+        mt: 2, 
+        mb: 2,
+        backgroundColor: theme.palette.background.default, 
+        boxShadow: theme.shadows[1],
+        width: '18%',
+        margin: '0 auto'
+      }}
+    >
+      <BottomNavigationAction label="Főoldal" icon={<DashboardIcon />} />
+      <BottomNavigationAction label="Kreditek" icon={<AccountBalanceWalletIcon />} />
+    </BottomNavigation>
+  );
+};
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -93,7 +121,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 const Home = ({ onSignOut, onSendData }) => {
-
+  const theme = useTheme();  
   const location = useLocation();
   const userId = location.state?.userId;
   const [credits, setCredits] = useState(0);
@@ -111,7 +139,16 @@ const Home = ({ onSignOut, onSendData }) => {
 
   const [selectedSurvey, setSelectedSurvey] = useState(null);
   const [showSurvey, setShowSurvey] = useState(false);
+  const [value, setValue] = useState(0);
 
+  const handleNavigationChange = (event, newValue) => {
+    setValue(newValue);
+    if (newValue === 0) {
+      setShowUserCreditPage(false);
+    } else if (newValue === 1) {
+      setShowUserCreditPage(true);
+    }
+  };
 
 
 
@@ -415,11 +452,32 @@ const [open, setOpen] = React.useState(false);
       >
         Köszöntjük az oldalon, {name}!
       </Typography>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+  <SimpleBottomNavigation 
+    value={value}
+    onChange={handleNavigationChange}
+    sx={{
+      mt: 2,
+      mb: 2,
+      backgroundColor: theme.palette.background.default,
+      boxShadow: theme.shadows[1],
+      width: '18%',
+      margin: '0 auto',
+      position: 'fixed',
+      top: '80px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: 1000
+    }}
+  />
+</Box>
+
       {!showUserCreditPage && !showSurvey && (
           <Card
             variant="outlined"
             sx={{
-              mt: 10, 
+              mt: 15,  // Here
               width: "95% !important",
               height: "70vh",
               maxWidth: "700px !important",
@@ -473,7 +531,7 @@ const [open, setOpen] = React.useState(false);
           <Card
             variant="outlined"
             sx={{
-              mt: 3, 
+              mt: 15, 
               width: "95% !important",
               height: "70vh",
               maxWidth: "700px !important",

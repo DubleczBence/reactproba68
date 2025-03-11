@@ -27,12 +27,26 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
   }));
 
 
-  const Helyzet = ({onClose, surveyId, lezaras}) => {
 
+  const Helyzet = ({onClose, surveyId, lezaras}) => {
     const [completionData, setCompletionData] = useState({
       completionCount: 0,
       targetCount: 100
     });
+    
+    const [animatedValue, setAnimatedValue] = useState(0);
+  
+    const completionPercentage = completionData.targetCount > 0 ? 
+      (completionData.completionCount / completionData.targetCount) * 100 : 0;
+  
+      useEffect(() => {
+        setAnimatedValue(100);
+        const timer = setTimeout(() => {
+          setAnimatedValue(completionPercentage);
+        }, 2000);  // Increased from 1000 to 2000
+        return () => clearTimeout(timer);
+      }, [completionPercentage]);
+  
 
     const handleCloseAndRefresh = () => {
       onClose();
@@ -51,10 +65,6 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
       };
       fetchSurveyStatus();
     }, [surveyId]);
-
-
-    const completionPercentage = completionData.targetCount > 0 ? 
-  (completionData.completionCount / completionData.targetCount) * 100 : 0;
 
 return (
   <HelyzetContainer
@@ -78,24 +88,27 @@ return (
     
 
 <Gauge
-      value={completionPercentage}
-      startAngle={0}
-      endAngle={360}
-      innerRadius="50%"
-      outerRadius="58%"
-      sx={(theme) => ({
-        [`& .${gaugeClasses.valueText}`]: {
-          fontSize: 60,
-        },
-        [`& .${gaugeClasses.valueArc}`]: {
-          fill: '',
-        },
-        [`& .${gaugeClasses.referenceArc}`]: {
-          fill: theme.palette.text.disabled,
-        },
-      })}
-      text={`${Math.round(completionPercentage)}%`}
-    />
+  value={animatedValue}
+  startAngle={0}
+  endAngle={360}
+  innerRadius="50%"
+  outerRadius="58%"
+  animationDuration={1500}  // Increased duration
+  sx={(theme) => ({
+    [`& .${gaugeClasses.valueText}`]: {
+      fontSize: 60,
+      transition: 'all 1.5s ease-in-out'  // Slower text transition
+    },
+    [`& .${gaugeClasses.valueArc}`]: {
+      fill: '',
+      transition: 'all 1.5s ease-in-out'  // Slower arc transition
+    },
+    [`& .${gaugeClasses.referenceArc}`]: {
+      fill: theme.palette.text.disabled
+    },
+  })}
+  text={`${Math.round(animatedValue)}%`}
+/>
 
 
       <Typography variant="h5" 

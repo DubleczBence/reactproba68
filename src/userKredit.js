@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Typography, Button, Box, CardContent, Grid } from "@mui/material";
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
+
 
 const voucherOptions = [
   {
@@ -70,7 +72,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId }) => {
         },
         body: JSON.stringify({
           userId,
-          voucherName: `${item.name} ${item.description}`,
+          voucher_name: item.description,  // Ezt módosítottuk
           creditCost: item.creditCost
         })
       });
@@ -83,9 +85,9 @@ const UserKredit = ({ currentCredits, onPurchase, userId }) => {
     } catch (error) {
       console.error('Error purchasing voucher:', error);
     }
-  };
+};
 
-
+  
   
 
   return (
@@ -121,7 +123,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId }) => {
           >
         <Box>
             <Typography variant="subtitle1">
-              {transaction.transaction_type === 'survey' ? 'Kérdőív kitöltés' : transaction.title}
+              {transaction.transaction_type === 'survey' ? 'Kérdőív kitöltés' : transaction.voucher_name}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {transaction.formatted_date}
@@ -142,7 +144,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId }) => {
       <StyledCard
       variant="outlined"
       sx={{
-        mt: 5,
+        mt: 15,
         width: "95% !important",
         maxWidth: "700px !important",
         display: 'flex',
