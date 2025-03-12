@@ -202,6 +202,7 @@ router.get('/company-surveys/:companyId', async (req, res) => {
   try {
     const [surveys] = await db.promise().query(
       `SELECT s.id, s.title, s.mintavetel, 
+       DATE_FORMAT(s.date_created, '%Y-%m-%d') as created_date,
        COUNT(DISTINCT a.user_id) as completion_count,
        ROUND((COUNT(DISTINCT a.user_id) / s.mintavetel * 100)) as completion_percentage
        FROM survey_set s 
@@ -215,5 +216,74 @@ router.get('/company-surveys/:companyId', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch company surveys' });
   }
 });
+
+
+
+router.get('/survey-answers/:surveyId', async (req, res) => {
+  try {
+    const [questions] = await db.promise().query(
+      `SELECT q.id, q.question, q.frm_option, q.type,
+        COUNT(DISTINCT a.user_id) as total_responses
+       FROM questions q
+       LEFT JOIN answers a ON q.id = a.question_id
+       WHERE q.survey_id = ?
+       GROUP BY q.id`,
+      [req.params.surveyId]
+    );
+
+    const surveyAnswers = await Promise.all(questions.map(async (question) => {
+      if (question.type === 'text') {
+        const [textAnswers] = await db.promise().query(
+          `SELECT answer FROM answers WHERE question_id = ?`,
+          [question.id]
+        );
+        return {
+          questionText: question.question,
+          type: question.type,
+          answers: textAnswers.map(a => ({
+            option: JSON.parse(a.answer)
+          }))
+        };
+      }
+
+      const options = JSON.parse(question.frm_option);
+      const [answerCounts] = await db.promise().query(
+        `SELECT answer, COUNT(*) as count
+         FROM answers
+         WHERE question_id = ?
+         GROUP BY answer`,
+        [question.id]
+      );
+
+      const answers = options.map(option => {
+        const answerCount = answerCounts.reduce((count, a) => {
+          const parsedAnswer = JSON.parse(a.answer);
+          if (Array.isArray(parsedAnswer)) {
+            return parsedAnswer.includes(option.label) ? count + a.count : count;
+          } else {
+            return parsedAnswer === option.label ? count + a.count : count;
+          }
+        }, 0);
+
+        return {
+          option: option.label,
+          count: answerCount,
+          percentage: Math.round((answerCount / question.total_responses) * 100) || 0
+        };
+      });
+
+      return {
+        questionText: question.question,
+        type: question.type,
+        answers: answers
+      };
+    }));
+
+    res.json(surveyAnswers);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch survey answers' });
+  }
+});
+
 
 module.exports = router;

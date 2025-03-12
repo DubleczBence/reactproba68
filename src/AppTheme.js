@@ -14,12 +14,11 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
     return disableCustomTheme
       ? {}
       : createTheme({
-          // For more details about CSS variables configuration, see https://mui.com/material-ui/customization/css-theme-variables/configuration/
           cssVariables: {
             colorSchemeSelector: 'data-mui-color-scheme',
             cssVarPrefix: 'template',
           },
-          colorSchemes, // Recently added in v6 for building light & dark mode app, see https://mui.com/material-ui/customization/palette/#color-schemes
+          colorSchemes,
           typography,
           shadows,
           shape,
@@ -30,12 +29,25 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
             ...navigationCustomizations,
             ...surfacesCustomizations,
             ...themeComponents,
+            MuiCssBaseline: {
+              styleOverrides: {
+                body: {
+                  backgroundImage: 'url("/kepek/Screenshot 2025-03-08 at 22.44.43.png")',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundAttachment: 'fixed',
+                },
+              },
+            },
           },
         });
   }, [disableCustomTheme, themeComponents]);
+
   if (disableCustomTheme) {
     return <React.Fragment>{children}</React.Fragment>;
   }
+
   return (
     <ThemeProvider theme={theme} disableTransitionOnChange>
       {children}

@@ -56,6 +56,7 @@ import Helyzet from './Helyzet';
 import { Snackbar, Alert } from '@mui/material';
 import Kredit from './Kredit';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import Statisztika from './Statisztika';
 
 
 
@@ -373,6 +374,7 @@ const handleCardDialogClose = (cardName) => {
     const [showFourthCard, setShowFourthCard] = React.useState(true);
     const [showFifthCard, setShowFifthCard] = React.useState(true);
     const [showSixthCard, setShowSixthCard] = React.useState(true);
+    const [showStatisztika, setShowStatisztika] = useState(false);
     const [filteredCount, setFilteredCount] = useState(0);
   
     const handleClickOpenKerd = () => {
@@ -477,6 +479,7 @@ const handleCardDialogClose = (cardName) => {
         setShowFourthCard(false);
         setShowFifthCard(false);
         setShowSixthCard(false);
+        setShowStatisztika(false);
       } else if (newValue === 1) {
         setShowCreditPage(true);
         setShowFirstCard(false);
@@ -485,9 +488,18 @@ const handleCardDialogClose = (cardName) => {
         setShowFourthCard(false);
         setShowFifthCard(false);
         setShowSixthCard(false);
+        setShowStatisztika(false);
+      } else if (newValue === 2) {
+        setShowCreditPage(false);
+        setShowFirstCard(false);
+        setShowSecondCard(false);
+        setShowThirdCard(false);
+        setShowFourthCard(false);
+        setShowFifthCard(false);
+        setShowSixthCard(false);
+        setShowStatisztika(true);
       }
     };
-    
 
 
     const handleSurveySuccess = () => {
@@ -596,8 +608,8 @@ const handleCardDialogClose = (cardName) => {
         variant="h3"
         sx={{
           position: 'absolute',
-          top: 26,
-          left: 26,
+          top: 16,
+          left: 160,
           cursor: 'pointer'
         }}
         onClick={() => {
@@ -619,7 +631,7 @@ const handleCardDialogClose = (cardName) => {
           sx={{
             mt: 7,
             width: "95% !important",
-            height: "60% !important",
+            height: "70% !important",
             maxWidth: "700px !important",
           }}
         >
@@ -677,39 +689,27 @@ const handleCardDialogClose = (cardName) => {
               >
                 <span>{survey.title}</span>
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, mr: 2 }}>
-                <Button
-                  component="span"
-                  disableRipple
-                  sx={{
-                    width: "82px",
-                    minWidth: "82px",
-                    height: "37px",
-                    border: "none", 
-                    borderRadius: "10px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    "&.MuiButtonBase-root": {
-                      backgroundColor: (theme) => 
-                        theme.palette.mode === "dark" ? "#424242 !important" : "#e0e0e0 !important",
-                      color: (theme) => theme.palette.text.primary,
-                    },
-                    "&:hover": {
-                      backgroundColor: (theme) =>
-                        theme.palette.mode === "dark" ? "#616161 !important" : "#bdbdbd !important",
-                    }
-                  }}
-                >
-                  Lezárás
-                </Button>
+                  <Typography
+                    component="span"
+                    sx={{
+                      width: "auto",
+                      minWidth: "150px",
+                      height: "37px",
+                      borderRadius: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "0 10px"
+                    }}
+                  >
+                    {survey.created_date}
+                  </Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Typography>{Math.round(survey.completion_percentage)}%</Typography>
                     <Typography variant="caption" sx={{ mt: -0.5 }}>
                       Folyamatban
                     </Typography>
                   </Box>
-                  
                 </Box>
               </Button>
             ))}
@@ -1158,6 +1158,14 @@ const handleCardDialogClose = (cardName) => {
             onClose={() => setShowCreditPage(false)}
             currentCredits={credits}
             onPurchase={handleCreditPurchase}
+          />
+        )}
+
+
+        {/* Statisztika oldal */}
+        {showStatisztika && (
+          <Statisztika 
+          onClose={() => setShowStatisztika(false)}
           />
         )}
 
