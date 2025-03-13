@@ -281,4 +281,77 @@ router.get('/credit-history/:companyId', async (req, res) => {
 });
 
 
+
+router.get('/survey-answers/:surveyId', async (req, res) => {
+  try {
+    const [questions] = await db.promise().query(
+      `SELECT q.id, q.question, q.frm_option, q.type,
+        COUNT(DISTINCT uc.user_id) as total_responses
+       FROM questions q
+       LEFT JOIN answers a ON q.id = a.question_id
+       LEFT JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
+       WHERE q.survey_id = ?
+       GROUP BY q.id`,
+      [req.params.surveyId]
+    );
+
+    const surveyAnswers = await Promise.all(questions.map(async (question) => {
+      if (question.type === 'text') {
+        const [textAnswers] = await db.promise().query(
+          `SELECT a.answer 
+           FROM answers a
+           JOIN user_connections uc ON a.id = uc.connection_id
+           WHERE uc.connection_type = 'answer' AND a.question_id = ?`,
+          [question.id]
+        );
+        return {
+          questionText: question.question,
+          type: question.type,
+          answers: textAnswers.map(a => ({
+            option: JSON.parse(a.answer)
+          }))
+        };
+      }
+
+      const options = JSON.parse(question.frm_option);
+      const [answerCounts] = await db.promise().query(
+        `SELECT a.answer, COUNT(*) as count
+         FROM answers a
+         JOIN user_connections uc ON a.id = uc.connection_id
+         WHERE uc.connection_type = 'answer' AND a.question_id = ?
+         GROUP BY a.answer`,
+        [question.id]
+      );
+
+      const answers = options.map(option => {
+        const answerCount = answerCounts.reduce((count, a) => {
+          const parsedAnswer = JSON.parse(a.answer);
+          if (Array.isArray(parsedAnswer)) {
+            return parsedAnswer.includes(option.label) ? count + a.count : count;
+          } else {
+            return parsedAnswer === option.label ? count + a.count : count;
+          }
+        }, 0);
+
+        return {
+          option: option.label,
+          count: answerCount,
+          percentage: Math.round((answerCount / question.total_responses) * 100) || 0
+        };
+      });
+
+      return {
+        questionText: question.question,
+        type: question.type,
+        answers: answers
+      };
+    }));
+
+    res.json(surveyAnswers);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch survey answers' });
+  }
+});
+
+
 module.exports = router;

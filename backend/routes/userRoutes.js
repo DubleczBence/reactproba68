@@ -167,15 +167,10 @@ router.get('/credits/:userId', async (req, res) => {
 router.get('/credit-history/:userId', async (req, res) => {
   try {
     const [transactions] = await db.promise().query(
-      `SELECT 
-        id,
-        amount,
-        transaction_type,
-        voucher_name,
-        DATE_FORMAT(transaction_date, '%Y-%m-%d %H:%i') as formatted_date
-      FROM transactions 
-      WHERE user_id = ?
-      ORDER BY transaction_date DESC`,
+      `SELECT t.* FROM transactions t
+       JOIN user_connections uc ON t.id = uc.connection_id 
+       WHERE uc.user_id = ? AND uc.connection_type = 'transaction'
+       ORDER BY t.transaction_date DESC`,
       [req.params.userId]
     );
     res.json(transactions);
@@ -191,9 +186,6 @@ router.post('/purchase-voucher', async (req, res) => {
   try {
     await db.promise().query('START TRANSACTION');
 
-
-    console.log('Purchase attempt:', { userId, voucherName, creditCost });
-    // Ellenőrizzük a felhasználó kreditjeit
     const [user] = await db.promise().query(
       'SELECT credits FROM users WHERE id = ?',
       [userId]
@@ -204,13 +196,22 @@ router.post('/purchase-voucher', async (req, res) => {
       return res.status(400).json({ error: 'Insufficient credits' });
     }
 
-    // Kredit levonása
     await db.promise().query(
       'UPDATE users SET credits = credits - ? WHERE id = ?',
       [creditCost, userId]
     );
 
-    // Tranzakció rögzítése
+    const [voucherResult] = await db.promise().query(
+      'INSERT INTO vouchers (user_id, name, credit_cost, purchase_date) VALUES (?, ?, ?, NOW())',
+      [userId, voucherName, creditCost]
+    );
+
+    // Add to user_connections table
+    await db.promise().query(
+      'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "voucher", ?)',
+      [userId, voucherResult.insertId]
+    );
+
     await db.promise().query(
       `INSERT INTO transactions 
        (user_id, amount, transaction_type, transaction_date, voucher_name) 
@@ -218,26 +219,13 @@ router.post('/purchase-voucher', async (req, res) => {
       [userId, creditCost, voucherName]
     );
 
-
-    await db.promise().query(
-      'INSERT INTO vouchers (user_id, name, credit_cost, purchase_date) VALUES (?, ?, ?, NOW())',
-      [userId, voucherName, creditCost]
-    );
-
     await db.promise().query('COMMIT');
-
-    // Friss kredit egyenleg lekérése
-    const [updatedUser] = await db.promise().query(
-      'SELECT credits FROM users WHERE id = ?',
-      [userId]
-    );
 
     res.json({
       message: 'Voucher purchased successfully',
-      currentCredits: updatedUser[0].credits
+      currentCredits: user[0].credits - creditCost
     });
   } catch (error) {
-    console.error('Purchase error details:', error);
     await db.promise().query('ROLLBACK');
     res.status(500).json({ error: 'Failed to purchase voucher' });
   }

@@ -69,9 +69,10 @@ router.get('/available-surveys', async (req, res) => {
   const userId = decoded.id;
 
   try {
-    
     const [userResponse] = await db.promise().query(
-      'SELECT * FROM users_responses WHERE user_id = ?',
+      `SELECT ur.* FROM users_responses ur
+       JOIN user_connections uc ON ur.id = uc.connection_id
+       WHERE uc.user_id = ? AND uc.connection_type = 'response'`,
       [userId]
     );
 
@@ -81,7 +82,6 @@ router.get('/available-surveys', async (req, res) => {
 
     const userData = userResponse[0];
 
-    
     const [surveys] = await db.promise().query(`
       SELECT s.id, s.title, s.credit_cost FROM survey_set s
       WHERE s.id NOT IN (SELECT survey_id FROM answers WHERE user_id = ?)
@@ -134,7 +134,6 @@ router.post('/submit-survey', async (req, res) => {
   const userId = decoded.id;
 
   try {
-
     const [survey] = await db.promise().query(
       'SELECT credit_cost FROM survey_set WHERE id = ?',
       [surveyId]
@@ -143,12 +142,17 @@ router.post('/submit-survey', async (req, res) => {
     const userCreditReward = Math.floor(survey[0].credit_cost / 3);
 
     for (const answer of answers) {
-      await db.promise().query(
+      const [answerResult] = await db.promise().query(
         'INSERT INTO answers (user_id, survey_id, question_id, answer) VALUES (?, ?, ?, ?)',
         [userId, surveyId, answer.questionId, JSON.stringify(answer.value)]
       );
-    }
 
+      // Add to user_connections table
+      await db.promise().query(
+        'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "answer", ?)',
+        [userId, answerResult.insertId]
+      );
+    }
 
     await db.promise().query(
       'UPDATE users SET credits = credits + ? WHERE id = ?',
