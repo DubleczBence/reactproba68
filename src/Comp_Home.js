@@ -57,6 +57,7 @@ import { Snackbar, Alert } from '@mui/material';
 import Kredit from './Kredit';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Statisztika from './Statisztika';
+import Stack from '@mui/material/Stack';
 
 
 
@@ -116,6 +117,21 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 
 
+const CompHomeContainer = styled(Stack)(({ theme }) => ({
+  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
+  minHeight: '100%',
+  padding: theme.spacing(2),
+  [theme.breakpoints.up('sm')]: {
+    padding: theme.spacing(4),
+  },
+  '&::before': {
+  content: '""',
+  position: 'absolute',
+  inset: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  zIndex: -1,
+}
+}));
 
 
 
@@ -561,8 +577,7 @@ const handleCardDialogClose = (cardName) => {
       <React.Fragment>
       
         <CssBaseline enableColorScheme />
-    <Box
-      sx={{
+        <CompHomeContainer direction="column" justifyContent="space-between"  sx={{
         position: 'relative',
         height: '100vh',
         width: '100vw',
@@ -570,8 +585,7 @@ const handleCardDialogClose = (cardName) => {
         flexDirection: 'column',
         alignItems: 'center',
         pt: 4, 
-      }}
-    >
+      }}>
 
     
 
@@ -1340,7 +1354,7 @@ const handleCardDialogClose = (cardName) => {
           }}>Igen</Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    
 
     <Snackbar 
       open={snackbar.open} 
@@ -1385,7 +1399,7 @@ const handleCardDialogClose = (cardName) => {
         {snackbar.message}
       </Alert>
     </Snackbar>
-    
+    </CompHomeContainer>
     </React.Fragment>
     </AppTheme>
   );

@@ -71,7 +71,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId }) => {
         },
         body: JSON.stringify({
           userId,
-          voucher_name: item.description,  // Ezt módosítottuk
+          voucherName: item.name,
           creditCost: item.creditCost
         })
       });
