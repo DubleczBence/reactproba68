@@ -5,25 +5,31 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Home from './Home';
 import CompHome from './Comp_Home';
+import AdminDashboard from './AdminDashboard'; // Új komponens importálása
 import CustomizedSnackbars from './CustomizedSnackbars';
-
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false); // Admin állapot hozzáadása
   const navigate = useNavigate(); 
   
   const validateToken = () => {
     const token = localStorage.getItem('token');
     if (!token) {
       setIsAuthenticated(false);
+      setIsAdmin(false);
       return false;
     }
     try {
       setIsAuthenticated(true);
+      // Admin jogosultság ellenőrzése a localStorage-ból
+      setIsAdmin(localStorage.getItem('isAdmin') === 'true');
       return true;
     } catch (error) {
       setIsAuthenticated(false);
+      setIsAdmin(false);
       localStorage.removeItem('token');
+      localStorage.removeItem('isAdmin');
       return false;
     }
   };
@@ -69,8 +75,6 @@ function App() {
     }
   };
   
-
-
   const HandleSignUpData = async ({ type, data }) => {
     console.log('Received data from SignUp:', { type, data });
 
@@ -104,7 +108,6 @@ function App() {
     setSnackbar({ ...snackbar, open: false });
   };
 
-
   const HandleSignInData = async ({ type, data }) => {
     console.log('Received data from SignIn:', { type, data });
 
@@ -127,16 +130,25 @@ function App() {
       if (response.ok) {
         setSnackbar({ open: true, message: 'Sikeres bejelentkezés!', severity: 'success' });
         setIsAuthenticated(true);
-
-
-         
-         if (result.token) {
+        
+        if (result.token) {
           localStorage.setItem('token', result.token);
+          
+          // Admin jogosultság kezelése
+          if (result.isAdmin) {
+            setIsAdmin(true);
+            localStorage.setItem('isAdmin', 'true');
+            navigate('/admin');
+            return;
+          } else {
+            setIsAdmin(false);
+            localStorage.setItem('isAdmin', 'false');
+          }
+          
           if (type === 'company') {
             localStorage.setItem('cegId', result.cegId);
           }
         }
-
 
         if (type === 'user') {
           console.log('User ID:', result.id);
@@ -144,7 +156,6 @@ function App() {
         } else if (type === 'company') {
           navigate('/comp_home', { state: { companyName: result.cegnev, cegId: result.cegId } }); 
         }
-
       } else {
         setSnackbar({ open: true, message: `Error: ${result.error}`, severity: 'error' });
       }
@@ -154,33 +165,34 @@ function App() {
     }
   };
   
-
   const HandleSignOut = () => {
     setIsAuthenticated(false);
+    setIsAdmin(false);
+    localStorage.removeItem('token');
+    localStorage.removeItem('isAdmin');
+    localStorage.removeItem('cegId');
     navigate('/sign-in');
   };
 
-  
-
   return (
     <div>
-    <Routes>
-      <Route path="/" element={<SignIn  onSignIn={HandleSignInData}/>} />
-      <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
-      <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
-      <Route path="/home" element={ isAuthenticated ? (<Home onSendData={handleSendData} onSignOut={HandleSignOut} /> ) : ( <SignIn />)} />
-      <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
-    </Routes>
-    <CustomizedSnackbars
-      open={snackbar.open}
-      handleClose={handleCloseSnackbar}
-      message={snackbar.message}
-      severity={snackbar.severity}
-    />
+      <Routes>
+        <Route path="/" element={<SignIn onSignIn={HandleSignInData}/>} />
+        <Route path="/sign-in" element={<SignIn onSignIn={HandleSignInData} />} />
+        <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
+        <Route path="/home" element={isAuthenticated ? (<Home onSendData={handleSendData} onSignOut={HandleSignOut} />) : (<SignIn />)} />
+        <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
+        {/* Admin útvonal hozzáadása */}
+        <Route path="/admin" element={isAuthenticated && isAdmin ? <AdminDashboard onSignOut={HandleSignOut} /> : <SignIn />} />
+      </Routes>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        handleClose={handleCloseSnackbar}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </div>
-);
-
-
+  );
 }
 
 export default App;

@@ -29,7 +29,7 @@ export default function ColorModeSelect(props) {
         <img
           src={mode === 'dark' ? optifyDark : optifyBright}
           alt="Optify Logo"
-          style={{ height: '50px' }}
+          style={{ height: '60px' }}
         />
       </Box>
     </>

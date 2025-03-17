@@ -10,7 +10,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   maxWidth: '700px',
   height: '65%',
   padding: theme.spacing(4),
-  marginTop: theme.spacing(7),
+  marginTop: theme.spacing(2),
   overflow: 'auto'
 }));
 
@@ -61,8 +61,8 @@ const Statisztika = () => {
         variant="h5"
         sx={{
           textAlign: 'center',
-          mb: -4,
-          mt: 6
+          mb: 1,
+          mt: 2
         }}
       >
         Válasszon kérdőívet

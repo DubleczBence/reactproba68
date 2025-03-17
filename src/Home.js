@@ -76,16 +76,19 @@ const Card = styled(MuiCard)(({ theme }) => ({
   alignSelf: 'center',
   width: '100%',
   padding: theme.spacing(4),
-  gap: theme.spacing(5),
+  gap: theme.spacing(2),
   margin: 'auto',
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: '700px',
-  },
+  overflow: 'auto',
+  backgroundColor: 'rgba(255, 255, 255, 0.4)',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+  [theme.breakpoints.up('sm')]: {
+    width: '450px',
+  },
   ...theme.applyStyles('dark', {
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+      backgroundColor: 'rgba(18, 18, 18, 0.4)',
   }),
 }));
 
@@ -277,12 +280,20 @@ const [open, setOpen] = React.useState(false);
 
   const handleSubmitSurvey = async () => {
     try {
-
-      const surveyDetails = availableSurveys.find(s => s.id === selectedSurvey.question[0].survey_id);
-    const creditAmount = Math.floor(surveyDetails.credit_cost / 3);
-    
-    console.log('Credit amount calculated:', creditAmount);
-
+      // Ellenőrizzük, hogy a selectedSurvey létezik-e
+      if (!selectedSurvey || !selectedSurvey.id) {
+        console.error('Selected survey is missing or invalid');
+        return;
+      }
+  
+      const surveyId = selectedSurvey.id;
+      console.log('Submitting survey with ID:', surveyId);
+      console.log('Selected survey data:', selectedSurvey);
+  
+      // Használjuk a selectedSurvey-ben tárolt adatokat
+      const creditAmount = Math.floor(selectedSurvey.creditCost / 3);
+      console.log('Credit amount calculated:', creditAmount);
+  
       const response = await fetch('http://localhost:3001/api/main/submit-survey', {
         method: 'POST',
         headers: {
@@ -290,8 +301,7 @@ const [open, setOpen] = React.useState(false);
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          surveyId: selectedSurvey.question[0].survey_id,
-          userId: userId,
+          surveyId: surveyId,
           answers: Object.entries(answers).map(([questionId, value]) => ({
             questionId,
             value
@@ -300,7 +310,6 @@ const [open, setOpen] = React.useState(false);
       });
   
       if (response.ok) {
-        
         const transactionResponse = await fetch('http://localhost:3001/api/users/add-survey-transaction', {
           method: 'POST',
           headers: {
@@ -310,7 +319,8 @@ const [open, setOpen] = React.useState(false);
           body: JSON.stringify({
             userId: userId,
             amount: creditAmount,
-            title: surveyDetails.title
+            title: selectedSurvey.title,
+            surveyId: surveyId
           })
         });
   
@@ -325,7 +335,6 @@ const [open, setOpen] = React.useState(false);
       console.error('Error submitting survey:', error);
     }
   };
-
 
   useEffect(() => {
     const checkIfSignedIn = async () => {
@@ -359,6 +368,7 @@ const [open, setOpen] = React.useState(false);
       });
       const data = await response.json();
       console.log('Fetched surveys:', data);
+      console.log('Available survey IDs:', data.surveys ? data.surveys.map(s => s.id) : []);
       setAvailableSurveys(data.surveys || []);
     } catch (error) {
       console.error('Error fetching available surveys:', error);
@@ -375,22 +385,38 @@ const [open, setOpen] = React.useState(false);
 
   const handleSurveyClick = async (surveyId) => {
     try {
+      console.log('Clicked on survey ID:', surveyId);
+      
+      // Keressük meg a kérdőív adatait az availableSurveys tömbben
+      const surveyInfo = availableSurveys.find(s => s.id === surveyId);
+      console.log('Survey info from available surveys:', surveyInfo);
+      
+      if (!surveyInfo) {
+        console.error('Survey not found in available surveys:', surveyId);
+        return;
+      }
+  
       const response = await fetch(`http://localhost:3001/api/main/survey/${surveyId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
       const surveyData = await response.json();
-
+      console.log('Survey data from API:', surveyData);
+  
       const questions = Array.isArray(surveyData) ? surveyData : [];
-
-      const surveyTitle = availableSurveys.find(survey => survey.id === surveyId)?.title;
-
+      
+      // Tároljuk a kiválasztott kérdőív adatait
       setSelectedSurvey({
-        title: surveyTitle,
-        question: questions 
+        id: surveyId,
+        title: surveyInfo.title,
+        creditCost: surveyInfo.credit_cost,
+        question: questions.map(q => ({
+          ...q,
+          survey_id: surveyId
+        }))
       });
-
+  
       setShowSurvey(true);
     } catch (error) {
       console.error('Error opening survey:', error);
@@ -422,8 +448,8 @@ const [open, setOpen] = React.useState(false);
         variant="h3"
         sx={{
           position: 'absolute',
-          top: 16,
-          left: 160,
+          top: 26,
+          left: 180,
           cursor: 'pointer'
         }}
         onClick={() => {
@@ -548,7 +574,7 @@ const [open, setOpen] = React.useState(false);
             </Typography>
 
 
-            {selectedSurvey.question.map((question, index) => (
+            {selectedSurvey.question && selectedSurvey.question.map((question, index) => (
               <Container
                 key={index}
                 sx={{

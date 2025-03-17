@@ -103,6 +103,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   gap: theme.spacing(2),
   margin: 'auto',
   overflow: 'auto',
+  backgroundColor: 'rgba(255, 255, 255, 0.4)',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -111,6 +112,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   ...theme.applyStyles('dark', {
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+      backgroundColor: 'rgba(18, 18, 18, 0.4)',
   }),
 }));
 
@@ -577,7 +579,7 @@ const handleCardDialogClose = (cardName) => {
       <React.Fragment>
       
         <CssBaseline enableColorScheme />
-        <CompHomeContainer direction="column" justifyContent="space-between"  sx={{
+        <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"}  sx={{
         position: 'relative',
         height: '100vh',
         width: '100vw',
@@ -622,8 +624,8 @@ const handleCardDialogClose = (cardName) => {
         variant="h3"
         sx={{
           position: 'absolute',
-          top: 16,
-          left: 160,
+          top: 26,
+          left: 180,
           cursor: 'pointer'
         }}
         onClick={() => {
@@ -1177,11 +1179,23 @@ const handleCardDialogClose = (cardName) => {
 
 
         {/* Statisztika oldal */}
-        {showStatisztika && (
-          <Statisztika 
-          onClose={() => setShowStatisztika(false)}
-          />
-        )}
+{showStatisztika && (
+  <Box sx={{ 
+    position: 'absolute', 
+    top: '200px',  // Állítsd be a kívánt magasságot
+    left: 0,
+    right: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxHeight: '70vh',
+    zIndex: 1
+  }}>
+    <Statisztika 
+      onClose={() => setShowStatisztika(false)}
+    />
+  </Box>
+)}
 
 
   <Tooltip title="Account settings">

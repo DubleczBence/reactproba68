@@ -82,9 +82,16 @@ router.get('/available-surveys', async (req, res) => {
 
     const userData = userResponse[0];
 
+    // Módosított lekérdezés, amely a survey_connections táblát használja
     const [surveys] = await db.promise().query(`
       SELECT s.id, s.title, s.credit_cost FROM survey_set s
-      WHERE s.id NOT IN (SELECT survey_id FROM answers WHERE user_id = ?)
+      WHERE s.id NOT IN (
+        SELECT DISTINCT sc.survey_id 
+        FROM answers a
+        JOIN survey_connections sc ON a.id = sc.connection_id AND sc.connection_type = 'answer'
+        JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
+        WHERE uc.user_id = ?
+      )
       AND (s.vegzettseg IS NULL OR s.vegzettseg = ?)
       AND (s.korcsoport IS NULL OR s.korcsoport = ?)
       AND (s.regio IS NULL OR s.regio = ?)
@@ -114,7 +121,8 @@ router.get('/survey/:id', async (req, res) => {
     const [survey] = await db.promise().query(
       `SELECT s.*, q.* 
        FROM survey_set s
-       LEFT JOIN questions q ON s.id = q.survey_id
+       LEFT JOIN survey_connections sc ON s.id = sc.survey_id AND sc.connection_type = 'question'
+       LEFT JOIN questions q ON sc.connection_id = q.id
        WHERE s.id = ?`,
       [req.params.id]
     );
@@ -143,14 +151,20 @@ router.post('/submit-survey', async (req, res) => {
 
     for (const answer of answers) {
       const [answerResult] = await db.promise().query(
-        'INSERT INTO answers (user_id, survey_id, question_id, answer) VALUES (?, ?, ?, ?)',
-        [userId, surveyId, answer.questionId, JSON.stringify(answer.value)]
+        'INSERT INTO answers (user_id, question_id, answer) VALUES (?, ?, ?)',
+        [userId, answer.questionId, JSON.stringify(answer.value)]
       );
 
       // Add to user_connections table
       await db.promise().query(
         'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "answer", ?)',
         [userId, answerResult.insertId]
+      );
+      
+      // Add to survey_connections table
+      await db.promise().query(
+        'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "answer", ?)',
+        [surveyId, answerResult.insertId]
       );
     }
 
@@ -173,9 +187,11 @@ router.post('/submit-survey', async (req, res) => {
 router.get('/survey-status/:surveyId', async (req, res) => {
   try {
     const [survey] = await db.promise().query(
-      `SELECT s.title, s.mintavetel, COUNT(DISTINCT a.user_id) as completion_count 
+      `SELECT s.title, s.mintavetel, COUNT(DISTINCT uc.user_id) as completion_count 
        FROM survey_set s 
-       LEFT JOIN answers a ON s.id = a.survey_id 
+       LEFT JOIN survey_connections sc ON s.id = sc.survey_id AND sc.connection_type = 'answer'
+       LEFT JOIN answers a ON sc.connection_id = a.id
+       LEFT JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
        WHERE s.id = ? 
        GROUP BY s.id`,
       [req.params.surveyId]
@@ -207,11 +223,14 @@ router.get('/company-surveys/:companyId', async (req, res) => {
     const [surveys] = await db.promise().query(
       `SELECT s.id, s.title, s.mintavetel, 
        DATE_FORMAT(s.date_created, '%Y-%m-%d') as created_date,
-       COUNT(DISTINCT a.user_id) as completion_count,
-       ROUND((COUNT(DISTINCT a.user_id) / s.mintavetel * 100)) as completion_percentage
+       COUNT(DISTINCT uc.user_id) as completion_count,
+       ROUND((COUNT(DISTINCT uc.user_id) / s.mintavetel * 100)) as completion_percentage
        FROM survey_set s 
-       LEFT JOIN answers a ON s.id = a.survey_id 
-       WHERE s.ceg_id = ? 
+       JOIN company_connections cc ON s.id = cc.connection_id AND cc.connection_type = 'survey'
+       LEFT JOIN survey_connections sc ON s.id = sc.survey_id AND sc.connection_type = 'answer'
+       LEFT JOIN answers a ON sc.connection_id = a.id
+       LEFT JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
+       WHERE cc.company_id = ? 
        GROUP BY s.id`,
       [req.params.companyId]
     );
@@ -227,10 +246,12 @@ router.get('/survey-answers/:surveyId', async (req, res) => {
   try {
     const [questions] = await db.promise().query(
       `SELECT q.id, q.question, q.frm_option, q.type,
-        COUNT(DISTINCT a.user_id) as total_responses
+        COUNT(DISTINCT uc.user_id) as total_responses
        FROM questions q
+       JOIN survey_connections sc ON q.id = sc.connection_id AND sc.connection_type = 'question'
        LEFT JOIN answers a ON q.id = a.question_id
-       WHERE q.survey_id = ?
+       LEFT JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
+       WHERE sc.survey_id = ?
        GROUP BY q.id`,
       [req.params.surveyId]
     );
@@ -238,7 +259,10 @@ router.get('/survey-answers/:surveyId', async (req, res) => {
     const surveyAnswers = await Promise.all(questions.map(async (question) => {
       if (question.type === 'text') {
         const [textAnswers] = await db.promise().query(
-          `SELECT answer FROM answers WHERE question_id = ?`,
+          `SELECT a.answer 
+           FROM answers a
+           JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
+           WHERE a.question_id = ?`,
           [question.id]
         );
         return {
@@ -252,10 +276,11 @@ router.get('/survey-answers/:surveyId', async (req, res) => {
 
       const options = JSON.parse(question.frm_option);
       const [answerCounts] = await db.promise().query(
-        `SELECT answer, COUNT(*) as count
-         FROM answers
-         WHERE question_id = ?
-         GROUP BY answer`,
+        `SELECT a.answer, COUNT(*) as count
+         FROM answers a
+         JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
+         WHERE a.question_id = ?
+         GROUP BY a.answer`,
         [question.id]
       );
 

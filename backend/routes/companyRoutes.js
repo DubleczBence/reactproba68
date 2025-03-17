@@ -104,24 +104,22 @@ router.post('/create-survey', async (req, res) => {
   console.log("Received request body:", req.body);
   console.log("Filter criteria:", req.body.filterCriteria);
   try {
-
     const token = req.headers.authorization.split(' ')[1]; 
     const decoded = jwt.verify(token, SECRET_KEY);
-    const cegId = decoded.id;
-
+    const companyId = decoded.id;
 
     await db.promise().query(
       'UPDATE companies SET credits = credits - ? WHERE id = ?',
-      [creditCost, cegId]
+      [creditCost, companyId]
     );
 
     const [surveyResult] = await db.promise().query(
       `INSERT INTO survey_set (
-        title, ceg_id, mintavetel, 
+        title, mintavetel, 
         vegzettseg, korcsoport, regio, nem, anyagi, credit_cost
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        title, cegId, participantCount,
+        title, participantCount,
         filterCriteria.vegzettseg || null,
         filterCriteria.korcsoport || null,
         filterCriteria.regio || null,
@@ -132,19 +130,43 @@ router.post('/create-survey', async (req, res) => {
     );
 
     const surveyId = surveyResult.insertId;
+    
+    // Kapcsolat létrehozása a company_connections táblában
+    await db.promise().query(
+      'INSERT INTO company_connections (company_id, connection_type, connection_id) VALUES (?, "survey", ?)',
+      [companyId, surveyId]
+    );
 
-  
+    // Kérdések létrehozása és kapcsolatok létrehozása a survey_connections táblában
     for (const question of questions) {
       const [questionResult] = await db.promise().query(
-        'INSERT INTO questions (question, frm_option, type, survey_id) VALUES (?, ?, ?, ?)',
-        [question.questionText, JSON.stringify(question.options), question.selectedButton, surveyId]
+        'INSERT INTO questions (question, frm_option, type) VALUES (?, ?, ?)',
+        [question.questionText, JSON.stringify(question.options), question.selectedButton]
+      );
+      
+      // Kapcsolat létrehozása a survey_connections táblában
+      await db.promise().query(
+        'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "question", ?)',
+        [surveyId, questionResult.insertId]
       );
     }
 
-
+    // Kredit tranzakció létrehozása
+    const [transactionResult] = await db.promise().query(
+      'INSERT INTO credit_transactions (amount, transaction_type) VALUES (?, "spend")',
+      [creditCost]
+    );
+    
+    // Kapcsolat létrehozása a company_connections táblában
     await db.promise().query(
-      'INSERT INTO credit_transactions (company_id, amount, transaction_type, survey_id, survey_title) VALUES (?, ?, "spend", ?, ?)',
-      [cegId, creditCost, surveyId, title]
+      'INSERT INTO company_connections (company_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
+      [companyId, transactionResult.insertId]
+    );
+    
+    // Kapcsolat létrehozása a survey_connections táblában
+    await db.promise().query(
+      'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
+      [surveyId, transactionResult.insertId]
     );
 
     res.status(201).json({ message: 'Survey created successfully' });
@@ -236,9 +258,15 @@ router.post('/purchase-credits', async (req, res) => {
   console.log("Received request:", { packageAmount, companyId });
   
   try {
+    const [transactionResult] = await db.promise().query(
+      'INSERT INTO credit_transactions (amount, transaction_type) VALUES (?, "purchase")',
+      [packageAmount]
+    );
+    
+    // Kapcsolat létrehozása a company_connections táblában
     await db.promise().query(
-      'INSERT INTO credit_transactions (company_id, amount, transaction_type) VALUES (?, ?, "purchase")',
-      [companyId, packageAmount]
+      'INSERT INTO company_connections (company_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
+      [companyId, transactionResult.insertId]
     );
 
     await db.promise().query(
@@ -270,8 +298,9 @@ router.get('/credit-history/:companyId', async (req, res) => {
         ct.*,
         DATE_FORMAT(ct.created_at, '%Y-%m-%d %H:%i') as formatted_date
        FROM credit_transactions ct
-       WHERE company_id = ?
-       ORDER BY created_at DESC`,
+       JOIN company_connections cc ON ct.id = cc.connection_id
+       WHERE cc.company_id = ? AND cc.connection_type = 'transaction'
+       ORDER BY ct.created_at DESC`,
       [req.params.companyId]
     );
     res.json(transactions);
@@ -288,9 +317,10 @@ router.get('/survey-answers/:surveyId', async (req, res) => {
       `SELECT q.id, q.question, q.frm_option, q.type,
         COUNT(DISTINCT uc.user_id) as total_responses
        FROM questions q
+       JOIN survey_connections sc ON q.id = sc.connection_id AND sc.connection_type = 'question'
        LEFT JOIN answers a ON q.id = a.question_id
        LEFT JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
-       WHERE q.survey_id = ?
+       WHERE sc.survey_id = ?
        GROUP BY q.id`,
       [req.params.surveyId]
     );

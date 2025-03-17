@@ -54,7 +54,6 @@ router.post('/sign-up', async (req, res) => {
 router.post('/sign-in', async (req, res) => {
   const { email, password } = req.body;
 
-  
   if (!email || !password) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
@@ -71,7 +70,6 @@ router.post('/sign-in', async (req, res) => {
     }
 
     const user = users[0];
-
     
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -79,15 +77,43 @@ router.post('/sign-in', async (req, res) => {
       return res.status(401).json({ error: 'Helytelen email vagy jelszó.' });
     }
 
+    // Admin ellenőrzés
+    const isAdmin = user.role === 'admin';
     
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
+    const token = jwt.sign({ 
+      id: user.id, 
+      email: user.email, 
+      role: user.role || 'user' 
+    }, SECRET_KEY, {
       expiresIn: '1h', 
     });
 
-    res.status(200).json({ message: 'Bejelentkezés sikeres!', token, name: user.name, id: user.id });
+    res.status(200).json({ 
+      message: 'Bejelentkezés sikeres!', 
+      token, 
+      name: user.name, 
+      id: user.id,
+      isAdmin: isAdmin
+    });
   } catch (error) {
     console.error('Hiba történt a bejelentkezés során:', error);
     res.status(500).json({ error: 'Hiba történt a bejelentkezés során.' });
+  }
+});
+
+
+router.get('/check-admin', async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, SECRET_KEY);
+    
+    if (decoded.role === 'admin') {
+      return res.status(200).json({ isAdmin: true });
+    }
+    
+    return res.status(403).json({ isAdmin: false, message: 'Nincs admin jogosultság' });
+  } catch (error) {
+    return res.status(401).json({ error: 'Érvénytelen token' });
   }
 });
 
@@ -212,11 +238,17 @@ router.post('/purchase-voucher', async (req, res) => {
       [userId, voucherResult.insertId]
     );
 
-    await db.promise().query(
+    const [transactionResult] = await db.promise().query(
       `INSERT INTO transactions 
        (user_id, amount, transaction_type, transaction_date, voucher_name) 
        VALUES (?, ?, 'purchase', NOW(), ?)`,
       [userId, creditCost, voucherName]
+    );
+
+    // Add transaction to user_connections
+    await db.promise().query(
+      'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
+      [userId, transactionResult.insertId]
     );
 
     await db.promise().query('COMMIT');
@@ -233,24 +265,47 @@ router.post('/purchase-voucher', async (req, res) => {
 
 
 router.post('/add-survey-transaction', async (req, res) => {
-  const { userId, amount, title } = req.body;
+  const { userId, amount, title, surveyId } = req.body; // Hozzáadtuk a surveyId-t
   
-  console.log('Received transaction data:', { userId, amount, title });
+  console.log('Received transaction data:', { userId, amount, title, surveyId });
 
   if (!amount || amount <= 0) {
     return res.status(400).json({ error: 'Invalid amount' });
   }
 
   try {
-    await db.promise().query(
+    // Tranzakció kezdése
+    await db.promise().query('START TRANSACTION');
+    
+    // Tranzakció létrehozása
+    const [transactionResult] = await db.promise().query(
       `INSERT INTO transactions 
        (user_id, amount, transaction_type, transaction_date, voucher_name) 
        VALUES (?, ?, 'survey', NOW(), ?)`,
       [userId, amount, title]
     );
     
+    // Kapcsolat létrehozása a user_connections táblában
+    await db.promise().query(
+      'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
+      [userId, transactionResult.insertId]
+    );
+    
+    // Ha van surveyId, akkor kapcsolat létrehozása a survey_connections táblában is
+    if (surveyId) {
+      await db.promise().query(
+        'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
+        [surveyId, transactionResult.insertId]
+      );
+    }
+    
+    // Tranzakció véglegesítése
+    await db.promise().query('COMMIT');
+    
     res.json({ message: 'Survey transaction recorded successfully' });
   } catch (error) {
+    // Hiba esetén visszagörgetés
+    await db.promise().query('ROLLBACK');
     console.error('Error recording survey transaction:', error);
     res.status(500).json({ error: 'Failed to record survey transaction' });
   }

@@ -4,6 +4,7 @@ const szuresRoutes = require('./routes/szuresRoutes');
 const userRoutes = require('./routes/userRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const homeRoutes = require('./routes/homeRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -16,6 +17,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/main', szuresRoutes);
 app.use('/api/main', homeRoutes); 
 app.use('/api/companies', companyRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 app.listen(PORT, () => {
