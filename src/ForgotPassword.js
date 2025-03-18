@@ -43,12 +43,12 @@ function ForgotPassword({ open, handleClose }) {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
-      <DialogTitle>Reset Password</DialogTitle>
+      <DialogTitle>Jelszó visszaállítása</DialogTitle>
       <DialogContent>
         {step === 'email' && (
           <>
             <DialogContentText>
-              Enter your email address and we'll send you a verification code.
+              Adja meg e-mail címét, és küldünk egy ellenőrző kódot.
             </DialogContentText>
             <OutlinedInput
               autoFocus
@@ -56,7 +56,7 @@ function ForgotPassword({ open, handleClose }) {
               fullWidth
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email address"
+              placeholder="Email cím"
               type="email"
               sx={{ mt: 2 }}
             />
@@ -66,7 +66,7 @@ function ForgotPassword({ open, handleClose }) {
               onClick={handleSendCode}
               sx={{ mt: 2 }}
             >
-              Send Code
+              Kód küldése
             </Button>
           </>
         )}
@@ -74,7 +74,7 @@ function ForgotPassword({ open, handleClose }) {
         {step === 'code' && (
           <>
             <DialogContentText>
-              Enter the 5-digit code sent to your email.
+            Írja be az e-mailre küldött 5 számjegyű kódot.
             </DialogContentText>
             <Stack spacing={2} sx={{ mt: 2 }}>
               <OutlinedInput
@@ -82,7 +82,7 @@ function ForgotPassword({ open, handleClose }) {
                 fullWidth
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="Security Code"
+                placeholder="Biztonsági kód"
               />
               <OutlinedInput
                 required
@@ -90,21 +90,21 @@ function ForgotPassword({ open, handleClose }) {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 type="password"
-                placeholder="New Password"
+                placeholder="Új jelszó"
               />
               <Button 
                 variant="contained" 
                 fullWidth 
                 onClick={handleVerifyCode}
               >
-                Reset Password
+                Jelszó visszaállítása
               </Button>
             </Stack>
           </>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>Mégse</Button>
       </DialogActions>
     </Dialog>
   );

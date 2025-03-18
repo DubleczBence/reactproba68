@@ -7,32 +7,42 @@ const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f';
 
 router.post('/home', async (req, res) => {
   const { vegzettseg, korcsoport, regio, nem, anyagi } = req.body;
-
   
   if (!vegzettseg || !korcsoport || !regio || !nem || !anyagi) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
-
   
-   if (!Date.parse(korcsoport)) {
+  if (!Date.parse(korcsoport)) {
     return res.status(400).json({ error: 'Érvénytelen dátum formátum!' });
   }
 
   try {
-
-   
     const token = req.headers.authorization.split(' ')[1]; 
     const decoded = jwt.verify(token, SECRET_KEY);
     const userId = decoded.id; 
 
- 
-    await db.promise().query(
+    // Start a transaction
+    await db.promise().query('START TRANSACTION');
+
+    // Insert user response
+    const [responseResult] = await db.promise().query(
       'INSERT INTO users_responses (user_id, korcsoport, vegzettseg, regio, nem, anyagi_helyzet) VALUES (?, ?, ?, ?, ?, ?)',
       [userId, new Date(korcsoport), vegzettseg, regio, nem, anyagi]
     );
 
+    // Create connection in user_connections table
+    await db.promise().query(
+      'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "response", ?)',
+      [userId, responseResult.insertId]
+    );
+
+    // Commit the transaction
+    await db.promise().query('COMMIT');
+
     res.status(201).json({ message: 'Küldés sikeres!' });
   } catch (error) {
+    // Rollback in case of error
+    await db.promise().query('ROLLBACK');
     console.error('Hiba történt a küldés közben:', error);
     res.status(500).json({ error: 'Hiba történt a küldés során.' });
   }
@@ -96,7 +106,8 @@ router.get('/available-surveys', async (req, res) => {
       AND (s.korcsoport IS NULL OR s.korcsoport = ?)
       AND (s.regio IS NULL OR s.regio = ?)
       AND (s.nem IS NULL OR s.nem = ?)
-      AND (s.anyagi IS NULL OR s.anyagi = ?)`,
+      AND (s.anyagi IS NULL OR s.anyagi = ?)
+      ORDER BY s.date_created DESC`,
       [
         userId,
         userData.vegzettseg,
@@ -231,7 +242,8 @@ router.get('/company-surveys/:companyId', async (req, res) => {
        LEFT JOIN answers a ON sc.connection_id = a.id
        LEFT JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
        WHERE cc.company_id = ? 
-       GROUP BY s.id`,
+       GROUP BY s.id
+       ORDER BY s.date_created DESC`,
       [req.params.companyId]
     );
     res.json(surveys);

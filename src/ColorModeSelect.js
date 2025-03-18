@@ -21,9 +21,9 @@ export default function ColorModeSelect(props) {
         }}
         {...props}
       >
-        <MenuItem value="system">System</MenuItem>
-        <MenuItem value="light">Light</MenuItem>
-        <MenuItem value="dark">Dark</MenuItem>
+        <MenuItem value="system">Rendszer</MenuItem>
+        <MenuItem value="light">Világos</MenuItem>
+        <MenuItem value="dark">Sötét</MenuItem>
       </Select>
       <Box sx={{ position: 'fixed', top: '0.5rem', left: '0.5rem' }}>
         <img

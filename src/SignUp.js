@@ -1,10 +1,8 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
@@ -357,7 +355,7 @@ export default function SignUp(props) {
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign up
+            Regisztráció
           </Typography>
           <Box
             component="form"
@@ -373,7 +371,7 @@ export default function SignUp(props) {
           >
             <Stack direction="row" alignItems="center" spacing={2}>
             <Typography sx={{ visibility: checked ? 'hidden' : 'visible' }}>
-              User
+              Felhasználó
             </Typography>
             <Switch
               checked={checked}
@@ -389,14 +387,14 @@ export default function SignUp(props) {
             {!checked && (
               <>
                 <FormControl>
-                  <FormLabel htmlFor="name">Full name</FormLabel>
+                  <FormLabel htmlFor="name">Teljes név</FormLabel>
                   <TextField
                     autoComplete="name"
                     name="name"
                     required
                     fullWidth
                     id="name"
-                    placeholder="Jon Snow"
+                    placeholder="Gipsz Jakab"
                     value={name}
                     onChange={handleNameChange}
                     error={nameError}
@@ -410,7 +408,7 @@ export default function SignUp(props) {
                     required
                     fullWidth
                     id="email"
-                    placeholder="your@email.com"
+                    placeholder="gipszjakab@email.com"
                     value={email}
                     onChange={handleEmailChange}
                     name="email"
@@ -422,7 +420,7 @@ export default function SignUp(props) {
                   />
                 </FormControl>
                 <FormControl>
-                  <FormLabel htmlFor="password">Password</FormLabel>
+                  <FormLabel htmlFor="password">Jelszó</FormLabel>
                   <TextField
                     required
                     fullWidth
@@ -628,25 +626,20 @@ export default function SignUp(props) {
               {checked ? 'Cég regisztráció' : 'User regisztráció'}
             </Button>
 
-
-            <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
-            />
             
           </Box>
           <Divider>
-            <Typography sx={{ color: 'text.secondary' }}>or</Typography>
+            <Typography sx={{ color: 'text.secondary' }}>vagy</Typography>
           </Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
+              Már van fiókja?{' '}
               <RouterLink
                 to="/sign-in"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
-                Sign in
+                Bejelentkezés
               </RouterLink>
             </Typography>
           </Box>

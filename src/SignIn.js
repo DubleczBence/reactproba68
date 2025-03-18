@@ -1,9 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
@@ -117,13 +115,22 @@ export default function SignIn(props) {
 
     
     else{
-      if (!ceg_email || ceg_email.length < 1) {
-        alert('Email is required.');
+      if (!ceg_email || !/\S+@\S+\.\S+/.test(ceg_email)) {
+        setEmailError(true);
+        setEmailErrorMessage('Please enter a valid email address.');
         isValid = false;
+      } else {
+        setEmailError(false);
+        setEmailErrorMessage('');
       }
-      if (!jelszo || jelszo.length < 6) {
-        alert('Jelszo must be at least 6 characters long.');
+  
+      if (!jelszo || jelszo < 6) {
+        setPasswordError(true);
+        setPasswordErrorMessage('Password must be at least 6 characters long.');
         isValid = false;
+      } else {
+        setPasswordError(false);
+        setPasswordErrorMessage('');
       }
     }
     return isValid;
@@ -196,7 +203,7 @@ export default function SignIn(props) {
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign in
+            Bejelentkezés
           </Typography>
           <Box
             component="form"
@@ -211,7 +218,7 @@ export default function SignIn(props) {
           >
             <Stack direction="row" alignItems="center" spacing={2}>
             <Typography sx={{ visibility: checked ? 'hidden' : 'visible' }}>
-              User
+              Felhasználó
             </Typography>
             <Switch
               checked={checked}
@@ -227,14 +234,14 @@ export default function SignIn(props) {
             {!checked && (
               <>
             <FormControl>
-              <FormLabel htmlFor="email">User Email</FormLabel>
+              <FormLabel htmlFor="email">Email</FormLabel>
               <TextField
                 error={emailError}
                 helperText={emailErrorMessage}
                 id="email"
                 type="email"
                 name="email"
-                placeholder="your@email.com"
+                placeholder="gipszjakab@email.com"
                 value={email}
                 onChange={handleEmailChange}
                 autoComplete="email"
@@ -246,7 +253,7 @@ export default function SignIn(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">User Password</FormLabel>
+              <FormLabel htmlFor="password">Jelszó</FormLabel>
               <TextField
                 error={passwordError}
                 helperText={passwordErrorMessage}
@@ -277,11 +284,14 @@ export default function SignIn(props) {
                   <TextField
                     required
                     fullWidth
+                    error={emailError}
+                    helperText={emailErrorMessage}
                     name="ceg_email"
                     id="ceg_email"
                     placeholder="ceg@email.com"
                     value={ceg_email}
                     onChange={handleCeg_emailChange}
+                    color={emailError ? 'error' : 'primary'}
                   />
                 </FormControl>
                 <FormControl>
@@ -289,23 +299,20 @@ export default function SignIn(props) {
                   <TextField
                     required
                     fullWidth
+                    error={emailError}
+                    helperText={emailErrorMessage}
                     type="password"
                     name="jelszo"
                     id="jelszo"
                     placeholder="••••••"
                     value={jelszo}
                     onChange={handleJelszoChange}
+                    color={passwordError ? 'error' : 'primary'}
                   />
                 </FormControl>
               </>
             )}
 
-
-
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <ForgotPassword open={open} handleClose={handleClose} />
             <Button
               type="submit"
@@ -313,7 +320,7 @@ export default function SignIn(props) {
               variant="contained"
               onClick={validateInputs}
             >
-              {checked ? 'Company Sign in' : 'User Sign in'}
+              {checked ? 'Cég Bejelentkezés' : 'Felhasználó Bejelentkezés'}
             </Button>
             <MuiLink
               component="button"
@@ -322,19 +329,19 @@ export default function SignIn(props) {
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >
-              Forgot your password?
+              Elfelejtette jelszavát?
             </MuiLink>
           </Box>
-          <Divider>or</Divider>
+          <Divider>vagy</Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography sx={{ textAlign: 'center' }}>
-              Don&apos;t have an account?{' '}
+              Nincs fiókja?{' '}
               <RouterLink
                 to="/sign-up"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
               >
-                Sign up
+                Regisztráció
               </RouterLink>
             </Typography>
           </Box>

@@ -45,6 +45,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useTheme } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
 
 
 
@@ -83,7 +84,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
-    width: '450px',
+    width: '700px',
   },
   ...theme.applyStyles('dark', {
     boxShadow:
@@ -443,14 +444,25 @@ const [open, setOpen] = React.useState(false);
       <UserContainer direction="column" justifyContent="space-between">
       <React.Fragment>
 
+      <Box 
+  sx={{ 
+    width: '100%', 
+    mb: 4,
+    mt: -3.5,
+    px: { xs: 2, sm: 3, md: 4 },
+    position: 'relative' // Add relative positioning to the container
+  }}
+>
+  <Grid container spacing={2} alignItems="center">
+    {/* Kredit megjelenítése */}
+    <Grid item xs={12} sm={4} md={3} sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
       <Typography
         component="h1"
-        variant="h3"
+        variant="h4"
         sx={{
-          position: 'absolute',
-          top: 26,
-          left: 180,
-          cursor: 'pointer'
+          cursor: 'pointer',
+          fontSize: { xs: '1.1rem', sm: '1.4rem', md: '1.8rem' },
+          ml: { sm: 12, md: 18 }
         }}
         onClick={() => {
           setShowUserCreditPage(true);
@@ -459,18 +471,63 @@ const [open, setOpen] = React.useState(false);
       >
         {credits} Kredit
       </Typography>
-
-
-      <Typography
-        component="h1"
-        variant="h6"
+    </Grid>
+    
+    {/* Üdvözlő szöveg */}
+    <Grid item xs={12} sm={4} md={6} sx={{ 
+  display: 'flex', 
+  justifyContent: 'center'
+}}>
+  <Typography
+    component="h1"
+    variant="h6"
+    sx={{
+      textAlign: 'center',
+      fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+      width: '100%',
+      mx: 'auto',
+      ml: { xs: '-4px', sm: '-6px', md: '-8px' } // Slight shift to the left
+    }}
+  >
+    Köszöntjük az oldalon, {name}!
+  </Typography>
+</Grid>
+    
+    {/* Témaválasztás és profil - positioned at the absolute edge */}
+    <Grid item xs={12} sm={4} md={3} sx={{
+  display: 'flex',
+  justifyContent: 'flex-end',
+}}>
+  <Box sx={{
+    display: 'flex',
+    gap: 5,
+    position: 'absolute', // Position absolutely
+    right: { xs: '0px', sm: '0px', md: '0px' },
+    top: '20px' // Move it up by 10px - adjust this value as needed
+  }}>
+    <ColorModeSelect />
+    <Tooltip title="Account settings">
+      <IconButton
+        onClick={handleClickProfile}
+        size="small"
         sx={{
-          textAlign: 'center',
-          mb: 2,
+          padding: 0,
+          width: 40,
+          height: 40,
+          borderRadius: '50%',
+          overflow: 'hidden',
         }}
+        aria-controls={openprofile ? 'account-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={openprofile ? 'true' : undefined}
       >
-        Köszöntjük az oldalon, {name}!
-      </Typography>
+        <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
+      </IconButton>
+    </Tooltip>
+  </Box>
+</Grid>
+  </Grid>
+</Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
   <SimpleBottomNavigation 
@@ -683,28 +740,7 @@ const [open, setOpen] = React.useState(false);
 
 
       
-      <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
-      <Tooltip title="Account settings">
-    <IconButton
-      onClick={handleClickProfile}
-      size="small"
-      sx={{
-        position: 'absolute',
-        top: 16,
-        right: 16,
-        padding: 0, 
-        width: 40, 
-        height: 40, 
-        borderRadius: '50%', 
-        overflow: 'hidden', 
-      }}
-      aria-controls={openprofile ? 'account-menu' : undefined}
-      aria-haspopup="true"
-      aria-expanded={openprofile ? 'true' : undefined}
-    >
-      <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
-    </IconButton>
-  </Tooltip>
+      
 
         <Menu
         anchorEl={anchorEl}
@@ -818,7 +854,7 @@ const [open, setOpen] = React.useState(false);
             <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
             
 
-            <Card variant="outlined">
+            <Card variant="outlined" sx={{ width: '600px' }}>
     
 
       
