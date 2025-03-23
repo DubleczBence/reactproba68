@@ -567,9 +567,19 @@ export default function AdminDashboard({ onSignOut }) {
         </Toolbar>
       </AppBar>
       
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Paper sx={{ width: '100%', mb: 2 }}>
-          <Tabs value={value} onChange={handleChange} centered>
+      <Container maxWidth={false} sx={{ mt: 4, px: { xs: 1, sm: 2, md: 3 } }}>
+        <Paper sx={{ width: '100%', mb: 2, overflowX: 'auto' }}>
+        <Tabs 
+            value={value} 
+            onChange={handleChange} 
+            centered
+            variant="fullWidth"  
+            sx={{ 
+              '& .MuiTabs-flexContainer': {
+                justifyContent: 'center'
+              }
+            }}
+          >
             <Tab label="Felhasználók" />
             <Tab label="Cégek" />
             <Tab label="Kérdőívek" />

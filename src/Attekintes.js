@@ -155,38 +155,63 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
         </Container>
       ))}
 
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          gap: 25, 
-          mt: 5,
-          mb: 5
-        }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' }, // Mobil nézetben oszlopba rendezi
+        justifyContent: 'center', 
+        gap: { xs: 4, sm: 25 }, // Kisebb rés mobil nézetben, nagyobb tablet/desktop nézetben
+        mt: 5,
+        mb: 5
+      }}>
           
-          <Box>
-            <Typography variant="h6" sx={{ textAlign: 'center', mb: 0.5, lineHeight: 1 }}>
+          <Box sx={{ 
+            textAlign: 'center',
+            mb: { xs: 2, sm: 0 } // Csak mobil nézetben ad alsó margót
+          }}>
+            <Typography variant="h6" sx={{ textAlign: 'center', mb: 0.5, lineHeight: 1, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
               Mintavétel
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline' }}>
-              <Typography variant="h4" sx={{ mr: 1, lineHeight: 1 }}>
+              <Typography variant="h4" sx={{ mr: 1, lineHeight: 1,  fontSize: { xs: '1.1rem', sm: '1.7rem' } }}>
                 {participantCount}
               </Typography>
-              <Typography variant="h6" sx={{ lineHeight: 1 }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  lineHeight: 1,
+                  fontSize: { xs: '1rem', sm: '1.25rem' } // Kisebb betűméret mobil nézetben
+                }}
+              >
                 fő
               </Typography>
             </Box>
           </Box>
 
           
-          <Box>
-            <Typography variant="h6" sx={{ textAlign: 'center', mb: 0.5, lineHeight: 1 }}>
+          <Box sx={{ textAlign: 'center' }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              textAlign: 'center', 
+              mb: 0.5, 
+              lineHeight: 1,
+              fontSize: { xs: '1rem', sm: '1.1rem' } // Kisebb betűméret mobil nézetben
+            }}
+          >
               Költség
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline' }}>
-              <Typography variant="h4" sx={{ mr: 1, lineHeight: 1 }}>
+            <Typography 
+                variant="h4" 
+                sx={{ 
+                  mr: 1, 
+                  lineHeight: 1,
+                  fontSize: { xs: '1.1rem', sm: '1.7rem' } // Kisebb betűméret mobil nézetben
+                }}
+              >
                 {creditCost}
               </Typography>
-              <Typography variant="h6" sx={{ lineHeight: 1 }}>
+              <Typography variant="h6" sx={{ lineHeight: 1,  fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 kredit
               </Typography>
             </Box>

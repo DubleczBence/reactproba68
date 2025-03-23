@@ -6,6 +6,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import MuiCard from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -35,6 +40,7 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
     });
     
     const [animatedValue, setAnimatedValue] = useState(0);
+    const [openDialog, setOpenDialog] = useState(false);
   
     const completionPercentage = completionData.targetCount > 0 ? 
       (completionData.completionCount / completionData.targetCount) * 100 : 0;
@@ -42,56 +48,82 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
       
   
       useEffect(() => {
-        const duration = 3000;
+        const duration = 2000; // Animáció időtartama milliszekundumban
         const steps = 60;
         const interval = duration / steps;
         let currentStep = 0;
       
-        const timer1 = setInterval(() => {
+        const timer = setInterval(() => {
           currentStep++;
-          const progress = (currentStep / steps) * 100;
-          setAnimatedValue(progress);
+          // Egyszerűen csak a completionPercentage-ig animálunk
+          const progress = (currentStep / steps) * completionPercentage;
+          setAnimatedValue(progress > completionPercentage ? completionPercentage : progress);
           
-          if (currentStep >= steps) {
-            clearInterval(timer1);
-            
-            
-            setTimeout(() => {
-              currentStep = 0;
-              const timer2 = setInterval(() => {
-                currentStep++;
-                const finalProgress = 100 - ((currentStep / steps) * (100 - completionPercentage));
-                setAnimatedValue(finalProgress);
-                
-                if (currentStep >= steps) {
-                  clearInterval(timer2);
-                }
-              }, interval);
-            }, 500);
+          if (currentStep >= steps || progress >= completionPercentage) {
+            clearInterval(timer);
+            setAnimatedValue(completionPercentage); // Biztosítjuk, hogy pontosan a célértéken álljon meg
           }
         }, interval);
       
-        return () => clearInterval(timer1);
+        return () => clearInterval(timer);
       }, [completionPercentage]);
+    
+  
+      const handleCloseAndRefresh = () => {
+        onClose();
+        window.location.reload();
+      };
+
+
+      const handleOpenDialog = () => {
+        setOpenDialog(true);
+      };
+  
+      const handleCloseDialog = () => {
+        setOpenDialog(false);
+      };
+
+
+      const handleConfirmClose = async () => {
+        try {
+          // Itt hívjuk meg a lezárás API-t
+          const response = await fetch(`http://localhost:3001/api/companies/close-survey/${surveyId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+      
+          if (response.ok) {
+            // Ha sikeres a lezárás, bezárjuk a dialógust és frissítjük az oldalt
+            setOpenDialog(false);
+            if (lezaras) lezaras();
+            handleCloseAndRefresh();
+          } else {
+            const errorData = await response.json();
+            console.error('Hiba történt a kérdőív lezárása során:', errorData.error);
+            alert(`Hiba történt a kérdőív lezárása során: ${errorData.error || 'Ismeretlen hiba'}`);
+          }
+        } catch (error) {
+          console.error('Hiba történt a kérdőív lezárása során:', error);
+          alert('Hiba történt a kérdőív lezárása során. Kérjük, próbálja újra később.');
+        }
+      };
   
 
-    const handleCloseAndRefresh = () => {
-      onClose();
-      window.location.reload();
-    };
 
-
-    useEffect(() => {
-      const fetchSurveyStatus = async () => {
-        const response = await fetch(`http://localhost:3001/api/main/survey-status/${surveyId}`);
-        const data = await response.json();
-        setCompletionData({
-          completionCount: data.completion_count,
-          targetCount: data.mintavetel
-        });
-      };
-      fetchSurveyStatus();
-    }, [surveyId]);
+      useEffect(() => {
+        const fetchSurveyStatus = async () => {
+          const response = await fetch(`http://localhost:3001/api/main/survey-status/${surveyId}`);
+          const data = await response.json();
+          setCompletionData({
+            completionCount: data.completion_count,
+            targetCount: data.mintavetel
+          });
+        };
+        fetchSurveyStatus();
+      }, [surveyId]);
 
 return (
   <HelyzetContainer
@@ -174,7 +206,7 @@ return (
     Vissza a menübe
   </Button>
   <Button
-    onClick={lezaras}
+    onClick={handleOpenDialog}
     variant="outlined"
     sx={{
       alignItems: "center",
@@ -220,6 +252,32 @@ return (
             
           
           </Button>
+
+
+          {/* Megerősítő dialógus */}
+          <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Kérdőív lezárása"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Biztosan le szeretné zárni a kérdőívet? A lezárás után a kérdőív nem lesz elérhető a felhasználók számára.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="primary">
+                Nem
+              </Button>
+              <Button onClick={handleConfirmClose} color="primary" autoFocus>
+                Igen
+              </Button>
+            </DialogActions>
+          </Dialog>
         </HelyzetContainer>
     );
     };

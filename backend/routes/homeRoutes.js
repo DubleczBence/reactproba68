@@ -92,7 +92,7 @@ router.get('/available-surveys', async (req, res) => {
 
     const userData = userResponse[0];
 
-    // Módosított lekérdezés, amely a survey_connections táblát használja
+    // Módosított lekérdezés, amely csak az aktív kérdőíveket adja vissza
     const [surveys] = await db.promise().query(`
       SELECT s.id, s.title, s.credit_cost FROM survey_set s
       WHERE s.id NOT IN (
@@ -107,6 +107,7 @@ router.get('/available-surveys', async (req, res) => {
       AND (s.regio IS NULL OR s.regio = ?)
       AND (s.nem IS NULL OR s.nem = ?)
       AND (s.anyagi IS NULL OR s.anyagi = ?)
+      AND s.is_active = 1
       ORDER BY s.date_created DESC`,
       [
         userId,

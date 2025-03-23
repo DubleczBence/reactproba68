@@ -58,6 +58,13 @@ import Kredit from './Kredit';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Statisztika from './Statisztika';
 import Stack from '@mui/material/Stack';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import Popover from '@mui/material/Popover';
+import Slider from '@mui/material/Slider';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 
@@ -198,6 +205,110 @@ const CompHome = ({ onSignOut }) => {
     fifth: false,
     sixth: false
   });
+
+
+  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
+const [surveyFilter, setSurveyFilter] = useState({
+  title: '',
+  titleFilterType: 'contains', // 'startsWith', 'endsWith', 'equals', 'contains'
+  date: '',
+  dateFilterType: 'contains',
+  completionMin: 0,
+  completionMax: 100
+});
+const [filteredSurveys, setFilteredSurveys] = useState([]);
+
+// Popover nyitás/zárás kezelése
+const handleFilterClick = (event) => {
+  setFilterAnchorEl(event.currentTarget);
+};
+
+const handleFilterClose = () => {
+  setFilterAnchorEl(null);
+};
+
+const openFilter = Boolean(filterAnchorEl);
+const filterId = openFilter ? 'survey-filter-popover' : undefined;
+
+// Szűrő alkalmazása
+const applyFilter = () => {
+  const filtered = companySurveys.filter(survey => {
+    // Cím szűrése a kiválasztott szűrési típus alapján
+    let matchesTitle = true;
+    if (surveyFilter.title) {
+      const title = survey.title.toLowerCase();
+      const filterText = surveyFilter.title.toLowerCase();
+      
+      switch (surveyFilter.titleFilterType) {
+        case 'startsWith':
+          matchesTitle = title.startsWith(filterText);
+          break;
+        case 'endsWith':
+          matchesTitle = title.endsWith(filterText);
+          break;
+        case 'equals':
+          matchesTitle = title === filterText;
+          break;
+        case 'contains':
+        default:
+          matchesTitle = title.includes(filterText);
+          break;
+      }
+    }
+    
+    // Dátum szűrése a kiválasztott szűrési típus alapján
+    let matchesDate = true;
+    if (surveyFilter.date) {
+      const date = survey.created_date.toLowerCase();
+      const filterDate = surveyFilter.date.toLowerCase();
+      
+      switch (surveyFilter.dateFilterType) {
+        case 'startsWith':
+          matchesDate = date.startsWith(filterDate);
+          break;
+        case 'endsWith':
+          matchesDate = date.endsWith(filterDate);
+          break;
+        case 'equals':
+          matchesDate = date === filterDate;
+          break;
+        case 'contains':
+        default:
+          matchesDate = date.includes(filterDate);
+          break;
+      }
+    }
+    
+    // Kitöltöttség szűrése
+    const completion = Math.round(survey.completion_percentage);
+    const matchesCompletion = completion >= surveyFilter.completionMin && completion <= surveyFilter.completionMax;
+    
+    return matchesTitle && matchesDate && matchesCompletion;
+  });
+  
+  setFilteredSurveys(filtered);
+  handleFilterClose();
+};
+
+
+// Szűrő törlése
+const clearFilter = () => {
+  setSurveyFilter({
+    title: '',
+    titleFilterType: 'contains',
+    date: '',
+    dateFilterType: 'contains',
+    completionMin: 0,
+    completionMax: 100
+  });
+  setFilteredSurveys([]);
+  handleFilterClose();
+};
+
+// Használjuk a filteredSurveys-t, ha van benne elem, egyébként a companySurveys-t
+const isFilterActive = surveyFilter.title !== '' || surveyFilter.date !== '' || 
+                      surveyFilter.completionMin > 0 || surveyFilter.completionMax < 100;
+const displayedSurveys = isFilterActive ? filteredSurveys : companySurveys;
 
 
   useEffect(() => {
@@ -591,146 +702,447 @@ const handleCardDialogClose = (cardName) => {
 
     
 
-    <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
-
-    <IconButton aria-label="cart" sx={{ position: 'absolute', top: '1rem', right: '12.5rem' }}>
+<Box 
+  sx={{ 
+    width: '100%', 
+    mb: 4,
+    mt: { xs: 6, sm: 0 }, 
+    px: { xs: 1, sm: 2, md: 3 },
+    position: 'relative',
+    display: 'flex',
+    flexDirection: { xs: 'column', md: 'row' },
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }}
+>
+  {/* Kredit megjelenítése */}
+  <Typography
+    component="h1"
+    variant="h3"
+    sx={{
+      cursor: 'pointer',
+      fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.6rem' },
+      order: { xs: 2, md: 1 },
+      mt: { xs: 2, md: -1 },
+      position: 'relative',
+      zIndex: 5,
+      width: { xs: '100%', md: '25%' }, 
+      textAlign: { xs: 'center', md: 'left' },
+      pl: { md: 20 }, // Add padding to avoid logo overlap
+    }}
+    onClick={() => {
+      setShowCreditPage(true);
+      setValue(1);
+    }}
+  >
+    {credits} Kredit
+  </Typography>
+  
+  {/* Üdvözlő szöveg */}
+  <Typography
+    component="h1"
+    variant="h6"
+    sx={{
+      textAlign: 'center',
+      fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+      order: { xs: 1, md: 2 },
+      width: { xs: '100%', md: '50%' },
+      mt: { xs: 1, md: 0 },
+      mb: { xs: 1, md: 0 },
+      whiteSpace: 'nowrap',
+      zIndex: 4
+    }}
+  >
+    Köszöntjük az oldalon, {name}!
+  </Typography>
+  
+  {/* Témaválasztás, értesítések és profil */}
+  <Box sx={{
+    display: 'flex',
+    gap: { xs: 2, sm: 3, md: 4 },
+    order: { xs: 3, md: 3 },
+    mt: { xs: 2, md: 0 },
+    width: { xs: '100%', md: '25%' },
+    justifyContent: { xs: 'center', md: 'flex-end' }
+  }}>
+    <ColorModeSelect sx={{ 
+      display: 'flex',
+      alignItems: 'center'
+    }} />
+    
+    <IconButton aria-label="notifications">
       <StyledBadge badgeContent={4} color="secondary">
         <MailIcon />
       </StyledBadge>
     </IconButton>
     
-
-      
-      <Typography
-        component="h1"
-        variant="h6"
+    <Tooltip title="Account settings">
+      <IconButton
+        onClick={handleClickProfile}
+        size="small"
         sx={{
-          textAlign: 'center',
-          mb: 2,
+          padding: 0,
+          width: 40,
+          height: 40,
+          borderRadius: '50%',
+          overflow: 'hidden',
         }}
+        aria-controls={openprofile ? 'account-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={openprofile ? 'true' : undefined}
       >
-        Köszöntjük az oldalon, {name}!
-      </Typography>
+        <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
+      </IconButton>
+    </Tooltip>
+  </Box>
+</Box>
 
-      
+
+
       <SimpleBottomNavigation
         value={value}
         onChange={handleNavigationChange}
       />
 
-      
-      <Typography
-        component="h1"
-        variant="h3"
-        sx={{
-          position: 'absolute',
-          top: 26,
-          left: 180,
-          cursor: 'pointer'
-        }}
-        onClick={() => {
-          setShowCreditPage(true);
-          setValue(1);
-        }}
-      >
-        {credits} Kredit
-      </Typography>
 
-
-
-
+{showFirstCard && !showCreditPage && (
+  <Box sx={{ 
+    display: 'flex', 
+    justifyContent: 'flex-end', 
+    width: '95%', 
+    maxWidth: '700px',
+    mb: 0,
+    mt: 4,
+  }}>
+    <Button
+      aria-describedby={filterId}
+      onClick={handleFilterClick}
+      variant="outlined"
+      sx={{
+        minWidth: { xs: "50px", sm: "60px" },
+        height: { xs: "40px", sm: "40px" },
+        position: 'relative',
+        bgcolor: (theme) => theme.palette.background.paper,
+      }}
+    >
+      <FilterListIcon color={isFilterActive ? "primary" : "inherit"} />
+      {isFilterActive && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            bgcolor: 'primary.main',
+          }}
+        />
+      )}
+    </Button>
+  </Box>
+)}
 
       {/* Első Card */}
       { showFirstCard && !showCreditPage && (
-        <Card
-          variant="outlined"
+  <Card
+    variant="outlined"
+    sx={{
+      mt: 1,
+      width: "95% !important",
+      height: { xs: "auto", sm: "70%" }, // Mobil nézetben auto magasság
+      maxWidth: "700px !important",
+      overflow: "auto", // Biztosítja, hogy a tartalom ne csússzon ki
+    }}
+  >
+    <Button
+      onClick={handleClickOpenKerd}
+      sx={{
+        height: { xs: "auto", sm: "80px" }, // Mobil nézetben automatikus magasság
+        minHeight: "60px", // Minimum magasság minden méretben
+        width: "100%",
+        justifyContent: "flex-start",
+        textAlign: "left",
+        pl: { xs: 2, sm: 4 }, // Kisebb padding mobil nézetben
+        fontSize: { xs: "1rem", sm: "1.2rem" }, // Kisebb betűméret mobil nézetben
+        flexShrink: 0,
+        mb: 2,
+        whiteSpace: "normal", // Engedi a sortörést
+      }}
+      variant="outlined"
+      startIcon={
+        <AddCircleOutlineIcon
           sx={{
-            mt: 7,
-            width: "95% !important",
-            height: "70% !important",
-            maxWidth: "700px !important",
+            width: { xs: "24px", sm: "32px" }, // Kisebb ikon mobil nézetben
+            height: { xs: "24px", sm: "32px" },
+            mr: { xs: 1, sm: 2 },
+          }}
+        />
+      }
+    >
+      Kérdőív létrehozása
+    </Button>
+
+
+    
+
+    {/* Szűrő Popover */}
+    <Popover
+  id={filterId}
+  open={openFilter}
+  anchorEl={filterAnchorEl}
+  onClose={handleFilterClose}
+  anchorOrigin={{
+    vertical: 'bottom',
+    horizontal: 'right',
+  }}
+  transformOrigin={{
+    vertical: 'top',
+    horizontal: 'right',
+  }}
+>
+  <Box sx={{ p: 3, width: 350 }}>
+    <Typography variant="h6" gutterBottom>
+      Kérdőívek szűrése
+    </Typography>
+    
+    {/* Cím szűrése */}
+    <Box sx={{ mb: 2 }}>
+      <Typography variant="subtitle2" gutterBottom>
+        Kérdőív címe
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <FormControl size="small" sx={{ width: '70%' }}>
+        <Select
+        value={surveyFilter.titleFilterType}
+        onChange={(e) => setSurveyFilter({...surveyFilter, titleFilterType: e.target.value})}
+        sx={{
+          '& .MuiSelect-select': {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            pr: 4 
+          }
+        }}
+        renderValue={(value) => {
+          const options = {
+            contains: 'Tartalmazza',
+            startsWith: 'Kezdődik...',
+            endsWith: 'Végződik...',
+            equals: 'Egyezik...'
+          };
+          return options[value] || value;
+        }}
+      >
+            <MenuItem value="contains">Tartalmazza</MenuItem>
+            <MenuItem value="startsWith">Ezzel kezdődik</MenuItem>
+            <MenuItem value="endsWith">Ezzel végződik</MenuItem>
+            <MenuItem value="equals">Pontosan egyezik</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          size="small"
+          fullWidth
+          value={surveyFilter.title}
+          onChange={(e) => setSurveyFilter({...surveyFilter, title: e.target.value})}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
+    </Box>
+    
+    {/* Dátum szűrése */}
+    <Box sx={{ mb: 2 }}>
+      <Typography variant="subtitle2" gutterBottom>
+        Dátum
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <FormControl size="small" sx={{ width: '70%' }}>
+        <Select
+        value={surveyFilter.dateFilterType}
+        onChange={(e) => setSurveyFilter({...surveyFilter, dateFilterType: e.target.value})}
+        sx={{
+          '& .MuiSelect-select': {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            pr: 4 
+          }
+        }}
+        renderValue={(value) => {
+          const options = {
+            contains: 'Tartalmazza',
+            startsWith: 'Kezdődik...',
+            endsWith: 'Végződik...',
+            equals: 'Egyezik...'
+          };
+          return options[value] || value;
+        }}
+      >
+            <MenuItem value="contains">Tartalmazza</MenuItem>
+            <MenuItem value="startsWith">Ezzel kezdődik</MenuItem>
+            <MenuItem value="endsWith">Ezzel végződik</MenuItem>
+            <MenuItem value="equals">Pontosan egyezik</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          size="small"
+          fullWidth
+          value={surveyFilter.date}
+          onChange={(e) => setSurveyFilter({...surveyFilter, date: e.target.value})}
+          placeholder="pl. 2023-05"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" />
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
+    </Box>
+    
+    {/* Kitöltöttség szűrése */}
+    <Box sx={{ mt: 3 }}>
+      <Typography variant="subtitle2" gutterBottom>
+        Kitöltöttség (%)
+      </Typography>
+      <Slider
+        value={[surveyFilter.completionMin, surveyFilter.completionMax]}
+        onChange={(e, newValue) => setSurveyFilter({
+          ...surveyFilter, 
+          completionMin: newValue[0], 
+          completionMax: newValue[1]
+        })}
+        valueLabelDisplay="auto"
+        min={0}
+        max={100}
+      />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+        <Typography variant="caption">
+          Min: {surveyFilter.completionMin}%
+        </Typography>
+        <Typography variant="caption">
+          Max: {surveyFilter.completionMax}%
+        </Typography>
+      </Box>
+    </Box>
+    
+    {/* Szűrés gombok */}
+    <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
+      <Button onClick={clearFilter} color="inherit">
+        Törlés
+      </Button>
+      <Button onClick={applyFilter} variant="contained">
+        Szűrés
+      </Button>
+    </Box>
+  </Box>
+</Popover>
+
+
+    {displayedSurveys.map(survey => (
+      <Button
+        key={survey.id}
+        onClick={() => {
+          setSelectedSurveyId(survey.id);
+          setShowFirstCard(false);
+          setShowSecondCard(false);
+          setShowThirdCard(false);
+          setShowFourthCard(false);
+          setShowFifthCard(false);
+          setShowSixthCard(true);
+        }}
+        sx={{
+          height: { xs: "auto", sm: "80px" }, // Mobil nézetben automatikus magasság
+          minHeight: { xs: "80px", sm: "80px" }, // Minimum magasság minden méretben
+          flexShrink: 0,
+          textAlign: "left",
+          pl: { xs: 2, sm: 4 }, // Kisebb padding mobil nézetben
+          fontSize: { xs: "0.9rem", sm: "1.2rem" }, // Kisebb betűméret mobil nézetben
+          mb: 2,
+          width: "100%",
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' }, // Mobil nézetben oszlopba rendezi
+          alignItems: { xs: 'flex-start', sm: 'center' }, // Mobil nézetben balra igazít
+          justifyContent: 'space-between',
+          py: { xs: 2, sm: 0 }, // Extra padding-y mobil nézetben
+          whiteSpace: "normal", // Engedi a sortörést
+        }}
+        variant="outlined"
+      >
+        <Typography 
+          component="span" 
+          sx={{ 
+            fontSize: { xs: '0.9rem', sm: '1.2rem' },
+            mb: { xs: 1, sm: 0 }, // Mobil nézetben alsó margó
+            width: { xs: '100%', sm: 'auto' }, // Mobil nézetben teljes szélesség
+            wordBreak: "break-word" // Hosszú szavak törése
           }}
         >
-          <Button
-            onClick={handleClickOpenKerd}
+          {survey.title}
+        </Typography>
+        
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'row', sm: 'row' }, 
+          alignItems: 'center', 
+          gap: { xs: 1, sm: 2 }, 
+          mr: { xs: 0, sm: 2 },
+          width: { xs: '100%', sm: 'auto' }, // Mobil nézetben teljes szélesség
+          justifyContent: { xs: 'space-between', sm: 'flex-end' } // Mobil nézetben szétosztja
+        }}>
+          <Typography
+            component="span"
             sx={{
-              height: "80px !important",
-              width: "100%",
-              justifyContent: "flex-start",
-              textAlign: "left",
-              pl: 4,
-              fontSize: "1.2rem",
-              flexShrink: 0,
-              mb: 2
+              width: "auto",
+              minWidth: { xs: "auto", sm: "150px" }, // Mobil nézetben automatikus szélesség
+              height: { xs: "auto", sm: "37px" }, // Mobil nézetben automatikus magasság
+              borderRadius: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 10px",
+              fontSize: { xs: '0.8rem', sm: 'inherit' } // Kisebb betűméret mobil nézetben
             }}
-            variant="outlined"
-            startIcon={
-              <AddCircleOutlineIcon
-                sx={{
-                  width: "32px",
-                  height: "32px",
-                  mr: 2,
-                }}
-              />
-            }
           >
-            Kérdőív létrehozása
-          </Button>
-
-          {companySurveys.map(survey => (
-              <Button
-                key={survey.id}
-                onClick={() => {
-                  setSelectedSurveyId(survey.id);
-                  setShowFirstCard(false);
-                  setShowSecondCard(false);
-                  setShowThirdCard(false);
-                  setShowFourthCard(false);
-                  setShowFifthCard(false);
-                  setShowSixthCard(true);
-                }}
-                sx={{
-                  height: "80px !important",
-                  minHeight: "80px",
-                  flexShrink: 0,
-                  textAlign: "left",
-                  pl: 4,
-                  fontSize: "1.2rem",
-                  mb: 2,
-                  width: "100%",
-                  display: 'flex',
-                  justifyContent: 'space-between'
-                }}
-                variant="outlined"
-              >
-                <span>{survey.title}</span>
-                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, mr: 2 }}>
-                  <Typography
-                    component="span"
-                    sx={{
-                      width: "auto",
-                      minWidth: "150px",
-                      height: "37px",
-                      borderRadius: "10px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      padding: "0 10px"
-                    }}
-                  >
-                    {survey.created_date}
-                  </Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography>{Math.round(survey.completion_percentage)}%</Typography>
-                    <Typography variant="caption" sx={{ mt: -0.5 }}>
-                      Folyamatban
-                    </Typography>
-                  </Box>
-                </Box>
-              </Button>
-            ))}
-        </Card>
-      )}
+            {survey.created_date}
+          </Typography>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center',
+            minWidth: { xs: "60px", sm: "auto" } // Fix szélesség mobil nézetben
+          }}>
+            <Typography sx={{ fontSize: { xs: '0.8rem', sm: 'inherit' } }}>
+              {Math.round(survey.completion_percentage)}%
+            </Typography>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                mt: -0.5,
+                fontSize: { xs: '0.7rem', sm: '0.75rem' } // Kisebb betűméret mobil nézetben
+              }}
+            >
+              Folyamatban
+            </Typography>
+          </Box>
+        </Box>
+      </Button>
+    ))}
+    {/* Ha nincs találat a szűrésre, jelenítsünk meg egy üzenetet */}
+    {filteredSurveys.length === 0 && surveyFilter.title !== '' && (
+      <Typography sx={{ textAlign: 'center', mt: 2, color: 'text.secondary' }}>
+        Nincs a szűrésnek megfelelő kérdőív
+      </Typography>
+    )}
+  </Card>
+)}
 
       {/* Második Card */}
       {!showThirdCard && !showFirstCard && showSecondCard && (
@@ -1197,28 +1609,6 @@ const handleCardDialogClose = (cardName) => {
   </Box>
 )}
 
-
-  <Tooltip title="Account settings">
-    <IconButton
-      onClick={handleClickProfile}
-      size="small"
-      sx={{
-        position: 'absolute',
-        top: 16,
-        right: 16,
-        padding: 0, 
-        width: 40, 
-        height: 40, 
-        borderRadius: '50%', 
-        overflow: 'hidden', 
-      }}
-      aria-controls={openprofile ? 'account-menu' : undefined}
-      aria-haspopup="true"
-      aria-expanded={openprofile ? 'true' : undefined}
-    >
-      <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
-    </IconButton>
-  </Tooltip>
 
         <Menu
         anchorEl={anchorEl}

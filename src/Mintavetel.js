@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -41,15 +41,25 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
 
 
 
+  const initialValue = Math.max(50, Math.min(Math.floor(userCount / 2), userCount));
+  const [value, setValue] = React.useState(initialValue);
 
-  const [value, setValue] = React.useState(50);
+
+
+  useEffect(() => {
+    if (value > userCount) {
+      setValue(userCount);
+    }
+  }, [userCount, value]);
+
 
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const handleInputChange = (event) => {
-    setValue(event.target.value === '' ? 0 : Number(event.target.value));
+    const inputValue = event.target.value === '' ? 0 : Number(event.target.value);
+    setValue(Math.max(50, Math.min(inputValue, userCount)));
   };
 
 
@@ -58,155 +68,158 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
   };
 
 
+  const minValue = 50;
+  const maxValue = Math.max(minValue, userCount);
 
-return (
-  <MintavetelContainer 
-  noValidate
-  autoComplete="off"
-  variant="outlined"
-  sx={{
-    top: "4px",
-    mt: 7, 
-    width: "95% !important",
-    height: "60% !important",
-    maxWidth: "700px !important",
-    position: "relative",
-    padding: "10px",
-    overflow: "auto",
-  }}>
-
-    <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
-        Mintavétel
-    </Typography>
-    <Typography variant="h6" sx={{ mt: 2, alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-        A meghatározott célcsoportból
-    </Typography>
-    <Typography variant="h4" sx={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-        {userCount} Fő
-    </Typography>
-    <Typography variant="h6" sx={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-        Érhető el
-    </Typography>
-
-
-
-
-    <Box sx={{ width: '90%', mx: 'auto', mt: 4, mb: 4 }}>
-      <Box container spacing={2} sx={{ alignItems: 'center' }}>
-        <Box item>
-        </Box>
-        <Box item xs
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-        >
-          <Typography sx={{ mr: 2 }}>50 fő</Typography>
-          <Slider
-            value={typeof value === 'number' ? value : 50}
-            onChange={handleSliderChange}
-            aria-labelledby="input-slider"
-            min={50}
-            max={1000}
-            sx={{ width: '300px' }}
-          />
-          <Typography sx={{ ml: 2 }}>1000 fő</Typography>
-        </Box>
-      </Box>
-      <Box item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Input
-          value={value}
-          size="medium"
-          onChange={handleInputChange}
-          sx={{ 
-            width: '100px',  
-            '& input': {
-              fontSize: '20px',
-              padding: '5px',
-              textAlign: 'center'
-            }
-          }}
-        />
-      </Box>
-    </Box>
-
-
-    <Box
-  sx={{
-    display: "flex",         
-    flexDirection: "row",    
-    alignItems: "center",    
-    justifyContent: "center", 
-    gap: 2,                  
-    mt: "auto",
-    mb: 2,       
-  }}>
-  <Button
-    onClick={handleNext}
+  return (
+    <MintavetelContainer 
+    noValidate
+    autoComplete="off"
     variant="outlined"
     sx={{
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
-      width: "82px",
-      border: "none", 
-      borderRadius: "10px", 
-      backgroundColor: (theme) => theme.palette.background.paper,
-      color: (theme) => theme.palette.text.primary,
-      "&:hover": {
-        backgroundColor: (theme) =>
-          theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
-      },
-    }}
-  >
-    Tovább
-  </Button>
-  <Button
-    onClick={onBack}
-    variant="outlined"
-    sx={{
-      alignItems: "center",
-      justifyContent: "center", 
-      textAlign: "center",
-      width: "82px",
-      border: "none",
-      borderRadius: "10px",
-      backgroundColor: (theme) => theme.palette.background.paper,
-      color: (theme) => theme.palette.text.primary,
-      "&:hover": {
-        backgroundColor: (theme) =>
-          theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
-      },
-    }}
-  >
-    Vissza
-  </Button>
-</Box>
-
-        <Button
-            onClick={onClose}
-            sx={{
-              position: "absolute", 
-              top: "8px", 
-              right: "8px",
-              width: "22px", 
-              height: "22px",
-              minWidth: "0px", 
-              padding: "0px", 
-              display: "flex", 
-              alignItems: "center",
-              justifyContent: "center",
+      top: "4px",
+      mt: 7, 
+      width: "95% !important",
+      height: "60% !important",
+      maxWidth: "700px !important",
+      position: "relative",
+      padding: "10px",
+      overflow: "auto",
+    }}>
+  
+      <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
+          Mintavétel
+      </Typography>
+      <Typography variant="h6" sx={{ mt: 2, alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+          A meghatározott célcsoportból
+      </Typography>
+      <Typography variant="h4" sx={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+          {userCount} Fő
+      </Typography>
+      <Typography variant="h6" sx={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+          Érhető el
+      </Typography>
+  
+  
+  
+  
+      <Box sx={{ width: '90%', mx: 'auto', mt: 4, mb: 4 }}>
+        <Box container spacing={2} sx={{ alignItems: 'center' }}>
+          <Box item>
+          </Box>
+          <Box item xs
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          >
+            <Typography sx={{ mr: 2 }}>{minValue} fő</Typography>
+            <Slider
+              value={typeof value === 'number' ? value : initialValue}
+              onChange={handleSliderChange}
+              aria-labelledby="input-slider"
+              min={minValue}
+              max={maxValue}
+              sx={{ width: '300px' }}
+              disabled={userCount <= minValue} // Ha nincs elég felhasználó, letiltjuk a slidert
+            />
+            <Typography sx={{ ml: 2 }}>{maxValue} fő</Typography>
+          </Box>
+        </Box>
+        <Box item xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Input
+            value={value}
+            size="medium"
+            onChange={handleInputChange}
+            sx={{ 
+              width: '100px',  
+              '& input': {
+                fontSize: '20px',
+                padding: '5px',
+                textAlign: 'center'
+              }
             }}
-            >
+          />
+        </Box>
+      </Box>
+  
+  
+      <Box
+    sx={{
+      display: "flex",         
+      flexDirection: "row",    
+      alignItems: "center",    
+      justifyContent: "center", 
+      gap: 2,                  
+      mt: "auto",
+      mb: 2,       
+    }}>
+    <Button
+      onClick={handleNext}
+      variant="outlined"
+      sx={{
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        width: "82px",
+        border: "none", 
+        borderRadius: "10px", 
+        backgroundColor: (theme) => theme.palette.background.paper,
+        color: (theme) => theme.palette.text.primary,
+        "&:hover": {
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
+        },
+      }}
+    >
+      Tovább
+    </Button>
+    <Button
+      onClick={onBack}
+      variant="outlined"
+      sx={{
+        alignItems: "center",
+        justifyContent: "center", 
+        textAlign: "center",
+        width: "82px",
+        border: "none",
+        borderRadius: "10px",
+        backgroundColor: (theme) => theme.palette.background.paper,
+        color: (theme) => theme.palette.text.primary,
+        "&:hover": {
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
+        },
+      }}
+    >
+      Vissza
+    </Button>
+  </Box>
+  
+          <Button
+              onClick={onClose}
+              sx={{
+                position: "absolute", 
+                top: "8px", 
+                right: "8px",
+                width: "22px", 
+                height: "22px",
+                minWidth: "0px", 
+                padding: "0px", 
+                display: "flex", 
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              >
+              
+                <CloseIcon
+                  sx={{
+                    width: "22px",
+                    height: "22px",
+                  }}
+                />
+              
             
-              <CloseIcon
-                sx={{
-                  width: "22px",
-                  height: "22px",
-                }}
-              />
-            
-          
-          </Button>
-        </MintavetelContainer>
-    );
-    };
-
-    export default Mintavetel;
+            </Button>
+          </MintavetelContainer>
+      );
+      };
+  
+      export default Mintavetel;

@@ -384,4 +384,35 @@ router.get('/survey-answers/:surveyId', async (req, res) => {
 });
 
 
+router.post('/close-survey/:surveyId', async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1]; 
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const companyId = decoded.id;
+
+    // Ellenőrizzük, hogy a cég tulajdonosa-e a kérdőívnek
+    const [surveyOwnership] = await db.promise().query(
+      `SELECT * FROM company_connections 
+       WHERE company_id = ? AND connection_id = ? AND connection_type = 'survey'`,
+      [companyId, req.params.surveyId]
+    );
+
+    if (surveyOwnership.length === 0) {
+      return res.status(403).json({ error: 'Nincs jogosultsága a kérdőív lezárásához' });
+    }
+
+    // Kérdőív lezárása (is_active mező frissítése)
+    await db.promise().query(
+      'UPDATE survey_set SET is_active = 0 WHERE id = ?',
+      [req.params.surveyId]
+    );
+
+    res.status(200).json({ message: 'Kérdőív sikeresen lezárva' });
+  } catch (error) {
+    console.error('Error closing survey:', error);
+    res.status(500).json({ error: 'Failed to close survey' });
+  }
+});
+
+
 module.exports = router;

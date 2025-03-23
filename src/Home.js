@@ -44,13 +44,23 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { useTheme } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
+import { useTheme, createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 
 const SimpleBottomNavigation = ({ value, onChange }) => {
-  const theme = useTheme();
+  const theme = createTheme({
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 960,
+        lg: 1280,
+        xl: 1920,
+        custom: 730 // Egyedi breakpoint
+      },
+    },
+  });
 
   return (
     <BottomNavigation
@@ -440,6 +450,7 @@ const [open, setOpen] = React.useState(false);
     if (isFormFilled) {
   return (
 
+    <ThemeProvider theme={theme}>
     <AppTheme {...onSendData}>
       <UserContainer direction="column" justifyContent="space-between">
       <React.Fragment>
@@ -448,64 +459,69 @@ const [open, setOpen] = React.useState(false);
   sx={{ 
     width: '100%', 
     mb: 4,
-    mt: -3.5,
-    px: { xs: 2, sm: 3, md: 4 },
-    position: 'relative' // Add relative positioning to the container
+    mt: { xs: 6, sm: 0 }, 
+    px: { xs: 1, sm: 2, md: 3 },
+    position: 'relative',
+    display: 'flex',
+    flexDirection: { xs: 'column', md: 'row' },
+    alignItems: 'center',
+    justifyContent: 'space-between'
   }}
 >
-  <Grid container spacing={2} alignItems="center">
-    {/* Kredit megjelenítése */}
-    <Grid item xs={12} sm={4} md={3} sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
-      <Typography
-        component="h1"
-        variant="h4"
-        sx={{
-          cursor: 'pointer',
-          fontSize: { xs: '1.1rem', sm: '1.4rem', md: '1.8rem' },
-          ml: { sm: 12, md: 18 }
-        }}
-        onClick={() => {
-          setShowUserCreditPage(true);
-          setShowSurvey(false);
-        }}
-      >
-        {credits} Kredit
-      </Typography>
-    </Grid>
-    
-    {/* Üdvözlő szöveg */}
-    <Grid item xs={12} sm={4} md={6} sx={{ 
-  display: 'flex', 
-  justifyContent: 'center'
-}}>
+  {/* Kredit megjelenítése */}
+  <Typography
+    component="h1"
+    variant="h4"
+    sx={{
+      cursor: 'pointer',
+      fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.6rem' },
+      order: { xs: 2, md: 1 },
+      mt: { xs: 2, md: -1 },
+      position: 'relative',
+      zIndex: 5,
+      width: { xs: '100%', md: '25%' }, 
+      textAlign: { xs: 'center', md: 'left' },
+      pl: { md: 20 }, // Add padding to avoid logo overlap
+    }}
+    onClick={() => {
+      setShowUserCreditPage(true);
+      setShowSurvey(false);
+    }}
+  >
+    {credits} Kredit
+  </Typography>
+  
+  {/* Üdvözlő szöveg */}
   <Typography
     component="h1"
     variant="h6"
     sx={{
       textAlign: 'center',
       fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-      width: '100%',
-      mx: 'auto',
-      ml: { xs: '-4px', sm: '-6px', md: '-8px' } // Slight shift to the left
+      order: { xs: 1, md: 2 },
+      width: { xs: '100%', md: '50%' },
+      mt: { xs: 1, md: 0 },
+      mb: { xs: 1, md: 0 },
+      whiteSpace: 'nowrap',
+      zIndex: 4
     }}
   >
     Köszöntjük az oldalon, {name}!
   </Typography>
-</Grid>
-    
-    {/* Témaválasztás és profil - positioned at the absolute edge */}
-    <Grid item xs={12} sm={4} md={3} sx={{
-  display: 'flex',
-  justifyContent: 'flex-end',
-}}>
+  
+  {/* Témaválasztás és profil */}
   <Box sx={{
     display: 'flex',
-    gap: 5,
-    position: 'absolute', // Position absolutely
-    right: { xs: '0px', sm: '0px', md: '0px' },
-    top: '20px' // Move it up by 10px - adjust this value as needed
+    gap: { xs: 2, sm: 3, md: 5 },
+    order: { xs: 3, md: 3 },
+    mt: { xs: 2, md: 0 },
+    width: { xs: '100%', md: '25%' },
+    justifyContent: { xs: 'center', md: 'flex-end' }
   }}>
-    <ColorModeSelect />
+    <ColorModeSelect sx={{ 
+      display: 'flex',
+      alignItems: 'center'
+    }} />
     <Tooltip title="Account settings">
       <IconButton
         onClick={handleClickProfile}
@@ -525,8 +541,6 @@ const [open, setOpen] = React.useState(false);
       </IconButton>
     </Tooltip>
   </Box>
-</Grid>
-  </Grid>
 </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
@@ -830,6 +844,7 @@ const [open, setOpen] = React.useState(false);
       </React.Fragment>
     </UserContainer>
     </AppTheme>
+    </ThemeProvider>
     )} else{ 
       return(
         <AppTheme {...onSendData}>
@@ -840,21 +855,101 @@ const [open, setOpen] = React.useState(false);
             <CssBaseline enableColorScheme />
 
 
-                <Typography
-              component="h1"
-              variant="h6"
-              sx={{
-                textAlign: 'center',
-                mb: 2,
-              }}
-            >
-              Köszöntjük az oldalon, {name}!
-            </Typography>
-            
-            <ColorModeSelect sx={{ position: 'absolute', top: '1rem', right: '5rem' }} />
+            <Box 
+  sx={{ 
+    width: '100%', 
+    mb: 4,
+    mt: { xs: 6, sm: 0 }, 
+    px: { xs: 1, sm: 2, md: 3 },
+    position: 'relative',
+    display: 'flex',
+    flexDirection: { xs: 'column', sm: 'row' },
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  }}
+>
+<Typography
+  component="h1"
+  variant="h4"
+  sx={{
+    visibility: 'hidden', // Láthatatlan, de foglal helyet
+    fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.6rem' },
+    order: { xs: 2, sm: 1 },
+    mt: { xs: 2, sm: -2 },
+    ml: { sm: 12, md: 18 },
+    position: 'relative',
+    zIndex: 5,
+    width: { sm: '25%' }, // Fix szélesség tablet mérettől
+    textAlign: { sm: 'left' }
+  }}
+>
+  {/* Üres szöveg, hogy ne látszódjon, de helyet foglaljon */}
+  &nbsp;
+</Typography>
+  
+  {/* Üdvözlő szöveg */}
+  <Typography
+    component="h1"
+    variant="h6"
+    sx={{
+      textAlign: 'center',
+      fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+      order: { xs: 1, sm: 2 },
+      position: { sm: 'absolute' },
+      left: { sm: '50%' },
+      transform: { sm: 'translateX(-50%)' },
+      width: { xs: '100%', sm: 'auto' },
+      mt: { xs: 2, sm: -1 },
+      whiteSpace: 'nowrap', // Megakadályozza a sortörést
+      zIndex: 4 // Alacsonyabb z-index, mint a kredit
+    }}
+  >
+    Köszöntjük az oldalon, {name}!
+  </Typography>
+  
+  {/* Témaválasztás és profil */}
+  <Box sx={{
+    display: 'flex',
+    gap: { xs: 2, sm: 3, md: 5 },
+    order: { xs: 3, sm: 3 },
+    mt: { xs: 0, sm: 0 },
+    position: 'relative',
+    right: { xs: 0, sm: -10, md: -20 },
+    width: { sm: '25%' }, // Fix szélesség tablet mérettől
+    justifyContent: 'flex-end' // Jobbra igazítás
+  }}>
+    <ColorModeSelect sx={{ 
+      display: 'flex',
+      alignItems: 'center'
+    }} />
+    <Tooltip title="Account settings">
+      <IconButton
+        onClick={handleClickProfile}
+        size="small"
+        sx={{
+          padding: 0,
+          width: 40,
+          height: 40,
+          borderRadius: '50%',
+          overflow: 'hidden',
+        }}
+        aria-controls={openprofile ? 'account-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={openprofile ? 'true' : undefined}
+      >
+        <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
+      </IconButton>
+    </Tooltip>
+  </Box>
+</Box>
             
 
-            <Card variant="outlined" sx={{ width: '600px' }}>
+            <Card variant="outlined" sx={{ 
+              width: { xs: '95%', sm: '600px' },
+              maxWidth: '600px',
+              mx: 'auto',
+              mt: { xs: 0, sm: 2 }
+            }}>
     
 
       
@@ -1062,29 +1157,6 @@ const [open, setOpen] = React.useState(false);
       </Button>
     </Card>
   
-
-
-  <Tooltip title="Account settings">
-    <IconButton
-      onClick={handleClickProfile}
-      size="small"
-      sx={{
-        position: 'absolute',
-        top: 16,
-        right: 16,
-        padding: 0, 
-        width: 40, 
-        height: 40, 
-        borderRadius: '50%', 
-        overflow: 'hidden', 
-      }}
-      aria-controls={openprofile ? 'account-menu' : undefined}
-      aria-haspopup="true"
-      aria-expanded={openprofile ? 'true' : undefined}
-    >
-      <Avatar sx={{ width: 40, height: 40 }} src="/static/images/avatar/2.jpg" />
-    </IconButton>
-  </Tooltip>
 
         <Menu
         anchorEl={anchorEl}

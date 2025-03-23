@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Button, Grid } from "@mui/material";
+import { Card, CardContent, Typography, Button, Grid, Box, useMediaQuery } from "@mui/material";
 import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { styled, useTheme } from '@mui/material/styles';
 
 const creditOptions = [
   { amount: 500, price: "10 000 Ft" },
@@ -14,22 +13,21 @@ const StyledCard = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignSelf: 'center',
-  width: '100%',
+  width: '100%', // Eltávolítottuk a fix 700px szélességet
   padding: theme.spacing(2),
   gap: theme.spacing(1),
   margin: 'auto',
   overflow: 'auto',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  [theme.breakpoints.up('sm')]: {
-    width: '700px',
-  },
-  minHeight: '640px'
+  minHeight: '740px',
 }));
 
 const CreditPurchase = ({ currentCredits, onPurchase }) => {
   const [creditHistory, setCreditHistory] = useState([]);
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const isNarrow = useMediaQuery('(max-width:1700px) and (min-width:901px)');
 
   useEffect(() => {
     const fetchCreditHistory = async () => {
@@ -39,8 +37,6 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     };
     fetchCreditHistory();
   }, []);
-
-
 
   const handlePurchase = async (amount) => {
     try {
@@ -74,26 +70,35 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
       console.error('Error purchasing credits:', error);
     }
   };
+
   return (
-    <>
-      {/* Credit History Card - Left Side */}
-    <Card
-      variant="outlined"
-      sx={{
-        position: 'absolute',
-        left: '20px',
-        top: '165px',
-        width: "550px",
-        flexShrink: 0,
-        boxShadow: 'none',
-        backgroundColor: 'transparent',
-        maxHeight: "640px",
-        overflowY: "auto"
-      }}
-    >
-        <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>
-          Pont előzmények
-        </Typography>
+    <Box
+  sx={{
+    minHeight: '100vh', // Az oldal teljes magassága
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    overflow: 'auto', // Gyermek elemek overflow kezeléséhez
+  }}
+>
+      {/* Transaction History Card - Left Side on Desktop, Below on Mobile */}
+      <Card
+  variant="outlined"
+  sx={{
+    position: isMobile ? 'static' : 'absolute',
+    left: isMobile ? 'auto' : '20px',
+    top: isMobile ? 'auto' : '145px',
+    width: isMobile ? "95%" : (isNarrow ? "400px" : "550px"), // Keskenyebb a köztes állapotban
+    flexShrink: 0,
+    boxShadow: 'none',
+    backgroundColor: 'transparent',
+    maxHeight: isMobile ? "400px" : "640px",
+    overflowY: "auto",
+    margin: isMobile ? "20px auto" : undefined,
+    order: isMobile ? 2 : 1,
+  }}
+>
+        <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
         {creditHistory.map((transaction) => (
           <Button
             key={transaction.id}
@@ -127,124 +132,186 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
         ))}
       </Card>
 
-
-        {/* Main Card - center */}
-        <StyledCard
-        variant="outlined"
-        sx={{
-          mt: 5,
-          width: "95% !important",
-          maxWidth: "700px !important",
-          display: 'flex',
-          alignItems: 'center',
-          padding: 2,
-          margin: '0 auto'
-        }}
-        >
-      
+      {/* Main Voucher Card */}
       <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        mb: 2,
-        mt: 1,
-        width: '100%'
-      }}>
-        <Typography variant="h4" fontWeight="bold" sx={{ textAlign: 'left', ml: 4 }}>
-          Aktuális egyenleg
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-          <Typography
-            variant="subtitle1"
-            fontWeight="bold"
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      position: 'relative',
+      width: '100%',
+      flexGrow: 1, // Növekedés biztosítása
+    }}>
+        <StyledCard
+            variant="outlined"
             sx={{
-              fontSize: '1.875rem'
+              mt: 15,
+              width: "100%", // Teljes szélességet foglalja el
+              maxWidth: "700px", // Maximális szélesség korlátozása
+              height: isMobile ? "auto" : "600px", // Magasság a görgethetőséghez
+              display: 'flex',
+              flexDirection: 'column', // Vertikális elrendezés
+              alignItems: 'center',
+              padding: 2,
+              margin: '0 auto',
+              overflowY: 'auto', // Görgethetőség engedélyezése
+              order: isMobile ? 1 : 2,
             }}
           >
-           {currentCredits}
-          </Typography>
-          <Typography sx={{ ml: 1 }}>
-            Kredit
-          </Typography>
-        </Box>
-      </Box>
-      
-      {['Havi feltöltés', 'Egyszeri feltöltés'].map((category, index) => (
-        <Card key={index} sx={{ marginBottom: 1, boxShadow: 'none',    height:'100%',  width: '100%', backgroundColor: '#f5f5f5', padding: 2 }}>
-          <CardContent sx={{ padding: '4px 0 0 0' }}>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              mb: 1, 
-              width: '100%'
+          <Box sx={{
+  display: 'flex',
+  flexDirection: { xs: 'column', sm: 'row' },
+  alignItems: 'center',  // Mindig középre igazítjuk függőlegesen
+  justifyContent: 'center',  // Mindig középre igazítjuk vízszintesen
+  mb: 2,
+  mt: 1,
+  width: '100%',
+  position: 'relative',
+  padding: { xs: '0 10px', sm: '0 20px' }
+}}>
+  <Typography 
+    variant="h4" 
+    fontWeight="bold" 
+    sx={{ 
+      textAlign: 'center',  // Mindig középre igazítjuk a szöveget
+      fontSize: { xs: '1.4rem', sm: '1.6rem' },
+      mb: { xs: 2, sm: 0 },
+      position: { sm: 'absolute' },  // Csak nagyobb képernyőn pozicionáljuk abszolút
+      left: { sm: '20px' }  // Csak nagyobb képernyőn helyezzük balra
+    }}
+  >
+    Aktuális egyenleg
+  </Typography>
+  
+  <Box sx={{ 
+    display: 'flex', 
+    alignItems: 'center',
+    justifyContent: 'center',  // Középre igazítjuk a tartalmát
+    width: { xs: '100%', sm: 'auto' }  // Mobilon teljes szélesség a középre igazításhoz
+  }}>
+    <Typography
+      variant="subtitle1"
+      fontWeight="bold"
+      sx={{
+        fontSize: { xs: '1.5rem', sm: '1.875rem' },
+        textAlign: 'center' , // Középre igazítjuk a szöveget
+        ml: 6
+      }}
+    >
+      {currentCredits}
+    </Typography>
+    <Typography sx={{ ml: 1, textAlign: 'center' }}>
+      Kredit
+    </Typography>
+  </Box>
+</Box>
+
+          {/* Credit Purchase Options */}
+          {['Havi feltöltés', 'Egyszeri feltöltés'].map((category, index) => (
+            <Card key={index} sx={{ 
+              marginBottom: 1, 
+              boxShadow: 'none', 
+              height:'100%',
+              width: '100%', 
+              backgroundColor: '#f5f5f5', 
+              padding: 2 
             }}>
-              <Typography variant="subtitle1" fontWeight="bold" sx={{ textAlign: 'left', ml: 2 }}>
-                Kredit vásárlása
-              </Typography>
-              <Typography 
-                variant="subtitle1" 
-                fontWeight="bold" 
-                sx={{ 
-                  position: 'absolute',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  fontSize: '0.875rem'
-                }}
-              >
-                {category}
-              </Typography>
-            </Box>
-              <Grid 
-                container 
-                spacing={2} 
-                justifyContent="center" 
-                alignItems="center" 
-                sx={{ 
-                  width: '100%', 
-                  margin: '0 auto',
-                  padding: '0'
-                }}
-              >
-                {creditOptions.map((option, idx) => (
-                  <Grid 
-                    item 
-                    xs={12} 
-                    sm={4} 
-                    key={idx} 
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      padding: '12px'
-                    }}
-                  >
-                  <Card variant="outlined" sx={{ 
-                    textAlign: "center", 
-                    padding: 1, 
-                    border: "1px solid grey",
-                    height: "180px",
-                    width: "100%",
-                    maxWidth: "280px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                  }}>
-                    <Typography variant="h3" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
-                      {option.amount}
-                    </Typography>
-                    <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>Kredit</Typography>
-                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>
-                      {option.price}
-                    </Typography>
-                    <Button variant="contained" size="small" onClick={() => handlePurchase(option.amount)} sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}>Vásárlás</Button>
-                  </Card>
+              <CardContent sx={{ padding: '4px 0 0 0' }}>
+              <Box sx={{ 
+  display: 'flex', 
+  flexDirection: { xs: 'column', sm: 'row' },
+  alignItems: 'center',  // Mindig középre igazítjuk függőlegesen
+  justifyContent: 'center',  // Mindig középre igazítjuk vízszintesen
+  mb: 1, 
+  width: '100%',
+  padding: { xs: '0 10px', sm: '0 20px' },
+  position: 'relative'
+}}>
+  <Typography 
+    variant="subtitle1" 
+    fontWeight="bold" 
+    sx={{ 
+      textAlign: 'center',  // Mindig középre igazítjuk a szöveget
+      mb: { xs: 1, sm: 0 },
+      position: { sm: 'absolute' },  // Csak nagyobb képernyőn pozicionáljuk abszolút
+      left: { sm: '20px' }  // Csak nagyobb képernyőn helyezzük balra
+    }}
+  >
+    Kredit vásárlása
+  </Typography>
+  
+  <Typography 
+    variant="subtitle1" 
+    fontWeight="bold" 
+    sx={{ 
+      textAlign: 'center',  // Mindig középre igazítjuk a szöveget
+      fontSize: '0.875rem',
+      width: { xs: '100%', sm: 'auto' }  // Mobilon teljes szélesség a középre igazításhoz
+    }}
+  >
+    {category}
+  </Typography>
+</Box>
+                
+                <Grid 
+                  container 
+                  spacing={2} 
+                  justifyContent="center" 
+                  alignItems="center" 
+                  sx={{ 
+                    width: '100%', 
+                    margin: '0 auto',
+                    padding: '0'
+                  }}
+                >
+                  {creditOptions.map((option, idx) => (
+                    <Grid 
+                      item 
+                      key={idx}
+                      xs={12} 
+                      sm={4} 
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        padding: '12px'
+                      }}
+                    >
+                      <Card variant="outlined" sx={{ 
+                        textAlign: "center", 
+                        padding: 1, 
+                        border: "1px solid grey",
+                        height: "180px",
+                        width: "100%",
+                        maxWidth: "280px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "center"
+                      }}>
+                        <Typography variant="h3" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
+                          {option.amount}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>Kredit</Typography>
+                        <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>
+                          {option.price}
+                        </Typography>
+                        <Button 
+                          variant="contained" 
+                          size="small" 
+                          onClick={() => handlePurchase(option.amount)} 
+                          sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}
+                        >
+                          Vásárlás
+                        </Button>
+                      </Card>
+                    </Grid>
+                  ))}
                 </Grid>
-              ))}
-            </Grid>
-          </CardContent>
-        </Card>
-      ))}
-    </StyledCard>
-    </>
+              </CardContent>
+            </Card>
+          ))}
+        </StyledCard>
+      </Box>
+    </Box>
   );
 };
 
