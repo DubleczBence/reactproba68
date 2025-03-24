@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme, useColorScheme } from '@mui/material/styles';
 import { inputsCustomizations } from './customizations/inputs';
 import { dataDisplayCustomizations } from './customizations/dataDisplay';
 import { feedbackCustomizations } from './customizations/feedback';
@@ -11,6 +11,12 @@ import { colorSchemes, typography, shadows, shape } from './themePrimitives';
 function AppTheme({ children, disableCustomTheme, themeComponents }) {
   const videoRef = React.useRef(null);
   const [opacity, setOpacity] = React.useState(1);
+  const { mode } = useColorScheme();
+
+  // Videó forrásának meghatározása a színmód alapján
+  const videoSource = mode === 'light' 
+    ? "/kepek/AdobeStock_477969018_2.mp4" 
+    : "/kepek/AdobeStock_477969018.mp4";
 
   React.useEffect(() => {
     const videoElement = videoRef.current;
@@ -92,6 +98,19 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
 
   return (
     <ThemeProvider theme={theme} disableTransitionOnChange>
+      {/* Háttér overlay - mindig látható, hogy ne legyen villogás */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.3)',
+          zIndex: -2,
+        }}
+      />
+      
       {/* Háttérvideó */}
       <video
         ref={videoRef}
@@ -106,12 +125,12 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           width: '100vw',
           height: '100vh',
           objectFit: 'cover',
-          zIndex: -1,
+          zIndex: -3, // A videó a háttér overlay mögött van
           opacity: opacity,
-          transition: 'opacity 1s ease-in-out',
+          transition: 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
-        <source src="/kepek/AdobeStock_477969018.mp4" type="video/mp4" />
+        <source src={videoSource} type="video/mp4" />
       </video>
 
       {/* Az alkalmazás tartalma */}
