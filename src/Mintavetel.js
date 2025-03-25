@@ -118,7 +118,7 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
               min={minValue}
               max={maxValue}
               sx={{ width: '300px' }}
-              disabled={userCount <= minValue} // Ha nincs elég felhasználó, letiltjuk a slidert
+              disabled={userCount <= minValue}
             />
             <Typography sx={{ ml: 2 }}>{maxValue} fő</Typography>
           </Box>

@@ -5,12 +5,12 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import Home from './Home';
 import CompHome from './Comp_Home';
-import AdminDashboard from './AdminDashboard'; // Új komponens importálása
+import AdminDashboard from './AdminDashboard'; 
 import CustomizedSnackbars from './CustomizedSnackbars';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false); // Admin állapot hozzáadása
+  const [isAdmin, setIsAdmin] = useState(false); 
   const navigate = useNavigate(); 
   
   const validateToken = () => {
@@ -22,7 +22,6 @@ function App() {
     }
     try {
       setIsAuthenticated(true);
-      // Admin jogosultság ellenőrzése a localStorage-ból
       setIsAdmin(localStorage.getItem('isAdmin') === 'true');
       return true;
     } catch (error) {
@@ -134,7 +133,6 @@ function App() {
         if (result.token) {
           localStorage.setItem('token', result.token);
           
-          // Admin jogosultság kezelése
           if (result.isAdmin) {
             setIsAdmin(true);
             localStorage.setItem('isAdmin', 'true');
@@ -182,7 +180,6 @@ function App() {
         <Route path="/sign-up" element={<SignUp onSignUp={HandleSignUpData} />} />
         <Route path="/home" element={isAuthenticated ? (<Home onSendData={handleSendData} onSignOut={HandleSignOut} />) : (<SignIn />)} />
         <Route path="/comp_home" element={isAuthenticated ? <CompHome onSignOut={HandleSignOut} /> : <SignIn />} />
-        {/* Admin útvonal hozzáadása */}
         <Route path="/admin" element={isAuthenticated && isAdmin ? <AdminDashboard onSignOut={HandleSignOut} /> : <SignIn />} />
       </Routes>
       <CustomizedSnackbars

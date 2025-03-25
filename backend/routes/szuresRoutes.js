@@ -5,7 +5,6 @@ const db = require('../db');
 
 
 
-// Szűrési adatok fogadása és lekérdezés futtatása
 router.post('/szures', (req, res) => {
     const { vegzettseg, korcsoport, regio, nem, anyagi } = req.body;
   
@@ -35,7 +34,6 @@ router.post('/szures', (req, res) => {
       params.push(anyagi);
     }
   
-    // Lekérdezés végrehajtása
     db.query(sql, params, (err, results) => {
       if (err) {
         console.error(err);

@@ -93,7 +93,6 @@ export default function AdminDashboard({ onSignOut }) {
     if (!token) return;
 
     try {
-      // Felhasználók lekérdezése
       const usersResponse = await fetch('http://localhost:3001/api/admin/users', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -104,7 +103,6 @@ export default function AdminDashboard({ onSignOut }) {
         setUsers(usersData);
       }
 
-      // Cégek lekérdezése
       const companiesResponse = await fetch('http://localhost:3001/api/admin/companies', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -115,7 +113,6 @@ export default function AdminDashboard({ onSignOut }) {
         setCompanies(companiesData);
       }
 
-      // Kérdőívek lekérdezése
       const surveysResponse = await fetch('http://localhost:3001/api/admin/surveys', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -270,7 +267,6 @@ export default function AdminDashboard({ onSignOut }) {
       return;
     }
 
-    // Ellenőrizzük, hogy minden opciónak van-e szövege
     let invalidOptions = false;
     questions.forEach(q => {
       if (q.selectedButton !== 'text') {
@@ -315,7 +311,6 @@ export default function AdminDashboard({ onSignOut }) {
           severity: 'success'
         });
         
-        // Alaphelyzetbe állítjuk a formot
         setSurveyTitle('');
         setSelectedCompany('');
         setParticipantCount(50);
@@ -333,7 +328,6 @@ export default function AdminDashboard({ onSignOut }) {
           anyagi: null
         });
         
-        // Frissítjük a kérdőívek listáját
         fetchData();
       } else {
         const errorData = await response.json();
@@ -478,7 +472,6 @@ export default function AdminDashboard({ onSignOut }) {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  // DataGrid oszlop definíciók
   const userColumns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'name', headerName: 'Név', width: 200 },

@@ -50,7 +50,7 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
   content: '""',
   position: 'absolute',
   inset: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Sötét réteg, hogy a szöveg kiemelkedjen
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
   zIndex: -1,
 }
 }));

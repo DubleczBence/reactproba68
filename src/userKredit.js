@@ -8,17 +8,17 @@ const voucherOptions = [
   {
     category: "Utalványok",
     items: [
-      { name: "4000 Ft", description: "Emag utalvány", creditCost: 2700 },
-      { name: "3000 Ft", description: "Spar utalvány", creditCost: 1300 },
-      { name: "5000 Ft", description: "Decathlon utalvány", creditCost: 2000 },
+      { name: "4000 Ft", description: "Emag utalvány", creditCost: 2700, image: "ajandekkartya_emag.png" },
+      { name: "3000 Ft", description: "Media Markt", creditCost: 1300, image: "ajandekkartya_media_m.png" },
+      { name: "5000 Ft", description: "Decathlon utalvány", creditCost: 2000, image: "ajandekkartya_decathlon.png" },
     ]
   },
   {
     category: "Ajándékkártyák",
     items: [
-      { name: "3000 Ft", description: "Steam kártya", creditCost: 100 },
-      { name: "2000 Ft", description: "Xbox kártya", creditCost: 1000 },
-      { name: "6000 Ft", description: "Amazon kártya", creditCost: 2300 },
+      { name: "3000 Ft", description: "Steam kártya", creditCost: 1300, image: "ajandekkartya_steam.png" },
+      { name: "2000 Ft", description: "Xbox kártya", creditCost: 1000, image: "ajandekkartya_xbox.png" },
+      { name: "6000 Ft", description: "Amazon kártya", creditCost: 2300, image: "ajandekkartya_amazon.png" },
     ]
   }
 ];
@@ -118,10 +118,8 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
       >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
   <Box sx={{ 
-    overflowY: "auto", 
-    // Biztosítjuk, hogy a tartalom görgethető legyen
+    overflowY: "auto",
     flex: 1,
-    // Adjunk neki padding-bottom-ot, hogy látszódjon az utolsó elem is
     pb: 2
   }}>
     {creditHistory.map((transaction, index) => (
@@ -158,7 +156,6 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
   </Box>
 </Card>
 
-      {/* Main Voucher Card */}
       <Box sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -231,7 +228,6 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
             </Box>
           </Box>
 
-          {/* Voucher Options */}
           {voucherOptions.map((category, categoryIndex) => (
             <Card key={`category-${categoryIndex}`} sx={{ 
               marginBottom: 1, 
@@ -302,33 +298,51 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
                       }}
                     >
                       <Card variant="outlined" sx={{ 
-                        textAlign: "center", 
-                        padding: 1, 
-                        border: "1px solid grey",
-                        height: "180px",
-                        width: "100%",
-                        maxWidth: "280px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        alignItems: "center"
-                      }}>
-                        <Typography variant="h5" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
-                          {item.name}
-                        </Typography>
-                        <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>{item.description}</Typography>
-                        <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>
-                          {item.creditCost} kredit
-                        </Typography>
-                        <Button 
-                          variant="contained" 
-                          size="small" 
-                          onClick={() => handleVoucherPurchase(item)} 
-                          sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}
-                        >
-                          Vásárlás
-                        </Button>
-                      </Card>
+                      textAlign: "center", 
+                      padding: 1, 
+                      border: "1px solid grey",
+                      height: "180px",
+                      width: "100%",
+                      maxWidth: "280px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      backgroundImage: `url(${item.image})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      position: "relative",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(255, 255, 255, 0.85)",
+                        zIndex: 0
+                      },
+                      "& > *": {
+                        position: "relative",
+                        zIndex: 1
+                      }
+                    }}>
+                      <Typography variant="h5" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
+                        {item.name}
+                      </Typography>
+                      <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>{item.description}</Typography>
+                      <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>
+                        {item.creditCost} kredit
+                      </Typography>
+                      <Button 
+                        variant="contained" 
+                        size="small" 
+                        onClick={() => handleVoucherPurchase(item)} 
+                        sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}
+                      >
+                        Vásárlás
+                      </Button>
+                    </Card>
                     </Grid>
                   ))}
                 </Grid>

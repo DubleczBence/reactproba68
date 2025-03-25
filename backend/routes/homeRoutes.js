@@ -21,27 +21,22 @@ router.post('/home', async (req, res) => {
     const decoded = jwt.verify(token, SECRET_KEY);
     const userId = decoded.id; 
 
-    // Start a transaction
     await db.promise().query('START TRANSACTION');
 
-    // Insert user response
     const [responseResult] = await db.promise().query(
       'INSERT INTO users_responses (user_id, korcsoport, vegzettseg, regio, nem, anyagi_helyzet) VALUES (?, ?, ?, ?, ?, ?)',
       [userId, new Date(korcsoport), vegzettseg, regio, nem, anyagi]
     );
 
-    // Create connection in user_connections table
     await db.promise().query(
       'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "response", ?)',
       [userId, responseResult.insertId]
     );
 
-    // Commit the transaction
     await db.promise().query('COMMIT');
 
     res.status(201).json({ message: 'Küldés sikeres!' });
   } catch (error) {
-    // Rollback in case of error
     await db.promise().query('ROLLBACK');
     console.error('Hiba történt a küldés közben:', error);
     res.status(500).json({ error: 'Hiba történt a küldés során.' });
@@ -74,11 +69,21 @@ router.get('/check-form-filled', async (req, res) => {
 
 
 router.get('/available-surveys', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1];
-  const decoded = jwt.verify(token, SECRET_KEY);
-  const userId = decoded.id;
+try {
 
-  try {
+
+    if (!req.headers.authorization) {
+      return res.status(401).json({ error: 'Authorization header missing' });
+    }
+    
+    const token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Token missing' });
+    }
+    
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const userId = decoded.id;
+
     const [userResponse] = await db.promise().query(
       `SELECT ur.* FROM users_responses ur
        JOIN user_connections uc ON ur.id = uc.connection_id
@@ -92,7 +97,6 @@ router.get('/available-surveys', async (req, res) => {
 
     const userData = userResponse[0];
 
-    // Módosított lekérdezés, amely csak az aktív kérdőíveket adja vissza
     const [surveys] = await db.promise().query(`
       SELECT s.id, s.title, s.credit_cost FROM survey_set s
       WHERE s.id NOT IN (
@@ -121,6 +125,9 @@ router.get('/available-surveys', async (req, res) => {
 
     res.status(200).json({ surveys });
   } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
     console.error('Error fetching available surveys:', error);
     res.status(500).json({ error: 'Failed to fetch available surveys' });
   }
@@ -167,13 +174,11 @@ router.post('/submit-survey', async (req, res) => {
         [userId, answer.questionId, JSON.stringify(answer.value)]
       );
 
-      // Add to user_connections table
       await db.promise().query(
         'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "answer", ?)',
         [userId, answerResult.insertId]
       );
       
-      // Add to survey_connections table
       await db.promise().query(
         'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "answer", ?)',
         [surveyId, answerResult.insertId]

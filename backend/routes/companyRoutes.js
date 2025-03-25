@@ -15,7 +15,6 @@ const transporter = nodemailer.createTransport({
 
 const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f';
 
-// Céges regisztrációs végpont
 router.post('/sign-up', async (req, res) => {
   const { cegnev, telefon, ceg_email, jelszo, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam } = req.body;
 
@@ -37,7 +36,6 @@ router.post('/sign-up', async (req, res) => {
     
     const hashedPassword = await bcrypt.hash(jelszo, 10);
 
-    // Céges felhasználó hozzáadása az adatbázishoz
     await db.promise().query(
       'INSERT INTO companies (cegnev, telefon, ceg_email, jelszo, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [cegnev, telefon, ceg_email, hashedPassword, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam]
@@ -50,7 +48,6 @@ router.post('/sign-up', async (req, res) => {
   }
 });
 
-// Céges bejelentkezési végpont
 router.post('/sign-in', async (req, res) => {
   const { ceg_email, jelszo } = req.body;
 
@@ -60,7 +57,6 @@ router.post('/sign-in', async (req, res) => {
   }
 
   try {
-    // Céges felhasználó lekérdezése
     const [companies] = await db.promise().query(
       'SELECT * FROM companies WHERE ceg_email = ?',
       [ceg_email]
@@ -79,7 +75,6 @@ router.post('/sign-in', async (req, res) => {
       return res.status(401).json({ error: 'Helytelen email vagy jelszó.' });
     }
 
-    // JWT token generálása
     const token = jwt.sign(
       { id: company.id, ceg_email: company.ceg_email },
       SECRET_KEY,
@@ -131,39 +126,33 @@ router.post('/create-survey', async (req, res) => {
 
     const surveyId = surveyResult.insertId;
     
-    // Kapcsolat létrehozása a company_connections táblában
     await db.promise().query(
       'INSERT INTO company_connections (company_id, connection_type, connection_id) VALUES (?, "survey", ?)',
       [companyId, surveyId]
     );
 
-    // Kérdések létrehozása és kapcsolatok létrehozása a survey_connections táblában
     for (const question of questions) {
       const [questionResult] = await db.promise().query(
         'INSERT INTO questions (question, frm_option, type) VALUES (?, ?, ?)',
         [question.questionText, JSON.stringify(question.options), question.selectedButton]
       );
       
-      // Kapcsolat létrehozása a survey_connections táblában
       await db.promise().query(
         'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "question", ?)',
         [surveyId, questionResult.insertId]
       );
     }
 
-    // Kredit tranzakció létrehozása
     const [transactionResult] = await db.promise().query(
       'INSERT INTO credit_transactions (amount, transaction_type) VALUES (?, "spend")',
       [creditCost]
     );
     
-    // Kapcsolat létrehozása a company_connections táblában
     await db.promise().query(
       'INSERT INTO company_connections (company_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
       [companyId, transactionResult.insertId]
     );
     
-    // Kapcsolat létrehozása a survey_connections táblában
     await db.promise().query(
       'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
       [surveyId, transactionResult.insertId]
@@ -263,7 +252,6 @@ router.post('/purchase-credits', async (req, res) => {
       [packageAmount]
     );
     
-    // Kapcsolat létrehozása a company_connections táblában
     await db.promise().query(
       'INSERT INTO company_connections (company_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
       [companyId, transactionResult.insertId]
@@ -390,7 +378,6 @@ router.post('/close-survey/:surveyId', async (req, res) => {
     const decoded = jwt.verify(token, SECRET_KEY);
     const companyId = decoded.id;
 
-    // Ellenőrizzük, hogy a cég tulajdonosa-e a kérdőívnek
     const [surveyOwnership] = await db.promise().query(
       `SELECT * FROM company_connections 
        WHERE company_id = ? AND connection_id = ? AND connection_type = 'survey'`,
@@ -401,7 +388,6 @@ router.post('/close-survey/:surveyId', async (req, res) => {
       return res.status(403).json({ error: 'Nincs jogosultsága a kérdőív lezárásához' });
     }
 
-    // Kérdőív lezárása (is_active mező frissítése)
     await db.promise().query(
       'UPDATE survey_set SET is_active = 0 WHERE id = ?',
       [req.params.surveyId]
@@ -433,13 +419,11 @@ router.get('/profile/:companyId', async (req, res) => {
   }
 });
 
-// Cég profil módosítása
 router.put('/profile/:companyId', async (req, res) => {
   const { cegnev, telefon } = req.body;
   const companyId = req.params.companyId;
   
   try {
-    // Először lekérdezzük a jelenlegi adatokat
     const [currentData] = await db.promise().query(
       'SELECT cegnev, telefon FROM companies WHERE id = ?',
       [companyId]
@@ -449,7 +433,6 @@ router.put('/profile/:companyId', async (req, res) => {
       return res.status(404).json({ error: 'Company not found' });
     }
     
-    // Csak azokat az adatokat frissítjük, amelyeket küldtek
     const updatedCegnev = cegnev !== undefined ? cegnev : currentData[0].cegnev;
     const updatedTelefon = telefon !== undefined ? telefon : currentData[0].telefon;
     

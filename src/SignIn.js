@@ -26,8 +26,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   gap: theme.spacing(2),
   margin: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.8)' // Világos mód - fehér háttér
-    : 'rgba(2, 1, 14, 0.8)', // Sötét mód - sötét háttér
+    ? 'rgba(255, 255, 255, 0.8)'
+    : 'rgba(2, 1, 14, 0.8)',
   [theme.breakpoints.up('sm')]: {
     maxWidth: '450px',
   },
@@ -36,7 +36,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   ...theme.applyStyles('dark', {
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-    backgroundColor: 'rgba(0, 2, 8, 0.8)', // 90% átlátszatlan sötét háttér
+    backgroundColor: 'rgba(0, 2, 8, 0.8)',
   }),
 }));
 
@@ -52,10 +52,10 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
     position: 'absolute',
     inset: 0,
     backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.3)' // Világos háttér átlátszósággal
-      : 'rgba(0, 0, 0, 0.5)', // Sötét háttér átlátszósággal
+      ? 'rgba(255, 255, 255, 0.3)'
+      : 'rgba(0, 0, 0, 0.5)',
     zIndex: -1,
-    pointerEvents: 'none', // Hogy ne akadályozza a kattintásokat
+    pointerEvents: 'none',
   }
 }));
 

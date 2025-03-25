@@ -15,7 +15,6 @@ const transporter = nodemailer.createTransport({
 
 const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f'; 
 
-// Regisztrációs végpont
 router.post('/sign-up', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -37,7 +36,6 @@ router.post('/sign-up', async (req, res) => {
     
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Felhasználó hozzáadása az adatbázishoz
     await db.promise().query(
       'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
       [name, email, hashedPassword]
@@ -50,7 +48,6 @@ router.post('/sign-up', async (req, res) => {
   }
 });
 
-// Bejelentkezési végpont
 router.post('/sign-in', async (req, res) => {
   const { email, password } = req.body;
 
@@ -59,7 +56,6 @@ router.post('/sign-in', async (req, res) => {
   }
 
   try {
-    // Felhasználó lekérdezése
     const [users] = await db.promise().query(
       'SELECT * FROM users WHERE email = ?',
       [email]
@@ -77,7 +73,6 @@ router.post('/sign-in', async (req, res) => {
       return res.status(401).json({ error: 'Helytelen email vagy jelszó.' });
     }
 
-    // Admin ellenőrzés
     const isAdmin = user.role === 'admin';
     
     const token = jwt.sign({ 
@@ -232,7 +227,6 @@ router.post('/purchase-voucher', async (req, res) => {
       [userId, voucherName, creditCost]
     );
 
-    // Add to user_connections table
     await db.promise().query(
       'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "voucher", ?)',
       [userId, voucherResult.insertId]
@@ -245,7 +239,6 @@ router.post('/purchase-voucher', async (req, res) => {
       [userId, creditCost, voucherName]
     );
 
-    // Add transaction to user_connections
     await db.promise().query(
       'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
       [userId, transactionResult.insertId]
@@ -265,7 +258,7 @@ router.post('/purchase-voucher', async (req, res) => {
 
 
 router.post('/add-survey-transaction', async (req, res) => {
-  const { userId, amount, title, surveyId } = req.body; // Hozzáadtuk a surveyId-t
+  const { userId, amount, title, surveyId } = req.body;
   
   console.log('Received transaction data:', { userId, amount, title, surveyId });
 
@@ -274,10 +267,8 @@ router.post('/add-survey-transaction', async (req, res) => {
   }
 
   try {
-    // Tranzakció kezdése
     await db.promise().query('START TRANSACTION');
     
-    // Tranzakció létrehozása
     const [transactionResult] = await db.promise().query(
       `INSERT INTO transactions 
        (user_id, amount, transaction_type, transaction_date, voucher_name) 
@@ -285,13 +276,11 @@ router.post('/add-survey-transaction', async (req, res) => {
       [userId, amount, title]
     );
     
-    // Kapcsolat létrehozása a user_connections táblában
     await db.promise().query(
       'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
       [userId, transactionResult.insertId]
     );
     
-    // Ha van surveyId, akkor kapcsolat létrehozása a survey_connections táblában is
     if (surveyId) {
       await db.promise().query(
         'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
@@ -299,15 +288,106 @@ router.post('/add-survey-transaction', async (req, res) => {
       );
     }
     
-    // Tranzakció véglegesítése
     await db.promise().query('COMMIT');
     
     res.json({ message: 'Survey transaction recorded successfully' });
   } catch (error) {
-    // Hiba esetén visszagörgetés
     await db.promise().query('ROLLBACK');
     console.error('Error recording survey transaction:', error);
     res.status(500).json({ error: 'Failed to record survey transaction' });
+  }
+});
+
+
+router.get('/profile/:userId', async (req, res) => {
+  try {
+    const [user] = await db.promise().query(
+      `SELECT u.id, u.name, u.email, 
+       DATE_FORMAT(ur.korcsoport, '%Y-%m-%d') as korcsoport,
+       ur.vegzettseg, ur.regio, ur.nem, ur.anyagi_helyzet as anyagi
+       FROM users u
+       LEFT JOIN users_responses ur ON u.id = ur.user_id
+       WHERE u.id = ?`,
+      [req.params.userId]
+    );
+    
+    if (user.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json(user[0]);
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+
+router.put('/profile/:userId', async (req, res) => {
+  const { name, regio, anyagi } = req.body;
+  const userId = req.params.userId;
+  
+  try {
+    await db.promise().query('START TRANSACTION');
+    
+    if (name !== undefined) {
+      await db.promise().query(
+        'UPDATE users SET name = ? WHERE id = ?',
+        [name, userId]
+      );
+    }
+    
+    const [existingResponse] = await db.promise().query(
+      'SELECT * FROM users_responses WHERE user_id = ?',
+      [userId]
+    );
+    
+    if (existingResponse.length > 0) {
+      const updates = [];
+      const params = [];
+      
+      if (regio !== undefined) {
+        updates.push('regio = ?');
+        params.push(regio);
+      }
+      
+      if (anyagi !== undefined) {
+        updates.push('anyagi_helyzet = ?');
+        params.push(anyagi);
+      }
+      
+      if (updates.length > 0) {
+        params.push(userId);
+        await db.promise().query(
+          `UPDATE users_responses SET ${updates.join(', ')} WHERE user_id = ?`,
+          params
+        );
+      }
+    } else if (regio !== undefined || anyagi !== undefined) {
+      await db.promise().query(
+        `INSERT INTO users_responses (user_id, korcsoport, vegzettseg, regio, nem, anyagi_helyzet)
+         VALUES (?, CURDATE(), '5', ?, '20', ?)`,
+        [userId, regio || '14', anyagi || '23']
+      );
+    }
+    
+    await db.promise().query('COMMIT');
+    
+    const [updatedUser] = await db.promise().query(
+      `SELECT u.name, ur.regio, ur.anyagi_helyzet as anyagi
+       FROM users u
+       LEFT JOIN users_responses ur ON u.id = ur.user_id
+       WHERE u.id = ?`,
+      [userId]
+    );
+    
+    res.json({ 
+      message: 'User profile updated successfully',
+      updatedData: updatedUser[0] || { name, regio, anyagi }
+    });
+  } catch (error) {
+    await db.promise().query('ROLLBACK');
+    console.error('Error updating user profile:', error);
+    res.status(500).json({ error: 'Failed to update user profile' });
   }
 });
 

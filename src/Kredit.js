@@ -13,7 +13,7 @@ const StyledCard = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignSelf: 'center',
-  width: '100%', // Eltávolítottuk a fix 700px szélességet
+  width: '100%',
   padding: theme.spacing(2),
   gap: theme.spacing(1),
   margin: 'auto',
@@ -74,21 +74,20 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
   return (
     <Box
   sx={{
-    minHeight: '100vh', // Az oldal teljes magassága
+    minHeight: '100vh',
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    overflow: 'auto', // Gyermek elemek overflow kezeléséhez
+    overflow: 'auto',
   }}
 >
-      {/* Transaction History Card - Left Side on Desktop, Below on Mobile */}
       <Card
   variant="outlined"
   sx={{
     position: isMobile ? 'static' : 'absolute',
     left: isMobile ? 'auto' : '20px',
     top: isMobile ? 'auto' : '145px',
-    width: isMobile ? "95%" : (isNarrow ? "400px" : "550px"), // Keskenyebb a köztes állapotban
+    width: isMobile ? "95%" : (isNarrow ? "400px" : "550px"),
     flexShrink: 0,
     boxShadow: 'none',
     backgroundColor: 'transparent',
@@ -132,36 +131,35 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
         ))}
       </Card>
 
-      {/* Main Voucher Card */}
       <Box sx={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       position: 'relative',
       width: '100%',
-      flexGrow: 1, // Növekedés biztosítása
+      flexGrow: 1,
     }}>
         <StyledCard
             variant="outlined"
             sx={{
               mt: 15,
-              width: "100%", // Teljes szélességet foglalja el
-              maxWidth: "700px", // Maximális szélesség korlátozása
-              height: isMobile ? "auto" : "600px", // Magasság a görgethetőséghez
+              width: "100%",
+              maxWidth: "700px",
+              height: isMobile ? "auto" : "600px",
               display: 'flex',
-              flexDirection: 'column', // Vertikális elrendezés
+              flexDirection: 'column',
               alignItems: 'center',
               padding: 2,
               margin: '0 auto',
-              overflowY: 'auto', // Görgethetőség engedélyezése
+              overflowY: 'auto',
               order: isMobile ? 1 : 2,
             }}
           >
           <Box sx={{
   display: 'flex',
   flexDirection: { xs: 'column', sm: 'row' },
-  alignItems: 'center',  // Mindig középre igazítjuk függőlegesen
-  justifyContent: 'center',  // Mindig középre igazítjuk vízszintesen
+  alignItems: 'center',
+  justifyContent: 'center',
   mb: 2,
   mt: 1,
   width: '100%',
@@ -172,11 +170,11 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     variant="h4" 
     fontWeight="bold" 
     sx={{ 
-      textAlign: 'center',  // Mindig középre igazítjuk a szöveget
+      textAlign: 'center',
       fontSize: { xs: '1.4rem', sm: '1.6rem' },
       mb: { xs: 2, sm: 0 },
-      position: { sm: 'absolute' },  // Csak nagyobb képernyőn pozicionáljuk abszolút
-      left: { sm: '20px' }  // Csak nagyobb képernyőn helyezzük balra
+      position: { sm: 'absolute' },
+      left: { sm: '20px' }
     }}
   >
     Aktuális egyenleg
@@ -185,15 +183,15 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
   <Box sx={{ 
     display: 'flex', 
     alignItems: 'center',
-    justifyContent: 'center',  // Középre igazítjuk a tartalmát
-    width: { xs: '100%', sm: 'auto' }  // Mobilon teljes szélesség a középre igazításhoz
+    justifyContent: 'center',
+    width: { xs: '100%', sm: 'auto' }
   }}>
     <Typography
       variant="subtitle1"
       fontWeight="bold"
       sx={{
         fontSize: { xs: '1.5rem', sm: '1.875rem' },
-        textAlign: 'center' , // Középre igazítjuk a szöveget
+        textAlign: 'center' ,
         ml: 6
       }}
     >
@@ -204,8 +202,6 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     </Typography>
   </Box>
 </Box>
-
-          {/* Credit Purchase Options */}
           {['Havi feltöltés', 'Egyszeri feltöltés'].map((category, index) => (
             <Card key={index} sx={{ 
               marginBottom: 1, 
@@ -219,8 +215,8 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
               <Box sx={{ 
   display: 'flex', 
   flexDirection: { xs: 'column', sm: 'row' },
-  alignItems: 'center',  // Mindig középre igazítjuk függőlegesen
-  justifyContent: 'center',  // Mindig középre igazítjuk vízszintesen
+  alignItems: 'center',
+  justifyContent: 'center',
   mb: 1, 
   width: '100%',
   padding: { xs: '0 10px', sm: '0 20px' },
@@ -230,10 +226,10 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     variant="subtitle1" 
     fontWeight="bold" 
     sx={{ 
-      textAlign: 'center',  // Mindig középre igazítjuk a szöveget
+      textAlign: 'center',
       mb: { xs: 1, sm: 0 },
-      position: { sm: 'absolute' },  // Csak nagyobb képernyőn pozicionáljuk abszolút
-      left: { sm: '20px' }  // Csak nagyobb képernyőn helyezzük balra
+      position: { sm: 'absolute' },
+      left: { sm: '20px' }
     }}
   >
     Kredit vásárlása
@@ -243,9 +239,9 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     variant="subtitle1" 
     fontWeight="bold" 
     sx={{ 
-      textAlign: 'center',  // Mindig középre igazítjuk a szöveget
+      textAlign: 'center',
       fontSize: '0.875rem',
-      width: { xs: '100%', sm: 'auto' }  // Mobilon teljes szélesség a középre igazításhoz
+      width: { xs: '100%', sm: 'auto' }
     }}
   >
     {category}

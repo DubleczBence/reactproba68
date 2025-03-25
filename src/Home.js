@@ -24,8 +24,6 @@ import Slide from '@mui/material/Slide';
 import Avatar from '@mui/material/Avatar';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -45,6 +43,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useTheme, createTheme, ThemeProvider } from '@mui/material/styles';
+import { Snackbar, Alert } from '@mui/material';
 
 
 
@@ -57,7 +56,7 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
         md: 960,
         lg: 1280,
         xl: 1920,
-        custom: 730 // Egyedi breakpoint
+        custom: 730
       },
     },
   });
@@ -91,8 +90,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.8)' // Világos mód - fehér háttér
-    : 'rgba(2, 1, 14, 0.8)', // Sötét mód - sötét háttér
+    ? 'rgba(255, 255, 255, 0.8)'
+    : 'rgba(2, 1, 14, 0.8)',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -117,10 +116,10 @@ const UserContainer = styled(Stack)(({ theme }) => ({
     position: 'absolute',
     inset: 0,
     backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.3)' // Világos háttér átlátszósággal
-      : 'rgba(0, 0, 0, 0.5)', // Sötét háttér átlátszósággal
+      ? 'rgba(255, 255, 255, 0.3)'
+      : 'rgba(0, 0, 0, 0.5)',
     zIndex: -1,
-    pointerEvents: 'none', // Hogy ne akadályozza a kattintásokat
+    pointerEvents: 'none',
   }
 }));
 
@@ -130,6 +129,193 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+
+
+const ProfileDialog = ({ open, onClose, userData, onSave }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    regio: '',
+    anyagi: ''
+  });
+
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        name: userData.name || '',
+        regio: userData.regio || '',
+        anyagi: userData.anyagi || ''
+      });
+    }
+  }, [userData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    const dataToSave = {};
+    if (formData.name.trim() !== '') dataToSave.name = formData.name;
+    if (formData.regio) dataToSave.regio = formData.regio;
+    if (formData.anyagi) dataToSave.anyagi = formData.anyagi;
+    
+    onSave(dataToSave);
+  };
+
+  const regioOptions = [
+    { value: '14', label: 'Nyugat-Dunántúl' },
+    { value: '15', label: 'Közép-Dunántúl' },
+    { value: '16', label: 'Közép-Magyarország' },
+    { value: '17', label: 'Észak-Magyarország' },
+    { value: '18', label: 'Észak-Alföld' },
+    { value: '19', label: 'Dél-Alföld' }
+  ];
+  
+  const anyagiOptions = [
+    { value: '23', label: '< 100 000 Ft' },
+    { value: '24', label: '100 000 Ft - 250 000 Ft' },
+    { value: '25', label: '250 000 Ft - 500 000 Ft' },
+    { value: '26', label: '500 000 Ft - 1 000 000 Ft' },
+    { value: '27', label: '1 000 000 Ft - 1 500 000 Ft' },
+    { value: '28', label: '1 500 000 Ft <' }
+  ];
+  
+  const vegzettsegMap = {
+    '1': 'Egyetem, főiskola stb. oklevéllel',
+    '2': 'Középfokú végzettség érettségi nélkül, szakmai végzettséggel',
+    '3': 'Középfokú végzettség érettségivel (szakmai végzettség nélkül)',
+    '4': 'Középfokú végzettség érettségivel (szakmai végzettséggel)',
+    '5': 'Általános iskola 8. osztálya',
+    '6': '8 általános iskolánál kevesebb'
+  };
+  
+  const nemMap = {
+    '20': 'Férfi',
+    '21': 'Nő',
+    '22': 'Egyéb'
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Felhasználói profil</DialogTitle>
+      <DialogContent>
+        <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <TextField
+            fullWidth
+            label="Név"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
+          />
+          
+          <FormControl fullWidth>
+          <InputLabel 
+            shrink 
+            style={{ transform: 'translate(0, -14px) scale(0.75)' }}
+          >
+            Régió
+          </InputLabel>
+            <Select
+              name="regio"
+              value={formData.regio}
+              onChange={handleChange}
+              label="Régió"
+            >
+              <MenuItem value="">
+                <em>Nincs kiválasztva</em>
+              </MenuItem>
+              {regioOptions.map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <FormControl fullWidth>
+            <InputLabel shrink 
+            style={{ transform: 'translate(0, -14px) scale(0.75)' }}
+            >
+              Anyagi helyzet</InputLabel>
+            <Select
+              name="anyagi"
+              value={formData.anyagi}
+              onChange={handleChange}
+              label="Anyagi helyzet"
+            >
+              <MenuItem value="">
+                <em>Nincs kiválasztva</em>
+              </MenuItem>
+              {anyagiOptions.map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <TextField
+            fullWidth
+            label="Email"
+            value={userData?.email || ''}
+            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Korcsoport"
+            value={userData?.korcsoport || 'Nincs megadva'}
+            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Végzettség"
+            value={vegzettsegMap[userData?.vegzettseg] || 'Nincs megadva'}
+            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Nem"
+            value={nemMap[userData?.nem] || 'Nincs megadva'}
+            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Mégse</Button>
+        <Button 
+          onClick={handleSubmit} 
+          variant="contained"
+          disabled={!formData.name.trim()}
+        >
+          Mentés
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 
 const Home = ({ onSignOut, onSendData }) => {
@@ -146,6 +332,9 @@ const Home = ({ onSignOut, onSendData }) => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [name, setName] = useState('');
   const [showUserCreditPage, setShowUserCreditPage] = useState(false);
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const [userProfileData, setUserProfileData] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   
   const [answers, setAnswers] = useState({});
 
@@ -162,6 +351,90 @@ const Home = ({ onSignOut, onSendData }) => {
     }
   };
 
+
+  const fetchUserProfile = useCallback(async () => {
+    try {
+      if (!userId) return;
+      
+      const response = await fetch(`http://localhost:3001/api/users/profile/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Failed to fetch user profile');
+      
+      const data = await response.json();
+      setUserProfileData(data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      setSnackbar({
+        open: true,
+        message: 'Hiba történt a profil betöltése során',
+        severity: 'error'
+      });
+    }
+  }, [userId]);
+  
+  const handleSaveUserProfile = async (formData) => {
+    try {
+      if (!userId) return;
+      
+      if (Object.keys(formData).length === 0) {
+        setSnackbar({
+          open: true,
+          message: 'Nincs módosítandó adat',
+          severity: 'info'
+        });
+        setProfileDialogOpen(false);
+        return;
+      }
+      
+      const response = await fetch(`http://localhost:3001/api/users/profile/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!response.ok) throw new Error('Failed to update user profile');
+      
+      await response.json();
+      
+      setSnackbar({
+        open: true,
+        message: 'Profil sikeresen frissítve',
+        severity: 'success'
+      });
+      
+      setProfileDialogOpen(false);
+      fetchUserProfile();
+      
+      if (formData.name) {
+        setName(formData.name);
+      }
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      setSnackbar({
+        open: true,
+        message: 'Hiba történt a profil mentése során',
+        severity: 'error'
+      });
+    }
+  };
+  
+  useEffect(() => {
+    fetchUserProfile();
+  }, [fetchUserProfile]);
+  
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbar(prev => ({...prev, open: false}));
+  };
 
 
 
@@ -296,7 +569,6 @@ const [open, setOpen] = React.useState(false);
 
   const handleSubmitSurvey = async () => {
     try {
-      // Ellenőrizzük, hogy a selectedSurvey létezik-e
       if (!selectedSurvey || !selectedSurvey.id) {
         console.error('Selected survey is missing or invalid');
         return;
@@ -306,7 +578,6 @@ const [open, setOpen] = React.useState(false);
       console.log('Submitting survey with ID:', surveyId);
       console.log('Selected survey data:', selectedSurvey);
   
-      // Használjuk a selectedSurvey-ben tárolt adatokat
       const creditAmount = Math.floor(selectedSurvey.creditCost / 3);
       console.log('Credit amount calculated:', creditAmount);
   
@@ -403,7 +674,6 @@ const [open, setOpen] = React.useState(false);
     try {
       console.log('Clicked on survey ID:', surveyId);
       
-      // Keressük meg a kérdőív adatait az availableSurveys tömbben
       const surveyInfo = availableSurveys.find(s => s.id === surveyId);
       console.log('Survey info from available surveys:', surveyInfo);
       
@@ -422,7 +692,6 @@ const [open, setOpen] = React.useState(false);
   
       const questions = Array.isArray(surveyData) ? surveyData : [];
       
-      // Tároljuk a kiválasztott kérdőív adatait
       setSelectedSurvey({
         id: surveyId,
         title: surveyInfo.title,
@@ -473,7 +742,6 @@ const [open, setOpen] = React.useState(false);
     justifyContent: 'space-between'
   }}
 >
-  {/* Kredit megjelenítése */}
   <Typography
     component="h1"
     variant="h4"
@@ -486,7 +754,7 @@ const [open, setOpen] = React.useState(false);
       zIndex: 5,
       width: { xs: '100%', md: '25%' }, 
       textAlign: { xs: 'center', md: 'left' },
-      pl: { md: 20 }, // Add padding to avoid logo overlap
+      pl: { md: 20 },
     }}
     onClick={() => {
       setShowUserCreditPage(true);
@@ -496,7 +764,6 @@ const [open, setOpen] = React.useState(false);
     {credits} Kredit
   </Typography>
   
-  {/* Üdvözlő szöveg */}
   <Typography
     component="h1"
     variant="h6"
@@ -513,8 +780,7 @@ const [open, setOpen] = React.useState(false);
   >
     Köszöntjük az oldalon, {name}!
   </Typography>
-  
-  {/* Témaválasztás és profil */}
+
   <Box sx={{
     display: 'flex',
     gap: { xs: 2, sm: 3, md: 5 },
@@ -743,9 +1009,6 @@ const [open, setOpen] = React.useState(false);
         )}
         
 
-
-
-        {/* user Kredit oldal */}
         {!showSurvey && showUserCreditPage && (
           <UserKredit 
             onClose={() => setShowUserCreditPage(false)}
@@ -756,10 +1019,6 @@ const [open, setOpen] = React.useState(false);
         )}
 
         <CssBaseline enableColorScheme />
-
-
-      
-      
 
         <Menu
         anchorEl={anchorEl}
@@ -798,25 +1057,13 @@ const [open, setOpen] = React.useState(false);
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleCloseProfile}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleCloseProfile}>
-          <Avatar /> My account
+        <MenuItem onClick={() => {
+          handleCloseProfile();
+          setProfileDialogOpen(true);
+        }}>
+          <Avatar /> Profil
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleCloseProfile}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleCloseProfile}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
         <MenuItem onClick={handleClickOpen}>
           <ListItemIcon>
             <Logout fontSize="small" />
@@ -826,6 +1073,56 @@ const [open, setOpen] = React.useState(false);
       </Menu>
 
 
+      <ProfileDialog 
+        open={profileDialogOpen}
+        onClose={() => setProfileDialogOpen(false)}
+        userData={userProfileData}
+        onSave={handleSaveUserProfile}
+      />
+
+      <Snackbar 
+        open={snackbar.open} 
+        autoHideDuration={6000} 
+        onClose={handleSnackbarClose}
+      >
+        <Alert 
+          onClose={handleSnackbarClose} 
+          severity={snackbar.severity} 
+          sx={{ 
+            width: '100%',
+            opacity: 0.9,
+            color: 'white',
+            '& .MuiAlert-icon': {
+              color: 'white'
+            },
+            '& .MuiAlert-message': {
+              color: 'white'
+            },
+            '& .MuiAlert-action': {
+              padding: 0,
+              color: 'white',
+              '& .MuiButtonBase-root': {
+                color: 'white',
+                padding: '4px',
+                bgcolor: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                '&:hover': {
+                  bgcolor: 'transparent'
+                }
+              }
+            },
+            '&.MuiAlert-standardSuccess': {
+              backgroundColor: 'rgba(46, 125, 50, 0.95)'
+            },
+            '&.MuiAlert-standardError': {
+              backgroundColor: 'rgba(211, 47, 47, 0.95)'
+            }
+          }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       
       <Dialog
         open={open}
@@ -856,9 +1153,7 @@ const [open, setOpen] = React.useState(false);
           <UserContainer direction="column" justifyContent="space-between">
             <React.Fragment>
 
-
             <CssBaseline enableColorScheme />
-
 
             <Box 
   sx={{ 
@@ -877,22 +1172,20 @@ const [open, setOpen] = React.useState(false);
   component="h1"
   variant="h4"
   sx={{
-    visibility: 'hidden', // Láthatatlan, de foglal helyet
+    visibility: 'hidden',
     fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.6rem' },
     order: { xs: 2, sm: 1 },
     mt: { xs: 2, sm: -2 },
     ml: { sm: 12, md: 18 },
     position: 'relative',
     zIndex: 5,
-    width: { sm: '25%' }, // Fix szélesség tablet mérettől
+    width: { sm: '25%' },
     textAlign: { sm: 'left' }
   }}
 >
-  {/* Üres szöveg, hogy ne látszódjon, de helyet foglaljon */}
   &nbsp;
 </Typography>
-  
-  {/* Üdvözlő szöveg */}
+
   <Typography
     component="h1"
     variant="h6"
@@ -905,14 +1198,13 @@ const [open, setOpen] = React.useState(false);
       transform: { sm: 'translateX(-50%)' },
       width: { xs: '100%', sm: 'auto' },
       mt: { xs: 2, sm: -1 },
-      whiteSpace: 'nowrap', // Megakadályozza a sortörést
-      zIndex: 4 // Alacsonyabb z-index, mint a kredit
+      whiteSpace: 'nowrap',
+      zIndex: 4
     }}
   >
     Köszöntjük az oldalon, {name}!
   </Typography>
   
-  {/* Témaválasztás és profil */}
   <Box sx={{
     display: 'flex',
     gap: { xs: 2, sm: 3, md: 5 },
@@ -920,8 +1212,8 @@ const [open, setOpen] = React.useState(false);
     mt: { xs: 0, sm: 0 },
     position: 'relative',
     right: { xs: 0, sm: -10, md: -20 },
-    width: { sm: '25%' }, // Fix szélesség tablet mérettől
-    justifyContent: 'flex-end' // Jobbra igazítás
+    width: { sm: '25%' },
+    justifyContent: 'flex-end'
   }}>
     <ColorModeSelect sx={{ 
       display: 'flex',
@@ -948,15 +1240,12 @@ const [open, setOpen] = React.useState(false);
   </Box>
 </Box>
             
-
             <Card variant="outlined" sx={{ 
               width: { xs: '95%', sm: '600px' },
               maxWidth: '600px',
               mx: 'auto',
               mt: { xs: 0, sm: 2 }
             }}>
-    
-
       
             <FormControl sx={{ m: 1, minWidth: 240 }}>
   <InputLabel
@@ -997,10 +1286,6 @@ const [open, setOpen] = React.useState(false);
     <MenuItem value={6}>8 általános iskolánál kevesebb</MenuItem>
   </Select>
 </FormControl>
-
-
-
-
 
 <LocalizationProvider dateAdapter={AdapterDayjs}>
   <DatePicker 
@@ -1112,8 +1397,6 @@ const [open, setOpen] = React.useState(false);
         </Select>
       </FormControl>
 
-
-
       <FormControl sx={{ m: 1, minWidth: 220 }}>
         <InputLabel id="demo-simple-select-autowidth-label"
         sx={{
@@ -1200,25 +1483,13 @@ const [open, setOpen] = React.useState(false);
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleCloseProfile}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleCloseProfile}>
-          <Avatar /> My account
+        <MenuItem onClick={() => {
+          handleCloseProfile();
+          setProfileDialogOpen(true);
+        }}>
+          <Avatar /> Profil
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleCloseProfile}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleCloseProfile}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
         <MenuItem onClick={handleClickOpen}>
           <ListItemIcon>
             <Logout fontSize="small" />
@@ -1227,7 +1498,18 @@ const [open, setOpen] = React.useState(false);
         </MenuItem>
       </Menu>
 
+      <ProfileDialog 
+      open={profileDialogOpen}
+      onClose={() => setProfileDialogOpen(false)}
+      userData={userProfileData}
+      onSave={handleSaveUserProfile}
+    />
 
+    <Snackbar 
+      open={snackbar.open} 
+      autoHideDuration={6000} 
+      onClose={handleSnackbarClose}
+    >
       
       <Dialog
         open={open}
@@ -1247,6 +1529,44 @@ const [open, setOpen] = React.useState(false);
           <Button onClick={onSignOut}>Igen</Button>
         </DialogActions>
       </Dialog>
+      <Alert 
+        onClose={handleSnackbarClose} 
+        severity={snackbar.severity} 
+        sx={{ 
+          width: '100%',
+          opacity: 0.9,
+          color: 'white',
+          '& .MuiAlert-icon': {
+            color: 'white'
+          },
+          '& .MuiAlert-message': {
+            color: 'white'
+          },
+          '& .MuiAlert-action': {
+            padding: 0,
+            color: 'white',
+            '& .MuiButtonBase-root': {
+              color: 'white',
+              padding: '4px',
+              bgcolor: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+              '&:hover': {
+                bgcolor: 'transparent'
+              }
+            }
+          },
+          '&.MuiAlert-standardSuccess': {
+            backgroundColor: 'rgba(46, 125, 50, 0.95)'
+          },
+          '&.MuiAlert-standardError': {
+            backgroundColor: 'rgba(211, 47, 47, 0.95)'
+          }
+        }}
+      >
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
   </React.Fragment>
   </UserContainer>
 </AppTheme>

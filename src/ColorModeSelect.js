@@ -9,30 +9,23 @@ import optifyDark from './kepek/optify-dark.png';
 export default function ColorModeSelect(props) {
   const { mode, setMode } = useColorScheme();
   
-  // Videó forrás frissítése a téma változásakor
   React.useEffect(() => {
-    // Megkeressük a videó elemet a DOM-ban
     const videoElement = document.querySelector('video');
     if (videoElement) {
-      // Beállítjuk a megfelelő videó forrást a téma alapján
       const videoSource = mode === 'light' 
         ? "/kepek/AdobeStock_477969018_2.mp4" 
         : "/kepek/AdobeStock_477969018.mp4";
       
-      // Frissítjük a source elem src attribútumát
       const sourceElement = videoElement.querySelector('source');
       if (sourceElement) {
         sourceElement.src = videoSource;
-        // Újratöltjük a videót, hogy az új forrás érvénybe lépjen
         videoElement.load();
-      // Biztonságos lejátszás a loadeddata esemény után
       const playVideo = () => {
         if (document.body.contains(videoElement)) {
           const playPromise = videoElement.play();
           
           if (playPromise !== undefined) {
             playPromise.catch(error => {
-              // Az AbortError várható a forrás változásakor, így ignoráljuk
               if (error.name !== 'AbortError') {
                 console.error('Video play error:', error);
               }
@@ -43,13 +36,12 @@ export default function ColorModeSelect(props) {
       
       videoElement.addEventListener('loadeddata', playVideo, { once: true });
       
-      // Eseménykezelő eltávolítása a cleanup során
       return () => {
         videoElement.removeEventListener('loadeddata', playVideo);
       };
     }
   }
-}, [mode]); // A függőségi tömb tartalmazza a mode-ot, így a téma változásakor újra lefut
+}, [mode]);
 
 if (!mode) {
   return null;

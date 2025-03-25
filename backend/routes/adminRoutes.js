@@ -5,23 +5,38 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = 'GJ4#nF2$s8@W9z!qP^rT&vXyL1_8b@k0cZ%*A&f';
 
-// Admin middleware
+
 const isAdmin = async (req, res, next) => {
   try {
+    // Tesztkörnyezetben átugorjuk a JWT ellenőrzést
+    if (process.env.NODE_ENV === 'test' && req.headers['x-test-admin'] === 'true') {
+      req.user = { id: 1, email: 'admin@test.com', role: 'admin' };
+      return next();
+    }
+
+    if (!req.headers.authorization) {
+      return res.status(401).json({ error: 'Authorization header missing' });
+    }
+    
     const token = req.headers.authorization.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Token missing' });
+    }
+    
     const decoded = jwt.verify(token, SECRET_KEY);
     
     if (decoded.role !== 'admin') {
       return res.status(403).json({ error: 'Admin jogosultság szükséges' });
     }
     
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(401).json({ error: 'Érvénytelen token' });
   }
 };
 
-// Felhasználók listázása
+
 router.get('/users', isAdmin, async (req, res) => {
   try {
     const [users] = await db.promise().query(
@@ -33,7 +48,7 @@ router.get('/users', isAdmin, async (req, res) => {
   }
 });
 
-// Cégek listázása
+
 router.get('/companies', isAdmin, async (req, res) => {
   try {
     const [companies] = await db.promise().query(
@@ -45,7 +60,7 @@ router.get('/companies', isAdmin, async (req, res) => {
   }
 });
 
-// Kérdőívek listázása
+
 router.get('/surveys', isAdmin, async (req, res) => {
     try {
       const [surveys] = await db.promise().query(`
@@ -63,7 +78,7 @@ router.get('/surveys', isAdmin, async (req, res) => {
     }
   });
 
-// Felhasználó módosítása
+
 router.put('/users/:id', isAdmin, async (req, res) => {
   const { name, email, credits, role } = req.body;
   
@@ -78,7 +93,7 @@ router.put('/users/:id', isAdmin, async (req, res) => {
   }
 });
 
-// Cég módosítása
+
 router.put('/companies/:id', isAdmin, async (req, res) => {
   const { cegnev, ceg_email, credits } = req.body;
   
@@ -93,7 +108,7 @@ router.put('/companies/:id', isAdmin, async (req, res) => {
   }
 });
 
-// Kérdőív törlése
+
 router.delete('/surveys/:id', isAdmin, async (req, res) => {
   try {
     await db.promise().query('DELETE FROM survey_set WHERE id = ?', [req.params.id]);
@@ -108,7 +123,6 @@ router.post('/create-survey', isAdmin, async (req, res) => {
   const { title, questions, participantCount, filterCriteria, creditCost, companyId } = req.body;
   
   try {
-    // Kérdőív létrehozása
     const [surveyResult] = await db.promise().query(
       `INSERT INTO survey_set (
         title, mintavetel, 
@@ -127,20 +141,17 @@ router.post('/create-survey', isAdmin, async (req, res) => {
 
     const surveyId = surveyResult.insertId;
     
-    // Kapcsolat létrehozása a company_connections táblában
     await db.promise().query(
       'INSERT INTO company_connections (company_id, connection_type, connection_id) VALUES (?, "survey", ?)',
       [companyId, surveyId]
     );
 
-    // Kérdések létrehozása és kapcsolatok létrehozása a survey_connections táblában
     for (const question of questions) {
       const [questionResult] = await db.promise().query(
         'INSERT INTO questions (question, frm_option, type) VALUES (?, ?, ?)',
         [question.questionText, JSON.stringify(question.options), question.selectedButton]
       );
       
-      // Kapcsolat létrehozása a survey_connections táblában
       await db.promise().query(
         'INSERT INTO survey_connections (survey_id, connection_type, connection_id) VALUES (?, "question", ?)',
         [surveyId, questionResult.insertId]

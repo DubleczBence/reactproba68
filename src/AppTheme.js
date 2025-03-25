@@ -13,30 +13,24 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
   const [opacity, setOpacity] = React.useState(1);
   const { mode } = useColorScheme();
 
-  // Videó forrásának meghatározása a színmód alapján
   const videoSource = mode === 'light' 
     ? "/kepek/AdobeStock_477969018_2.mp4" 
     : "/kepek/AdobeStock_477969018.mp4";
 
-  // Fade effektus a videó végén
   React.useEffect(() => {
     const videoElement = videoRef.current;
     
     if (videoElement) {
-      // Videó időtartamának lekérdezése betöltés után
       const handleLoadedMetadata = () => {
         const duration = videoElement.duration;
         
-        // Időzítő beállítása a videó vége előtt 1 másodperccel
         const setFadeTimer = () => {
           const timeUntilEnd = (duration - videoElement.currentTime - 1) * 1000;
           if (timeUntilEnd > 0) {
             setTimeout(() => {
-              // Fokozatos elhalványítás
               const minOpacity = mode === 'light' ? 0.7 : 0;
               setOpacity(minOpacity);
               
-              // Újra láthatóvá tesszük, amikor a videó újraindul
               setTimeout(() => {
                 setOpacity(1);
               }, 1000);
@@ -44,10 +38,8 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           }
         };
         
-        // Időzítő beállítása, amikor a videó elindul
         setFadeTimer();
         
-        // Időzítő beállítása minden újraindításkor
         videoElement.addEventListener('seeked', setFadeTimer);
         videoElement.addEventListener('play', setFadeTimer);
       };
@@ -100,7 +92,6 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
 
   return (
     <ThemeProvider theme={theme} disableTransitionOnChange>
-      {/* Háttér overlay - mindig látható, hogy ne legyen villogás */}
       <div
         style={{
           position: 'fixed',
@@ -113,7 +104,6 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
         }}
       />
       
-      {/* Háttérvideó */}
       <video
         ref={videoRef}
         autoPlay
@@ -127,7 +117,7 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           width: '100vw',
           height: '100vh',
           objectFit: 'cover',
-          zIndex: -3, // A videó a háttér overlay mögött van
+          zIndex: -3,
           opacity: opacity,
           transition: 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
@@ -135,7 +125,6 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
         <source src={videoSource} type="video/mp4" />
       </video>
 
-      {/* Az alkalmazás tartalma */}
       {children}
     </ThemeProvider>
   );
@@ -143,9 +132,6 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
 
 AppTheme.propTypes = {
   children: PropTypes.node,
-  /**
-   * This is for the docs site. You can ignore it or remove it.
-   */
   disableCustomTheme: PropTypes.bool,
   themeComponents: PropTypes.object,
 };

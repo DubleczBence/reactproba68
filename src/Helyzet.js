@@ -48,20 +48,19 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
       
   
       useEffect(() => {
-        const duration = 2000; // Animáció időtartama milliszekundumban
+        const duration = 2000;
         const steps = 60;
         const interval = duration / steps;
         let currentStep = 0;
       
         const timer = setInterval(() => {
           currentStep++;
-          // Egyszerűen csak a completionPercentage-ig animálunk
           const progress = (currentStep / steps) * completionPercentage;
           setAnimatedValue(progress > completionPercentage ? completionPercentage : progress);
           
           if (currentStep >= steps || progress >= completionPercentage) {
             clearInterval(timer);
-            setAnimatedValue(completionPercentage); // Biztosítjuk, hogy pontosan a célértéken álljon meg
+            setAnimatedValue(completionPercentage);
           }
         }, interval);
       
@@ -86,7 +85,6 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
 
       const handleConfirmClose = async () => {
         try {
-          // Itt hívjuk meg a lezárás API-t
           const response = await fetch(`http://localhost:3001/api/companies/close-survey/${surveyId}`, {
             method: 'POST',
             headers: {
@@ -96,7 +94,6 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
           });
       
           if (response.ok) {
-            // Ha sikeres a lezárás, bezárjuk a dialógust és frissítjük az oldalt
             setOpenDialog(false);
             if (lezaras) lezaras();
             handleCloseAndRefresh();
@@ -249,12 +246,8 @@ return (
                   height: "22px",
                 }}
               />
-            
-          
           </Button>
 
-
-          {/* Megerősítő dialógus */}
           <Dialog
             open={openDialog}
             onClose={handleCloseDialog}

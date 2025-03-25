@@ -109,8 +109,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.8)' // Világos mód - fehér háttér
-    : 'rgba(2, 1, 14, 0.8)', // Sötét mód - sötét háttér
+    ? 'rgba(255, 255, 255, 0.8)'
+    : 'rgba(2, 1, 14, 0.8)',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -138,8 +138,8 @@ const CompHomeContainer = styled(Stack)(({ theme }) => ({
   position: 'absolute',
   inset: 0,
   backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.3)' // Világos háttér átlátszósággal
-      : 'rgba(0, 0, 0, 0.5)', // Sötét háttér átlátszósággal
+      ? 'rgba(255, 255, 255, 0.3)'
+      : 'rgba(0, 0, 0, 0.5)',
   zIndex: -1,
 }
 }));
@@ -169,8 +169,8 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
         mt: 2, 
         mb: 2,
         backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.5)' // More transparent in light mode
-      : theme.palette.background.default, // Keep original in dark mode 
+      ? 'rgba(255, 255, 255, 0.5)'
+      : theme.palette.background.default,
         boxShadow: theme.shadows[1],
         width: '18%', 
       }}
@@ -221,13 +221,16 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
       <DialogTitle>Cég profil</DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Módosítható mezők */}
           <TextField
             fullWidth
             label="Cégnév"
             name="cegnev"
             value={formData.cegnev}
             onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -236,14 +239,21 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             name="telefon"
             value={formData.telefon}
             onChange={handleChange}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
-          {/* Csak olvasható mezők */}
           <TextField
             fullWidth
             label="Email"
             value={companyData?.ceg_email || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -251,6 +261,10 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             label="Település"
             value={companyData?.telepules || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -258,6 +272,10 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             label="Megye"
             value={companyData?.megye || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -265,6 +283,10 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             label="Céges számla"
             value={companyData?.ceges_szamla || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -272,6 +294,10 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             label="Hitelkártya"
             value={companyData?.hitelkartya || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -279,6 +305,10 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             label="Adószám"
             value={companyData?.adoszam || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -286,6 +316,10 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             label="Cégjegyzékszám"
             value={companyData?.cegjegyzek || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
           
           <TextField
@@ -293,6 +327,10 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             label="Helyrajzi szám"
             value={companyData?.helyrajziszam || ''}
             InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { transform: 'translate(0, -14px) scale(0.75)' }
+            }}
           />
         </Box>
       </DialogContent>
@@ -365,7 +403,6 @@ const CompHome = ({ onSignOut }) => {
       const companyId = location.state?.cegId;
       if (!companyId) return;
       
-      // Ellenőrizzük, hogy van-e mit frissíteni
       if (Object.keys(formData).length === 0) {
         setSnackbar({
           open: true,
@@ -395,7 +432,7 @@ const CompHome = ({ onSignOut }) => {
       });
       
       setProfileDialogOpen(false);
-      fetchCompanyProfile(); // Frissítsük a profil adatokat
+      fetchCompanyProfile();
     } catch (error) {
       console.error('Error updating company profile:', error);
       setSnackbar({
@@ -415,7 +452,7 @@ const CompHome = ({ onSignOut }) => {
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
 const [surveyFilter, setSurveyFilter] = useState({
   title: '',
-  titleFilterType: 'contains', // 'startsWith', 'endsWith', 'equals', 'contains'
+  titleFilterType: 'contains',
   date: '',
   dateFilterType: 'contains',
   completionMin: 0,
@@ -423,7 +460,6 @@ const [surveyFilter, setSurveyFilter] = useState({
 });
 const [filteredSurveys, setFilteredSurveys] = useState([]);
 
-// Popover nyitás/zárás kezelése
 const handleFilterClick = (event) => {
   setFilterAnchorEl(event.currentTarget);
 };
@@ -435,10 +471,8 @@ const handleFilterClose = () => {
 const openFilter = Boolean(filterAnchorEl);
 const filterId = openFilter ? 'survey-filter-popover' : undefined;
 
-// Szűrő alkalmazása
 const applyFilter = () => {
   const filtered = companySurveys.filter(survey => {
-    // Cím szűrése a kiválasztott szűrési típus alapján
     let matchesTitle = true;
     if (surveyFilter.title) {
       const title = survey.title.toLowerCase();
@@ -461,7 +495,6 @@ const applyFilter = () => {
       }
     }
     
-    // Dátum szűrése a kiválasztott szűrési típus alapján
     let matchesDate = true;
     if (surveyFilter.date) {
       const date = survey.created_date.toLowerCase();
@@ -484,7 +517,6 @@ const applyFilter = () => {
       }
     }
     
-    // Kitöltöttség szűrése
     const completion = Math.round(survey.completion_percentage);
     const matchesCompletion = completion >= surveyFilter.completionMin && completion <= surveyFilter.completionMax;
     
@@ -496,7 +528,6 @@ const applyFilter = () => {
 };
 
 
-// Szűrő törlése
 const clearFilter = () => {
   setSurveyFilter({
     title: '',
@@ -510,7 +541,6 @@ const clearFilter = () => {
   handleFilterClose();
 };
 
-// Használjuk a filteredSurveys-t, ha van benne elem, egyébként a companySurveys-t
 const isFilterActive = surveyFilter.title !== '' || surveyFilter.date !== '' || 
                       surveyFilter.completionMin > 0 || surveyFilter.completionMax < 100;
 const displayedSurveys = isFilterActive ? filteredSurveys : companySurveys;
@@ -920,7 +950,6 @@ const handleCardDialogClose = (cardName) => {
     justifyContent: 'space-between'
   }}
 >
-  {/* Kredit megjelenítése */}
   <Typography
     component="h1"
     variant="h3"
@@ -933,7 +962,7 @@ const handleCardDialogClose = (cardName) => {
       zIndex: 5,
       width: { xs: '100%', md: '25%' }, 
       textAlign: { xs: 'center', md: 'left' },
-      pl: { md: 20 }, // Add padding to avoid logo overlap
+      pl: { md: 20 },
     }}
     onClick={() => {
       setShowCreditPage(true);
@@ -943,7 +972,6 @@ const handleCardDialogClose = (cardName) => {
     {credits} Kredit
   </Typography>
   
-  {/* Üdvözlő szöveg */}
   <Typography
     component="h1"
     variant="h6"
@@ -961,7 +989,6 @@ const handleCardDialogClose = (cardName) => {
     Köszöntjük az oldalon, {name}!
   </Typography>
   
-  {/* Témaválasztás, értesítések és profil */}
   <Box sx={{
     display: 'flex',
     gap: { xs: 2, sm: 3, md: 4 },
@@ -1055,30 +1082,30 @@ const handleCardDialogClose = (cardName) => {
     sx={{
       mt: 1,
       width: "95% !important",
-      height: { xs: "auto", sm: "70%" }, // Mobil nézetben auto magasság
+      height: { xs: "auto", sm: "70%" },
       maxWidth: "700px !important",
-      overflow: "auto", // Biztosítja, hogy a tartalom ne csússzon ki
+      overflow: "auto",
     }}
   >
     <Button
       onClick={handleClickOpenKerd}
       sx={{
-        height: { xs: "auto", sm: "80px" }, // Mobil nézetben automatikus magasság
-        minHeight: "60px", // Minimum magasság minden méretben
+        height: { xs: "auto", sm: "80px" },
+        minHeight: "60px",
         width: "100%",
         justifyContent: "flex-start",
         textAlign: "left",
-        pl: { xs: 2, sm: 4 }, // Kisebb padding mobil nézetben
-        fontSize: { xs: "1rem", sm: "1.2rem" }, // Kisebb betűméret mobil nézetben
+        pl: { xs: 2, sm: 4 },
+        fontSize: { xs: "1rem", sm: "1.2rem" },
         flexShrink: 0,
         mb: 2,
-        whiteSpace: "normal", // Engedi a sortörést
+        whiteSpace: "normal",
       }}
       variant="outlined"
       startIcon={
         <AddCircleOutlineIcon
           sx={{
-            width: { xs: "24px", sm: "32px" }, // Kisebb ikon mobil nézetben
+            width: { xs: "24px", sm: "32px" },
             height: { xs: "24px", sm: "32px" },
             mr: { xs: 1, sm: 2 },
           }}
@@ -1089,9 +1116,6 @@ const handleCardDialogClose = (cardName) => {
     </Button>
 
 
-    
-
-    {/* Szűrő Popover */}
     <Popover
   id={filterId}
   open={openFilter}
@@ -1111,7 +1135,6 @@ const handleCardDialogClose = (cardName) => {
       Kérdőívek szűrése
     </Typography>
     
-    {/* Cím szűrése */}
     <Box sx={{ mb: 2 }}>
       <Typography variant="subtitle2" gutterBottom>
         Kérdőív címe
@@ -1161,7 +1184,6 @@ const handleCardDialogClose = (cardName) => {
       </Box>
     </Box>
     
-    {/* Dátum szűrése */}
     <Box sx={{ mb: 2 }}>
       <Typography variant="subtitle2" gutterBottom>
         Dátum
@@ -1212,7 +1234,6 @@ const handleCardDialogClose = (cardName) => {
       </Box>
     </Box>
     
-    {/* Kitöltöttség szűrése */}
     <Box sx={{ mt: 3 }}>
       <Typography variant="subtitle2" gutterBottom>
         Kitöltöttség (%)
@@ -1238,7 +1259,6 @@ const handleCardDialogClose = (cardName) => {
       </Box>
     </Box>
     
-    {/* Szűrés gombok */}
     <Box sx={{ mt: 3, display: 'flex', justifyContent: 'space-between' }}>
       <Button onClick={clearFilter} color="inherit">
         Törlés
@@ -1264,20 +1284,20 @@ const handleCardDialogClose = (cardName) => {
           setShowSixthCard(true);
         }}
         sx={{
-          height: { xs: "auto", sm: "80px" }, // Mobil nézetben automatikus magasság
-          minHeight: { xs: "80px", sm: "80px" }, // Minimum magasság minden méretben
+          height: { xs: "auto", sm: "80px" },
+          minHeight: { xs: "80px", sm: "80px" },
           flexShrink: 0,
           textAlign: "left",
-          pl: { xs: 2, sm: 4 }, // Kisebb padding mobil nézetben
-          fontSize: { xs: "0.9rem", sm: "1.2rem" }, // Kisebb betűméret mobil nézetben
+          pl: { xs: 2, sm: 4 },
+          fontSize: { xs: "0.9rem", sm: "1.2rem" },
           mb: 2,
           width: "100%",
           display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' }, // Mobil nézetben oszlopba rendezi
-          alignItems: { xs: 'flex-start', sm: 'center' }, // Mobil nézetben balra igazít
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'flex-start', sm: 'center' },
           justifyContent: 'space-between',
-          py: { xs: 2, sm: 0 }, // Extra padding-y mobil nézetben
-          whiteSpace: "normal", // Engedi a sortörést
+          py: { xs: 2, sm: 0 },
+          whiteSpace: "normal",
         }}
         variant="outlined"
       >
@@ -1285,9 +1305,9 @@ const handleCardDialogClose = (cardName) => {
           component="span" 
           sx={{ 
             fontSize: { xs: '0.9rem', sm: '1.2rem' },
-            mb: { xs: 1, sm: 0 }, // Mobil nézetben alsó margó
-            width: { xs: '100%', sm: 'auto' }, // Mobil nézetben teljes szélesség
-            wordBreak: "break-word" // Hosszú szavak törése
+            mb: { xs: 1, sm: 0 },
+            width: { xs: '100%', sm: 'auto' },
+            wordBreak: "break-word"
           }}
         >
           {survey.title}
@@ -1299,21 +1319,21 @@ const handleCardDialogClose = (cardName) => {
           alignItems: 'center', 
           gap: { xs: 1, sm: 2 }, 
           mr: { xs: 0, sm: 2 },
-          width: { xs: '100%', sm: 'auto' }, // Mobil nézetben teljes szélesség
-          justifyContent: { xs: 'space-between', sm: 'flex-end' } // Mobil nézetben szétosztja
+          width: { xs: '100%', sm: 'auto' },
+          justifyContent: { xs: 'space-between', sm: 'flex-end' }
         }}>
           <Typography
             component="span"
             sx={{
               width: "auto",
-              minWidth: { xs: "auto", sm: "150px" }, // Mobil nézetben automatikus szélesség
-              height: { xs: "auto", sm: "37px" }, // Mobil nézetben automatikus magasság
+              minWidth: { xs: "auto", sm: "150px" },
+              height: { xs: "auto", sm: "37px" },
               borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               padding: "0 10px",
-              fontSize: { xs: '0.8rem', sm: 'inherit' } // Kisebb betűméret mobil nézetben
+              fontSize: { xs: '0.8rem', sm: 'inherit' }
             }}
           >
             {survey.created_date}
@@ -1322,7 +1342,7 @@ const handleCardDialogClose = (cardName) => {
             display: 'flex', 
             flexDirection: 'column', 
             alignItems: 'center',
-            minWidth: { xs: "60px", sm: "auto" } // Fix szélesség mobil nézetben
+            minWidth: { xs: "60px", sm: "auto" }
           }}>
             <Typography sx={{ fontSize: { xs: '0.8rem', sm: 'inherit' } }}>
               {Math.round(survey.completion_percentage)}%
@@ -1331,7 +1351,7 @@ const handleCardDialogClose = (cardName) => {
               variant="caption" 
               sx={{ 
                 mt: -0.5,
-                fontSize: { xs: '0.7rem', sm: '0.75rem' } // Kisebb betűméret mobil nézetben
+                fontSize: { xs: '0.7rem', sm: '0.75rem' }
               }}
             >
               Folyamatban
@@ -1340,7 +1360,6 @@ const handleCardDialogClose = (cardName) => {
         </Box>
       </Button>
     ))}
-    {/* Ha nincs találat a szűrésre, jelenítsünk meg egy üzenetet */}
     {filteredSurveys.length === 0 && surveyFilter.title !== '' && (
       <Typography sx={{ textAlign: 'center', mt: 2, color: 'text.secondary' }}>
         Nincs a szűrésnek megfelelő kérdőív
@@ -1724,17 +1743,10 @@ const handleCardDialogClose = (cardName) => {
                   height: "22px",
                 }}
               />
-            
-          
           </Button>
-
-          
-
 
         </Card>
         )}
-
-
         {/* Harmadik Card */}
         {!showFirstCard && !showSecondCard && showThirdCard && (
           <Szuro 
@@ -1745,8 +1757,6 @@ const handleCardDialogClose = (cardName) => {
           />
         )}
 
-
-
         {/* Negyedik Card */}
         {!showFirstCard && !showSecondCard && !showThirdCard && showFourthCard && (
           <Mintavetel 
@@ -1756,7 +1766,6 @@ const handleCardDialogClose = (cardName) => {
             onNext={handleClickOpenAttekintes}
           />
         )}
-
 
         {/* Ötödik Card */}
         {!showFirstCard && !showSecondCard && !showThirdCard && !showFourthCard && showFifthCard && (
@@ -1773,17 +1782,14 @@ const handleCardDialogClose = (cardName) => {
           />
         )}
 
-
         {/* Hatodik Card */}
         {!showFirstCard && !showSecondCard && !showThirdCard && !showFourthCard && !showFifthCard && showSixthCard && (
           <Helyzet
           onClose={handleCloseIconClick}
           surveyId={selectedSurveyId}
           >
-            
           </Helyzet>
         )}
-
 
         {/* Kredit oldal */}
         {showCreditPage && (
@@ -1794,12 +1800,10 @@ const handleCardDialogClose = (cardName) => {
           />
         )}
 
-
-        {/* Statisztika oldal */}
 {showStatisztika && (
   <Box sx={{ 
     position: 'absolute', 
-    top: '200px',  // Állítsd be a kívánt magasságot
+    top: '200px',
     left: 0,
     right: 0,
     display: 'flex',
@@ -1813,8 +1817,6 @@ const handleCardDialogClose = (cardName) => {
     />
   </Box>
 )}
-
-
         <Menu
         anchorEl={anchorEl}
         id="account-menu"
@@ -1893,7 +1895,6 @@ const handleCardDialogClose = (cardName) => {
         </DialogActions>
       </Dialog>
 
-      {/* Third card dialog */}
       <Dialog
         open={openCardDialog.third}
         TransitionComponent={Transition}
@@ -1915,7 +1916,6 @@ const handleCardDialogClose = (cardName) => {
         </DialogActions>
       </Dialog>
 
-      {/* Fourth card dialog */}
       <Dialog
         open={openCardDialog.fourth}
         TransitionComponent={Transition}
@@ -1937,7 +1937,6 @@ const handleCardDialogClose = (cardName) => {
         </DialogActions>
       </Dialog>
 
-      {/* Fifth card dialog */}
       <Dialog
         open={openCardDialog.fifth}
         TransitionComponent={Transition}
