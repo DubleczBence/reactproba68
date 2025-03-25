@@ -415,4 +415,60 @@ router.post('/close-survey/:surveyId', async (req, res) => {
 });
 
 
+router.get('/profile/:companyId', async (req, res) => {
+  try {
+    const [company] = await db.promise().query(
+      'SELECT id, cegnev, telefon, ceg_email, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam FROM companies WHERE id = ?',
+      [req.params.companyId]
+    );
+    
+    if (company.length === 0) {
+      return res.status(404).json({ error: 'Company not found' });
+    }
+    
+    res.json(company[0]);
+  } catch (error) {
+    console.error('Error fetching company profile:', error);
+    res.status(500).json({ error: 'Failed to fetch company profile' });
+  }
+});
+
+// Cég profil módosítása
+router.put('/profile/:companyId', async (req, res) => {
+  const { cegnev, telefon } = req.body;
+  const companyId = req.params.companyId;
+  
+  try {
+    // Először lekérdezzük a jelenlegi adatokat
+    const [currentData] = await db.promise().query(
+      'SELECT cegnev, telefon FROM companies WHERE id = ?',
+      [companyId]
+    );
+    
+    if (currentData.length === 0) {
+      return res.status(404).json({ error: 'Company not found' });
+    }
+    
+    // Csak azokat az adatokat frissítjük, amelyeket küldtek
+    const updatedCegnev = cegnev !== undefined ? cegnev : currentData[0].cegnev;
+    const updatedTelefon = telefon !== undefined ? telefon : currentData[0].telefon;
+    
+    await db.promise().query(
+      'UPDATE companies SET cegnev = ?, telefon = ? WHERE id = ?',
+      [updatedCegnev, updatedTelefon, companyId]
+    );
+    
+    res.json({ 
+      message: 'Company profile updated successfully',
+      updatedData: {
+        cegnev: updatedCegnev,
+        telefon: updatedTelefon
+      }
+    });
+  } catch (error) {
+    console.error('Error updating company profile:', error);
+    res.status(500).json({ error: 'Failed to update company profile' });
+  }
+});
+
 module.exports = router;

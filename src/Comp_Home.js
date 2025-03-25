@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -27,8 +27,6 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import MuiCard from '@mui/material/Card';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -110,7 +108,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
   gap: theme.spacing(2),
   margin: 'auto',
   overflow: 'auto',
-  backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  backgroundColor: theme.palette.mode === 'light' 
+    ? 'rgba(255, 255, 255, 0.8)' // Világos mód - fehér háttér
+    : 'rgba(2, 1, 14, 0.8)', // Sötét mód - sötét háttér
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -137,7 +137,9 @@ const CompHomeContainer = styled(Stack)(({ theme }) => ({
   content: '""',
   position: 'absolute',
   inset: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: theme.palette.mode === 'light' 
+      ? 'rgba(255, 255, 255, 0.3)' // Világos háttér átlátszósággal
+      : 'rgba(0, 0, 0, 0.5)', // Sötét háttér átlátszósággal
   zIndex: -1,
 }
 }));
@@ -166,7 +168,9 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
       sx={{
         mt: 2, 
         mb: 2,
-        backgroundColor: theme.palette.background.default, 
+        backgroundColor: theme.palette.mode === 'light' 
+      ? 'rgba(255, 255, 255, 0.5)' // More transparent in light mode
+      : theme.palette.background.default, // Keep original in dark mode 
         boxShadow: theme.shadows[1],
         width: '18%', 
       }}
@@ -183,6 +187,131 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
+  const [formData, setFormData] = useState({
+    cegnev: '',
+    telefon: ''
+  });
+
+  useEffect(() => {
+    if (companyData) {
+      setFormData({
+        cegnev: companyData.cegnev || '',
+        telefon: companyData.telefon ? companyData.telefon.toString() : ''
+      });
+    }
+  }, [companyData]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    const dataToSave = {};
+    if (formData.cegnev.trim() !== '') dataToSave.cegnev = formData.cegnev;
+    if (formData.telefon.trim() !== '') dataToSave.telefon = formData.telefon;
+    
+    onSave(dataToSave);
+  };
+
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>Cég profil</DialogTitle>
+      <DialogContent>
+        <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {/* Módosítható mezők */}
+          <TextField
+            fullWidth
+            label="Cégnév"
+            name="cegnev"
+            value={formData.cegnev}
+            onChange={handleChange}
+          />
+          
+          <TextField
+            fullWidth
+            label="Telefonszám"
+            name="telefon"
+            value={formData.telefon}
+            onChange={handleChange}
+          />
+          
+          {/* Csak olvasható mezők */}
+          <TextField
+            fullWidth
+            label="Email"
+            value={companyData?.ceg_email || ''}
+            InputProps={{ readOnly: true }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Település"
+            value={companyData?.telepules || ''}
+            InputProps={{ readOnly: true }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Megye"
+            value={companyData?.megye || ''}
+            InputProps={{ readOnly: true }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Céges számla"
+            value={companyData?.ceges_szamla || ''}
+            InputProps={{ readOnly: true }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Hitelkártya"
+            value={companyData?.hitelkartya || ''}
+            InputProps={{ readOnly: true }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Adószám"
+            value={companyData?.adoszam || ''}
+            InputProps={{ readOnly: true }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Cégjegyzékszám"
+            value={companyData?.cegjegyzek || ''}
+            InputProps={{ readOnly: true }}
+          />
+          
+          <TextField
+            fullWidth
+            label="Helyrajzi szám"
+            value={companyData?.helyrajziszam || ''}
+            InputProps={{ readOnly: true }}
+          />
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Mégse</Button>
+        <Button 
+          onClick={handleSubmit} 
+          variant="contained"
+          disabled={!formData.cegnev.trim() || !formData.telefon.trim()}
+        >
+          Mentés
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+
+
 
 const CompHome = ({ onSignOut }) => {
   const [surveyTotalCost, setSurveyTotalCost] = useState(0);
@@ -193,6 +322,8 @@ const CompHome = ({ onSignOut }) => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [showCreditPage, setShowCreditPage] = useState(false);
   const [selectedParticipants, setSelectedParticipants] = useState(50);
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+  const [companyProfileData, setCompanyProfileData] = useState(null);
 
   const [companySurveys, setCompanySurveys] = useState([]);
   const [selectedSurveyId, setSelectedSurveyId] = useState(null);
@@ -205,6 +336,80 @@ const CompHome = ({ onSignOut }) => {
     fifth: false,
     sixth: false
   });
+
+
+  const fetchCompanyProfile = useCallback(async () => {
+    try {
+      const companyId = location.state?.cegId;
+      if (!companyId) return;
+      
+      const response = await fetch(`http://localhost:3001/api/companies/profile/${companyId}`);
+      if (!response.ok) throw new Error('Failed to fetch company profile');
+      
+      const data = await response.json();
+      setCompanyProfileData(data);
+    } catch (error) {
+      console.error('Error fetching company profile:', error);
+      setSnackbar({
+        open: true,
+        message: 'Hiba történt a cég profil betöltése során',
+        severity: 'error'
+      });
+    }
+  }, [location.state?.cegId, setSnackbar]);
+
+
+
+  const handleSaveCompanyProfile = async (formData) => {
+    try {
+      const companyId = location.state?.cegId;
+      if (!companyId) return;
+      
+      // Ellenőrizzük, hogy van-e mit frissíteni
+      if (Object.keys(formData).length === 0) {
+        setSnackbar({
+          open: true,
+          message: 'Nincs módosítandó adat',
+          severity: 'info'
+        });
+        setProfileDialogOpen(false);
+        return;
+      }
+      
+      const response = await fetch(`http://localhost:3001/api/companies/profile/${companyId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!response.ok) throw new Error('Failed to update company profile');
+      
+      await response.json();
+      
+      setSnackbar({
+        open: true,
+        message: 'Cég profil sikeresen frissítve',
+        severity: 'success'
+      });
+      
+      setProfileDialogOpen(false);
+      fetchCompanyProfile(); // Frissítsük a profil adatokat
+    } catch (error) {
+      console.error('Error updating company profile:', error);
+      setSnackbar({
+        open: true,
+        message: 'Hiba történt a cég profil mentése során',
+        severity: 'error'
+      });
+    }
+  };
+
+
+  useEffect(() => {
+    fetchCompanyProfile();
+  }, [fetchCompanyProfile]);
 
 
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
@@ -1647,32 +1852,27 @@ const handleCardDialogClose = (cardName) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleCloseProfile}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleCloseProfile}>
-          <Avatar /> My account
+        <MenuItem onClick={() => {
+          handleCloseProfile();
+          setProfileDialogOpen(true);
+        }}>
+          <Avatar /> Cég profil
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleCloseProfile}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleCloseProfile}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
         <MenuItem onClick={handleClickOpen}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout
         </MenuItem>
-      </Menu>     
+      </Menu>
+
+           <ProfileDialog 
+              open={profileDialogOpen}
+              onClose={() => setProfileDialogOpen(false)}
+              companyData={companyProfileData}
+              onSave={handleSaveCompanyProfile}
+            />
 
       <Dialog
         open={open}
@@ -1808,5 +2008,6 @@ const handleCardDialogClose = (cardName) => {
     </AppTheme>
   );
 };
+
 
 export default CompHome;

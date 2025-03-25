@@ -90,7 +90,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
   gap: theme.spacing(2),
   margin: 'auto',
   overflow: 'auto',
-  backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  backgroundColor: theme.palette.mode === 'light' 
+    ? 'rgba(255, 255, 255, 0.8)' // Világos mód - fehér háttér
+    : 'rgba(2, 1, 14, 0.8)', // Sötét mód - sötét háttér
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -111,12 +113,15 @@ const UserContainer = styled(Stack)(({ theme }) => ({
     padding: theme.spacing(4),
   },
   '&::before': {
-  content: '""',
-  position: 'absolute',
-  inset: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Sötét réteg, hogy a szöveg kiemelkedjen
-  zIndex: -1,
-}
+    content: '""',
+    position: 'absolute',
+    inset: 0,
+    backgroundColor: theme.palette.mode === 'light' 
+      ? 'rgba(255, 255, 255, 0.3)' // Világos háttér átlátszósággal
+      : 'rgba(0, 0, 0, 0.5)', // Sötét háttér átlátszósággal
+    zIndex: -1,
+    pointerEvents: 'none', // Hogy ne akadályozza a kattintásokat
+  }
 }));
 
 

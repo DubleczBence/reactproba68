@@ -33,7 +33,8 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           if (timeUntilEnd > 0) {
             setTimeout(() => {
               // Fokozatos elhalványítás
-              setOpacity(0);
+              const minOpacity = mode === 'light' ? 0.7 : 0;
+              setOpacity(minOpacity);
               
               // Újra láthatóvá tesszük, amikor a videó újraindul
               setTimeout(() => {
@@ -59,7 +60,7 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
         videoElement.removeEventListener('play', handleLoadedMetadata);
       };
     }
-  }, []);
+  }, [mode]);
 
   const theme = React.useMemo(() => {
     return disableCustomTheme
@@ -107,7 +108,7 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           left: 0,
           width: '100vw',
           height: '100vh',
-          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.3)',
+          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)',
           zIndex: -2,
         }}
       />
