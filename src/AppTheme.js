@@ -18,6 +18,7 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
     ? "/kepek/AdobeStock_477969018_2.mp4" 
     : "/kepek/AdobeStock_477969018.mp4";
 
+  // Fade effektus a videó végén
   React.useEffect(() => {
     const videoElement = videoRef.current;
     

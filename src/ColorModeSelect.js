@@ -25,14 +25,35 @@ export default function ColorModeSelect(props) {
         sourceElement.src = videoSource;
         // Újratöltjük a videót, hogy az új forrás érvénybe lépjen
         videoElement.load();
-        videoElement.play();
-      }
+      // Biztonságos lejátszás a loadeddata esemény után
+      const playVideo = () => {
+        if (document.body.contains(videoElement)) {
+          const playPromise = videoElement.play();
+          
+          if (playPromise !== undefined) {
+            playPromise.catch(error => {
+              // Az AbortError várható a forrás változásakor, így ignoráljuk
+              if (error.name !== 'AbortError') {
+                console.error('Video play error:', error);
+              }
+            });
+          }
+        }
+      };
+      
+      videoElement.addEventListener('loadeddata', playVideo, { once: true });
+      
+      // Eseménykezelő eltávolítása a cleanup során
+      return () => {
+        videoElement.removeEventListener('loadeddata', playVideo);
+      };
     }
-  }, [mode]); // A függőségi tömb tartalmazza a mode-ot, így a téma változásakor újra lefut
-
-  if (!mode) {
-    return null;
   }
+}, [mode]); // A függőségi tömb tartalmazza a mode-ot, így a téma változásakor újra lefut
+
+if (!mode) {
+  return null;
+}
   
   return (
     <>
