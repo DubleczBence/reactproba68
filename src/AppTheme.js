@@ -28,7 +28,9 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           const timeUntilEnd = (duration - videoElement.currentTime - 1) * 1000;
           if (timeUntilEnd > 0) {
             setTimeout(() => {
-              const minOpacity = mode === 'light' ? 0.7 : 0;
+              const minOpacity = mode === 'light' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches) 
+              ? 0.7 
+              : 0;
               setOpacity(minOpacity);
               
               setTimeout(() => {

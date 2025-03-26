@@ -12,9 +12,9 @@ export default function ColorModeSelect(props) {
   React.useEffect(() => {
     const videoElement = document.querySelector('video');
     if (videoElement) {
-      const videoSource = mode === 'light' 
-        ? "/kepek/AdobeStock_477969018_2.mp4" 
-        : "/kepek/AdobeStock_477969018.mp4";
+      const videoSource = mode === 'light' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches)
+      ? "/kepek/AdobeStock_477969018_2.mp4" 
+      : "/kepek/AdobeStock_477969018.mp4";
       
       const sourceElement = videoElement.querySelector('source');
       if (sourceElement) {
