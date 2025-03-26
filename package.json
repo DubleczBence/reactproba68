@@ -30,6 +30,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
+    "test:selenium": "jest --testMatch='**/selenium/**/*.test.js'",
     "eject": "react-scripts eject",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -54,7 +55,9 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "chromedriver": "^134.0.5",
     "jest": "^27.5.1",
+    "selenium-webdriver": "^4.30.0",
     "supertest": "^7.1.0"
   }
 }
