@@ -133,6 +133,8 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
           pl: 4,
           mb: 2,
           borderRadius: "10px",
+          opacity: 0.9, // Nagyobb opacitás (kevésbé átlátszó)
+          backgroundColor: "rgba(255, 255, 255, 0.9)", // Fehér háttér nagyobb opacitással
         }}
         variant="outlined"
       >

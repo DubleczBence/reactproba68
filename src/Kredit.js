@@ -81,7 +81,7 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     overflow: 'auto',
   }}
 >
-      <Card
+<Card
   variant="outlined"
   sx={{
     position: isMobile ? 'static' : 'absolute',
@@ -95,6 +95,10 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     overflowY: "auto",
     margin: isMobile ? "20px auto" : undefined,
     order: isMobile ? 2 : 1,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: isMobile ? "300px" : "auto",
+    zIndex: 10,
   }}
 >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
@@ -109,6 +113,8 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
               pl: 4,
               mb: 2,
               borderRadius: "10px",
+              opacity: 0.9, // Nagyobb opacitás (kevésbé átlátszó)
+              backgroundColor: "rgba(255, 255, 255, 0.9)", // Fehér háttér nagyobb opacitással
             }}
             variant="outlined"
           >
