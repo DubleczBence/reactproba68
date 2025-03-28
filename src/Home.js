@@ -1357,7 +1357,7 @@ const [open, setOpen] = React.useState(false);
           <MenuItem value={15}>Közép-Dunántúl</MenuItem>
           <MenuItem value={16}>Közép-Magyarország</MenuItem>
           <MenuItem value={17}>Észak-Magyarország</MenuItem>
-          <MenuItem value={18}>Észak-Alföldv</MenuItem>
+          <MenuItem value={18}>Észak-Alföld</MenuItem>
           <MenuItem value={19}>Dél-Alföld</MenuItem>
         </Select>
       </FormControl>

@@ -36,7 +36,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   alignSelf: 'center',
   width: '95%',
   maxWidth: '700px',
-  height: '65%',
+  height: '85%',
   padding: theme.spacing(4),
   marginTop: theme.spacing(2),
   overflow: 'auto'
@@ -247,29 +247,72 @@ const Statisztika = ({ onClose }) => {
     };
   };
 
-  // Demográfiai adatok előkészítése
-  const getDemographicChartData = () => {
-    if (!demographicData || !demographicData[selectedDemographic]) return null;
-    
-    const rawData = demographicData[selectedDemographic];
-    const labels = Object.keys(rawData);
-    const data = Object.values(rawData);
-    
-    const backgroundColors = labels.map(() => 
-      `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
-    );
-    
-    return {
-      labels,
-      datasets: [
-        {
-          data,
-          backgroundColor: backgroundColors,
-          borderWidth: 1,
-        },
-      ],
-    };
+ // Demográfiai adatok előkészítése
+const getDemographicChartData = () => {
+  if (!demographicData || !demographicData[selectedDemographic]) return null;
+  
+  const rawData = demographicData[selectedDemographic];
+  let labels = Object.keys(rawData);
+  const data = Object.values(rawData);
+  
+  // Adatbázis értékek átalakítása olvasható formátumra a Home.js alapján
+  if (selectedDemographic === 'nem') {
+    labels = labels.map(value => {
+      if (value === '20') return 'Férfi';
+      if (value === '21') return 'Nő';
+      if (value === '22') return 'Egyéb';
+      return value;
+    });
+  } else if (selectedDemographic === 'vegzettseg') {
+    labels = labels.map(value => {
+      // Rövidebb címkék, hogy elférjenek a diagramon
+      if (value === '1') return 'Egyetem/főiskola';
+      if (value === '2') return 'Középfok érettségi nélkül';
+      if (value === '3') return 'Középfok érettségivel';
+      if (value === '4') return 'Középfok érettségi+szakmai';
+      if (value === '5') return 'Általános iskola';
+      if (value === '6') return '8 általános alatt';
+      return value;
+    });
+  } else if (selectedDemographic === 'regio') {
+    labels = labels.map(value => {
+      if (value === '14') return 'Nyugat-Dunántúl';
+      if (value === '15') return 'Közép-Dunántúl';
+      if (value === '16') return 'Közép-Magyarország';
+      if (value === '17') return 'Észak-Magyarország';
+      if (value === '18') return 'Észak-Alföld';
+      if (value === '19') return 'Dél-Alföld';
+      if (value === '20') return 'Ismeretlen régió (20)'; // Kezeld az ismeretlen értéket
+      return `Ismeretlen régió (${value})`;
+    });
+  } else if (selectedDemographic === 'anyagi') {
+    labels = labels.map(value => {
+      if (value === '23') return '< 100 000 Ft';
+      if (value === '24') return '100-250 000 Ft';
+      if (value === '25') return '250-500 000 Ft';
+      if (value === '26') return '500-1 000 000 Ft';
+      if (value === '27') return '1-1,5 millió Ft';
+      if (value === '28') return '1,5 millió Ft <';
+      return value;
+    });
+  }
+  // A korcsoport már megfelelő formátumban van a backend-től
+  
+  const backgroundColors = labels.map(() => 
+    `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
+  );
+  
+  return {
+    labels,
+    datasets: [
+      {
+        data,
+        backgroundColor: backgroundColors,
+        borderWidth: 1,
+      },
+    ],
   };
+};
 
   // Összehasonlító adatok előkészítése
   const getComparisonChartData = () => {
@@ -318,9 +361,27 @@ const Statisztika = ({ onClose }) => {
 
   const demographicChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'right',
+        labels: {
+          boxWidth: 15,
+          padding: 10,
+          font: {
+            size: 11
+          },
+          // Címkék tördelése, ha túl hosszúak
+          generateLabels: (chart) => {
+            const original = ChartJS.overrides.pie.plugins.legend.labels.generateLabels(chart);
+            original.forEach(label => {
+              if (label.text && label.text.length > 20) {
+                label.text = label.text.substring(0, 20) + '...';
+              }
+            });
+            return original;
+          }
+        }
       },
       title: {
         display: true,
@@ -332,6 +393,18 @@ const Statisztika = ({ onClose }) => {
           'Korcsoport'
         }`,
       },
+      tooltip: {
+        callbacks: {
+          // Tooltipben megjelenítjük a teljes szöveget
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+            const percentage = Math.round((value / total) * 100);
+            return `${label}: ${value} (${percentage}%)`;
+          }
+        }
+      }
     },
   };
 
@@ -677,12 +750,12 @@ const Statisztika = ({ onClose }) => {
                     <FormControl fullWidth sx={{ mb: 3 }}>
                       <InputLabel 
                         sx={{ 
-                          transform: 'translate(-5px, -8px) scale(0.75)',
+                          transform: 'translate(0px, -15px) scale(0.75)',
                           '&.Mui-focused': {
-                            transform: 'translate(-5px, -8px) scale(0.75)'
+                            transform: 'translate(0px, -15px) scale(0.75)'
                           },
                           '&.MuiInputLabel-shrink': {
-                            transform: 'translate(-5px, -8px) scale(0.75)'
+                            transform: 'translate(0px, -15px) scale(0.75)'
                           }
                         }}
                       >
@@ -701,11 +774,51 @@ const Statisztika = ({ onClose }) => {
                       </Select>
                     </FormControl>
                     
-                    <Box sx={{ height: 400 }} ref={chartRef}>
-                      <Pie 
-                        data={getDemographicChartData()} 
-                        options={demographicChartOptions} 
-                      />
+                    {/* Módosított kördiagram konténer */}
+                    <Box 
+                      sx={{ 
+                        height: 350, 
+                        width: '100%', 
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',  // Függőleges középre igazítás
+                        position: 'relative'
+                      }} 
+                      ref={chartRef}
+                    >
+                      <Box sx={{ 
+                        width: '80%', 
+                        height: '100%',
+                        maxWidth: 400,
+                        margin: '0 auto',
+                        display: 'flex',       // Flexbox használata
+                        justifyContent: 'center', // Vízszintes középre igazítás
+                        alignItems: 'center'   // Függőleges középre igazítás
+                      }}>
+                        <Pie 
+                          data={getDemographicChartData()} 
+                          options={{
+                            ...demographicChartOptions,
+                            maintainAspectRatio: true,
+                            responsive: true,
+                            plugins: {
+                              ...demographicChartOptions.plugins,
+                              legend: {
+                                ...demographicChartOptions.plugins.legend,
+                                position: 'bottom',
+                                align: 'center',
+                                labels: {
+                                  boxWidth: 12,
+                                  padding: 15,
+                                  font: {
+                                    size: 11
+                                  }
+                                }
+                              }
+                            }
+                          }} 
+                        />
+                      </Box>
                     </Box>
                   </Box>
                 ) : (
@@ -722,7 +835,7 @@ const Statisztika = ({ onClose }) => {
                 Az időbeli adatok megjelenítése fejlesztés alatt áll.
               </Typography>
             )}
-            
+            <Box sx={{ height: 20 }} /> 
             <Button 
               onClick={() => {
                 setSelectedSurvey(null);
@@ -777,7 +890,17 @@ const Statisztika = ({ onClose }) => {
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <FormControl fullWidth>
-                  <InputLabel>Minimum</InputLabel>
+                  <InputLabel
+                  sx={{ 
+                    transform: 'translate(0px, -13px) scale(0.75)',
+                    '&.Mui-focused': {
+                      transform: 'translate(0px, -13px) scale(0.75)'
+                    },
+                    '&.MuiInputLabel-shrink': {
+                      transform: 'translate(0px, -13px) scale(0.75)'
+                    }
+                  }}
+                  >Minimum</InputLabel>
                   <Select
                     name="minCompletionPercentage"
                     value={filters.minCompletionPercentage}
@@ -793,7 +916,17 @@ const Statisztika = ({ onClose }) => {
               </Grid>
               <Grid item xs={6}>
                 <FormControl fullWidth>
-                  <InputLabel>Maximum</InputLabel>
+                  <InputLabel
+                  sx={{ 
+                    transform: 'translate(0px, -13px) scale(0.75)',
+                    '&.Mui-focused': {
+                      transform: 'translate(0px, -13px) scale(0.75)'
+                    },
+                    '&.MuiInputLabel-shrink': {
+                      transform: 'translate(0px, -13px) scale(0.75)'
+                    }
+                  }}
+                  >Maximum</InputLabel>
                   <Select
                     name="maxCompletionPercentage"
                     value={filters.maxCompletionPercentage}
@@ -824,6 +957,15 @@ const Statisztika = ({ onClose }) => {
                   onChange={handleFilterChange}
                   InputLabelProps={{
                     shrink: true,
+                    sx: { 
+                      transform: 'translate(0px, -13px) scale(0.75)',
+                      '&.Mui-focused': {
+                        transform: 'translate(0px, -13px) scale(0.75)'
+                      },
+                      '&.MuiInputLabel-shrink': {
+                        transform: 'translate(0px, -13px) scale(0.75)'
+                      }
+                    }
                   }}
                   fullWidth
                 />
@@ -837,6 +979,15 @@ const Statisztika = ({ onClose }) => {
                   onChange={handleFilterChange}
                   InputLabelProps={{
                     shrink: true,
+                    sx: { 
+                      transform: 'translate(0px, -13px) scale(0.75)',
+                      '&.Mui-focused': {
+                        transform: 'translate(0px, -13px) scale(0.75)'
+                      },
+                      '&.MuiInputLabel-shrink': {
+                        transform: 'translate(0px, -13px) scale(0.75)'
+                      }
+                    }
                   }}
                   fullWidth
                 />

@@ -503,6 +503,9 @@ router.get('/survey-demographics/:surveyId', async (req, res) => {
       }
     };
 
+    // Érvényes régió értékek
+    const validRegions = ['14', '15', '16', '17', '18', '19'];
+
     demographics.forEach(user => {
       // Végzettség
       result.vegzettseg[user.vegzettseg] = (result.vegzettseg[user.vegzettseg] || 0) + 1;
@@ -510,8 +513,10 @@ router.get('/survey-demographics/:surveyId', async (req, res) => {
       // Nem
       result.nem[user.nem] = (result.nem[user.nem] || 0) + 1;
       
-      // Régió
-      result.regio[user.regio] = (result.regio[user.regio] || 0) + 1;
+      // Régió - csak érvényes értékeket adunk hozzá
+      if (validRegions.includes(user.regio)) {
+        result.regio[user.regio] = (result.regio[user.regio] || 0) + 1;
+      }
       
       // Anyagi helyzet
       result.anyagi[user.anyagi] = (result.anyagi[user.anyagi] || 0) + 1;
