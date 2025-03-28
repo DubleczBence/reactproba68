@@ -454,4 +454,82 @@ router.put('/profile/:companyId', async (req, res) => {
   }
 });
 
+
+router.get('/survey-demographics/:surveyId', async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1]; 
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const companyId = decoded.id;
+
+    // Ellenőrizzük, hogy a cég tulajdonosa-e a kérdőívnek
+    const [surveyOwnership] = await db.promise().query(
+      `SELECT * FROM company_connections 
+       WHERE company_id = ? AND connection_id = ? AND connection_type = 'survey'`,
+      [companyId, req.params.surveyId]
+    );
+
+    if (surveyOwnership.length === 0) {
+      return res.status(403).json({ error: 'Nincs jogosultsága a kérdőív adataihoz' });
+    }
+
+    // Lekérjük a kitöltők demográfiai adatait
+    const [demographics] = await db.promise().query(
+      `SELECT 
+        ur.vegzettseg,
+        ur.nem,
+        ur.regio,
+        ur.anyagi_helyzet as anyagi,
+        TIMESTAMPDIFF(YEAR, ur.korcsoport, CURDATE()) as eletkor
+       FROM users_responses ur
+       JOIN user_connections uc ON ur.user_id = uc.user_id
+       JOIN survey_connections sc ON uc.connection_id = sc.connection_id
+       WHERE sc.survey_id = ? AND sc.connection_type = 'answer'
+       GROUP BY ur.user_id`,
+      [req.params.surveyId]
+    );
+
+    // Csoportosítjuk az adatokat kategóriák szerint
+    const result = {
+      vegzettseg: {},
+      nem: {},
+      regio: {},
+      anyagi: {},
+      korcsoport: {
+        '18-25': 0,
+        '26-35': 0,
+        '36-45': 0,
+        '46-55': 0,
+        '56+': 0
+      }
+    };
+
+    demographics.forEach(user => {
+      // Végzettség
+      result.vegzettseg[user.vegzettseg] = (result.vegzettseg[user.vegzettseg] || 0) + 1;
+      
+      // Nem
+      result.nem[user.nem] = (result.nem[user.nem] || 0) + 1;
+      
+      // Régió
+      result.regio[user.regio] = (result.regio[user.regio] || 0) + 1;
+      
+      // Anyagi helyzet
+      result.anyagi[user.anyagi] = (result.anyagi[user.anyagi] || 0) + 1;
+      
+      // Korcsoport
+      const age = user.eletkor;
+      if (age <= 25) result.korcsoport['18-25']++;
+      else if (age <= 35) result.korcsoport['26-35']++;
+      else if (age <= 45) result.korcsoport['36-45']++;
+      else if (age <= 55) result.korcsoport['46-55']++;
+      else result.korcsoport['56+']++;
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error fetching survey demographics:', error);
+    res.status(500).json({ error: 'Failed to fetch survey demographics' });
+  }
+});
+
 module.exports = router;
