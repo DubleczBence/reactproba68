@@ -14,6 +14,10 @@ import AppTheme from './AppTheme';
 import ColorModeSelect from './ColorModeSelect';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
 
@@ -64,6 +68,18 @@ export default function SignUp(props) {
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
 
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [showJelszo, setShowJelszo] = React.useState(false);
+  const [showConfirmJelszo, setShowConfirmJelszo] = React.useState(false);
+
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
+  const handleClickShowJelszo = () => setShowJelszo((show) => !show);
+  const handleClickShowConfirmJelszo = () => setShowConfirmJelszo((show) => !show);
+
+
   const [company_nameError, setCompanyNameError] = React.useState(false);
   const [company_nameErrorMessage, setCompanyNameErrorMessage] = React.useState('');
   const [company_phonenumberError, setCompanyPhonenumberError] = React.useState(false);
@@ -104,6 +120,7 @@ export default function SignUp(props) {
   const [adoszam, setAdoszam] = React.useState('');
   const [cegjegyzek, setCegjegyzek] = React.useState('');
   const [helyrajziszam, setHelyrajziszam] = React.useState('');
+  
 
 
   const handleChange = (event) => {
@@ -125,8 +142,18 @@ export default function SignUp(props) {
   const handleCegjegyzekChange = (e) => setCegjegyzek(e.target.value);
   const handleHelyrajziszamChange = (e) => setHelyrajziszam(e.target.value);
   
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = React.useState(false);
+  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = React.useState('');
 
+  const [confirmJelszo, setConfirmJelszo] = React.useState('');
+  const [confirmJelszoError, setConfirmJelszoError] = React.useState(false);
+  const [confirmJelszoErrorMessage, setConfirmJelszoErrorMessage] = React.useState('');
+
+  const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
+  const handleConfirmJelszoChange = (e) => setConfirmJelszo(e.target.value);
   const handleAdoszamChange = (e) => {
+
     const input = e.target.value.replace(/[^0-9]/g, ""); 
     let formatted = input;
   
@@ -140,71 +167,74 @@ export default function SignUp(props) {
     setAdoszam(formatted);
   };
 
-
-
-
   const validateInputs = () => {
     let isValid = true;
-
+  
     if (!checked) {
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
+      if (!email || !/\S+@\S+\.\S+/.test(email)) {
+        setEmailError(true);
+        setEmailErrorMessage('Please enter a valid email address.');
+        isValid = false;
+      } else {
+        setEmailError(false);
+        setEmailErrorMessage('');
+      }
+  
+      if (!password || password.length < 6) {
+        setPasswordError(true);
+        setPasswordErrorMessage('Password must be at least 6 characters long.');
+        isValid = false;
+      } else {
+        setPasswordError(false);
+        setPasswordErrorMessage('');
+      }
+  
+      if (!name || name.length < 1) {
+        setNameError(true);
+        setNameErrorMessage('Name is required.');
+        isValid = false;
+      } else {
+        setNameError(false);
+        setNameErrorMessage('');
+      }
+      
+      if (password !== confirmPassword) {
+        setConfirmPasswordError(true);
+        setConfirmPasswordErrorMessage('Passwords do not match.');
+        isValid = false;
+      } else {
+        setConfirmPasswordError(false);
+        setConfirmPasswordErrorMessage('');
+      }
     }
-
-    if (!password || password.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
-    if (!name || name.length < 1) {
-      setNameError(true);
-      setNameErrorMessage('Name is required.');
-      isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage('');
-    }
-    }
-
-
-    else{
-    
+    else {
       if (!cegnev || cegnev.length < 1) {
         setCompanyNameError(true);
         setCompanyNameErrorMessage('Company name is required.');
-      isValid = false;
+        isValid = false;
       } else {
         setCompanyNameError(false);
         setCompanyNameErrorMessage('');
       }
-
+  
       if (!telefon || (telefon.startsWith('+36') && telefon.length !== 12) || (telefon.startsWith('06') && telefon.length !== 11) || (!telefon.startsWith('+36') && !telefon.startsWith('06')) || (!telefon.startsWith('+3620') && !telefon.startsWith('+3630') && !telefon.startsWith('+3670') && !telefon.startsWith('0620') && !telefon.startsWith('0630') && !telefon.startsWith('0670')) || !phoneRegex.test(telefon)) {
         setCompanyPhonenumberError(true);
         setCompanyPhonenumberErrorMessage('The phone number must be valid and Hungarian.');
-      isValid = false;
+        isValid = false;
       } else {
         setCompanyPhonenumberError(false);
         setCompanyPhonenumberErrorMessage('');
       }
-
+  
       if (!ceg_email || !/\S+@\S+\.\S+/.test(ceg_email)) {
         setCompanyEmailError(true);
         setCompanyEmailErrorMessage('Please enter a valid email address.');
         isValid = false;
-      }else {
+      } else {
         setCompanyEmailError(false);
         setCompanyEmailErrorMessage('');
       }
-
+  
       if (!jelszo || jelszo.length < 6) {
         setCompanyPasswordError(true);
         setCompanyPasswordErrorMessage('Password must be at least 6 characters long.');
@@ -229,7 +259,16 @@ export default function SignUp(props) {
         setCompanyPasswordError(false);
         setCompanyPasswordErrorMessage('');
       }
-
+      
+      if (jelszo !== confirmJelszo) {
+        setConfirmJelszoError(true);
+        setConfirmJelszoErrorMessage('Passwords do not match.');
+        isValid = false;
+      } else {
+        setConfirmJelszoError(false);
+        setConfirmJelszoErrorMessage('');
+      }
+  
       if (!telepules || telepules.length < 1) {
         setCompanySettlementError(true);
         setCompanySettlementErrorMessage('Settelment is required.');
@@ -239,7 +278,7 @@ export default function SignUp(props) {
         setCompanySettlementError(false);
         setCompanySettlementErrorMessage('');
       }
-
+  
       if (!megye || megye.length < 1) {
         setCompanyCountyError(true);
         setCompanyCountyErrorMessage('County is required.');
@@ -249,27 +288,27 @@ export default function SignUp(props) {
         setCompanyCountyError(false);
         setCompanyCountyErrorMessage('');
       }
-
+  
       if (!ceges_szamla || ceges_szamla.length !== 24 || !/^\d+$/.test(ceges_szamla)) {
         setCompanyInvoiceError(true);
         setCompanyInvoiceErrorMessage('Invoice must be 24 characters long and contain only numbers.');
         isValid = false;
       }
       else {
-          setCompanyInvoiceError(false);
-          setCompanyInvoiceErrorMessage('');
+        setCompanyInvoiceError(false);
+        setCompanyInvoiceErrorMessage('');
       }
-
+  
       if (!hitelkartya || hitelkartya.length !== 16 || !/^\d+$/.test(hitelkartya)) {
         setCompanyCreditcardError(true);
         setCompanyCreditcardErrorMessage('Credit card number must be 16 digits and contain only numbers.');
         isValid = false;
       } 
       else {
-          setCompanyCreditcardError(false);
-          setCompanyCreditcardErrorMessage('');
+        setCompanyCreditcardError(false);
+        setCompanyCreditcardErrorMessage('');
       }
-
+  
       if (!adoszam || adoszam.replace(/[^0-9]/g, "").length < 8) {
         setCompanyTaxnumberError(true);
         setCompanyTaxnumberErrorMessage("Az adószámnak legalább 8 számjegyűnek kell lennie.");
@@ -278,30 +317,30 @@ export default function SignUp(props) {
         setCompanyTaxnumberError(false);
         setCompanyTaxnumberErrorMessage("");
       }
-
+  
       if (!cegjegyzek || cegjegyzek.length !== 10 || !/^\d{10}$/.test(cegjegyzek)) {
         setCompanyRegisterError(true);
         setCompanyRegisterErrorMessage('Company register must be 10 digits long and contain only numbers.');
         isValid = false;
       } 
       else {
-          setCompanyRegisterError(false);
-          setCompanyRegisterErrorMessage('');
+        setCompanyRegisterError(false);
+        setCompanyRegisterErrorMessage('');
       }
-
+  
       if (!helyrajziszam ||  helyrajziszam.length < 1 || !/^\d{1,4}[-/]\d{1,4}$/.test(helyrajziszam)) {
         setCompanyGeographicNoError(true);
         setCompanyGeographicNoErrorMessage('Geographic number is required and must contain only numbers, with an optional separator ("/" or "-").');
         isValid = false;
-    } else {
+      } else {
         setCompanyGeographicNoError(false);
         setCompanyGeographicNoErrorMessage('');
+      }
     }
-    }
-    
-
+  
     return isValid;
   };
+  
 
   const handleSubmit = (event) => {
     event.preventDefault(); 
@@ -383,7 +422,6 @@ export default function SignUp(props) {
             </Typography>
             </Stack>
 
-            {/* User Form */}
             {!checked && (
               <>
                 <FormControl>
@@ -426,7 +464,7 @@ export default function SignUp(props) {
                     fullWidth
                     name="password"
                     placeholder="••••••"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     id="password"
                     autoComplete="new-password"
                     value={password}
@@ -435,6 +473,125 @@ export default function SignUp(props) {
                     error={passwordError}
                     helperText={passwordErrorMessage}
                     color={passwordError ? 'error' : 'primary'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end" sx={{ backgroundColor: 'transparent', margin: 0, padding: 0, marginRight: '-11px' }}>
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClickShowPassword();
+                              // Fókusz megőrzése és kurzor pozíció beállítása a végére
+                              setTimeout(() => {
+                                const input = document.getElementById('password');
+                                if (input) {
+                                  input.focus();
+                                  const length = input.value.length;
+                                  input.setSelectionRange(length, length);
+                                }
+                              }, 0);
+                            }}
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // Megakadályozza az alapértelmezett eseményt
+                              e.stopPropagation(); // Megakadályozza az esemény továbbterjedését
+                            }}
+                            edge="end"
+                            disableRipple
+                            sx={{
+                              color: 'text.secondary',
+                              opacity: 0.7,
+                              backgroundColor: 'transparent',
+                              boxShadow: 'none',
+                              border: 'none',
+                              outline: 'none',
+                              height: '30px', // Csökkentett magasság
+                              width: '30px',  // Arányos szélesség
+                              padding: '4px',
+                              margin: 0,
+                              '&:hover': {
+                                backgroundColor: 'transparent',
+                                boxShadow: 'none'
+                              }
+                            }}
+                          >
+                            {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderRadius: '4px'
+                        }
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel htmlFor="confirmPassword">Jelszó megerősítése</FormLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    name="confirmPassword"
+                    placeholder="••••••"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    variant="outlined"
+                    error={confirmPasswordError}
+                    helperText={confirmPasswordErrorMessage}
+                    color={confirmPasswordError ? 'error' : 'primary'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end" sx={{ backgroundColor: 'transparent', margin: 0, padding: 0, marginRight: '-11px' }}>
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClickShowConfirmPassword();
+                              setTimeout(() => {
+                                const input = document.getElementById('confirmPassword');
+                                if (input) {
+                                  input.focus();
+                                  const length = input.value.length;
+                                  input.setSelectionRange(length, length);
+                                }
+                              }, 0);
+                            }}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            edge="end"
+                            disableRipple
+                            sx={{
+                              color: 'text.secondary',
+                              opacity: 0.7,
+                              backgroundColor: 'transparent',
+                              boxShadow: 'none',
+                              border: 'none',
+                              outline: 'none',
+                              height: '30px',
+                              width: '30px',
+                              padding: '4px',
+                              margin: 0,
+                              '&:hover': {
+                                backgroundColor: 'transparent',
+                                boxShadow: 'none'
+                              }
+                            }}
+                          >
+                            {showConfirmPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderRadius: '4px'
+                        }
+                      }
+                    }}
                   />
                 </FormControl>
               </>
@@ -495,7 +652,7 @@ export default function SignUp(props) {
                   <TextField
                     required
                     fullWidth
-                    type="password"
+                    type={showJelszo ? 'text' : 'password'}
                     name="jelszo"
                     id="jelszo"
                     placeholder="••••••"
@@ -505,6 +662,123 @@ export default function SignUp(props) {
                     error={company_passwordError}
                     helperText={company_passwordErrorMessage}
                     color={company_passwordError ? 'error' : 'primary'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end" sx={{ backgroundColor: 'transparent', margin: 0, padding: 0, marginRight: '-11px' }}>
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClickShowJelszo();
+                              setTimeout(() => {
+                                const input = document.getElementById('jelszo');
+                                if (input) {
+                                  input.focus();
+                                  const length = input.value.length;
+                                  input.setSelectionRange(length, length);
+                                }
+                              }, 0);
+                            }}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            edge="end"
+                            disableRipple
+                            sx={{
+                              color: 'text.secondary',
+                              opacity: 0.7,
+                              backgroundColor: 'transparent',
+                              boxShadow: 'none',
+                              border: 'none',
+                              outline: 'none',
+                              height: '30px',
+                              width: '30px',
+                              padding: '4px',
+                              margin: 0,
+                              '&:hover': {
+                                backgroundColor: 'transparent',
+                                boxShadow: 'none'
+                              }
+                            }}
+                          >
+                            {showJelszo ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderRadius: '4px'
+                        }
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel htmlFor="confirmJelszo">Jelszó megerősítése</FormLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    type={showConfirmJelszo ? 'text' : 'password'}
+                    name="confirmJelszo"
+                    id="confirmJelszo"
+                    placeholder="••••••"
+                    value={confirmJelszo}
+                    onChange={handleConfirmJelszoChange}
+                    variant="outlined"
+                    error={confirmJelszoError}
+                    helperText={confirmJelszoErrorMessage}
+                    color={confirmJelszoError ? 'error' : 'primary'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end" sx={{ backgroundColor: 'transparent', margin: 0, padding: 0, marginRight: '-11px' }}>
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClickShowConfirmJelszo();
+                              setTimeout(() => {
+                                const input = document.getElementById('confirmJelszo');
+                                if (input) {
+                                  input.focus();
+                                  const length = input.value.length;
+                                  input.setSelectionRange(length, length);
+                                }
+                              }, 0);
+                            }}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                            edge="end"
+                            disableRipple
+                            sx={{
+                              color: 'text.secondary',
+                              opacity: 0.7,
+                              backgroundColor: 'transparent',
+                              boxShadow: 'none',
+                              border: 'none',
+                              outline: 'none',
+                              height: '30px',
+                              width: '30px',
+                              padding: '4px',
+                              margin: 0,
+                              '&:hover': {
+                                backgroundColor: 'transparent',
+                                boxShadow: 'none'
+                              }
+                            }}
+                          >
+                            {showConfirmJelszo ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderRadius: '4px'
+                        }
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormControl>
