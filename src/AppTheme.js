@@ -65,7 +65,49 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
             cssVarPrefix: 'template',
           },
           colorSchemes,
-          typography,
+          typography: {
+            ...typography,
+            fontFamily: '"Poppins", sans-serif',
+            h1: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            h2: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            h3: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            h4: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            h5: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            h6: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            subtitle1: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            subtitle2: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            body1: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            body2: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            button: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            caption: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+            overline: {
+              fontFamily: '"Poppins", sans-serif',
+            },
+          },
           shadows,
           shape,
           components: {
@@ -81,6 +123,10 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
                   margin: 0,
                   padding: 0,
                   overflow: 'hidden',
+                  fontFamily: '"Poppins", sans-serif',
+                },
+                '*': {
+                  fontFamily: '"Poppins", sans-serif',
                 },
               },
             },

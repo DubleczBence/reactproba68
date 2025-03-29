@@ -189,7 +189,7 @@ return (
       alignItems: "center",
       justifyContent: "center",
       textAlign: "center",
-      width: "150px",
+      width: "160px",
       border: "none", 
       borderRadius: "10px", 
       backgroundColor: (theme) => theme.palette.background.paper,

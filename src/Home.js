@@ -852,7 +852,7 @@ const [open, setOpen] = React.useState(false);
               }
             }}
           >
-            <Typography variant="h4" sx={{ mt: 1, ml: 2, mb: 3 }}>
+            <Typography variant="h5" sx={{ mt: 1, ml: 2, mb: 3 }}>
               Elérhető kérdőívek ({availableSurveys.length})
             </Typography>
             
@@ -902,7 +902,7 @@ const [open, setOpen] = React.useState(false);
             }}
           >
             <Typography 
-              variant="h4" 
+              variant="h5" 
               sx={{ 
                 mt: 1, 
                 ml: 2,

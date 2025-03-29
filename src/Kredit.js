@@ -289,7 +289,7 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
                         justifyContent: "space-between",
                         alignItems: "center"
                       }}>
-                        <Typography variant="h3" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
+                        <Typography variant="h4" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
                           {option.amount}
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>Kredit</Typography>

@@ -300,51 +300,72 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
                       }}
                     >
                       <Card variant="outlined" sx={{ 
-                      textAlign: "center", 
-                      padding: 1, 
-                      border: "1px solid grey",
-                      height: "180px",
-                      width: "100%",
-                      maxWidth: "280px",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      backgroundImage: `url(${item.image})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      position: "relative",
-                      "&::before": {
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(255, 255, 255, 0.85)",
-                        zIndex: 0
-                      },
-                      "& > *": {
-                        position: "relative",
-                        zIndex: 1
-                      }
-                    }}>
-                      <Typography variant="h5" fontWeight="bold" sx={{ mb: 0, mt: 1 }}>
-                        {item.name}
-                      </Typography>
-                      <Typography variant="body2" sx={{ mb: 0, mt: -2 }}>{item.description}</Typography>
-                      <Typography variant="h6" fontWeight="bold" sx={{ mb: 0 }}>
-                        {item.creditCost} kredit
-                      </Typography>
-                      <Button 
-                        variant="contained" 
-                        size="small" 
-                        onClick={() => handleVoucherPurchase(item)} 
-                        sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}
-                      >
-                        Vásárlás
-                      </Button>
-                    </Card>
+  textAlign: "center", 
+  padding: 1, 
+  border: "1px solid grey",
+  height: "180px",
+  width: "100%",
+  maxWidth: "280px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+  ...(theme.palette.mode === 'light' ? {
+    backgroundImage: `url(${item.image})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(255, 255, 255, 0.85)",
+      zIndex: 0
+    }
+  } : {
+    backgroundColor: "rgba(30, 30, 30, 0.9)",
+    position: "relative",
+    overflow: "hidden",
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundImage: `url(${item.image})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      opacity: 0.3,
+      filter: "brightness(0.7) contrast(1.2)",
+      zIndex: 0
+    }
+  }),
+  position: "relative",
+  "& > *": {
+    position: "relative",
+    zIndex: 1
+  }
+}}>
+  {/* No need for the small image in the corner anymore */}
+  <Typography variant="h5" fontWeight="bold" sx={{ mb: 0, mt: 1, zIndex: 2 }}>
+    {item.name}
+  </Typography>
+  <Typography variant="body2" sx={{ mb: 0, mt: -2, zIndex: 2 }}>{item.description}</Typography>
+  <Typography variant="h6" fontWeight="bold" sx={{ mb: 0, zIndex: 2 }}>
+    {item.creditCost} kredit
+  </Typography>
+  <Button 
+    variant="contained" 
+    size="small" 
+    onClick={() => handleVoucherPurchase(item)} 
+    sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1, zIndex: 2 }}
+  >
+    Vásárlás
+  </Button>
+</Card>
                     </Grid>
                   ))}
                 </Grid>
