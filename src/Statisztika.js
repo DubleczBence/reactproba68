@@ -36,9 +36,16 @@ const StyledCard = styled(Card)(({ theme }) => ({
   alignSelf: 'center',
   width: '95%',
   maxWidth: '700px',
-  height: '85%',
+  height: 'auto',
+  minHeight: '300px', // Jelentősen csökkentett minimum magasság
+  maxHeight: {
+    xs: 'calc(100vh - 350px)', // Kisebb képernyőn kisebb maximális magasság
+    sm: 'calc(100vh - 300px)', // Tablet méretben kicsit nagyobb
+    md: 'calc(100vh - 250px)'  // Asztali méretben az eredeti
+  },
   padding: theme.spacing(4),
   marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(8), // Megtartjuk az alsó margót
   overflow: 'auto'
 }));
 
@@ -469,7 +476,24 @@ const getDemographicChartData = () => {
   };
 
   return (
-    <>
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center',
+      width: '100%',
+      height: 'auto', // Változtassuk 'auto'-ra a fix magasság helyett
+      maxHeight: {
+        xs: 'calc(100vh - 200px)', // Kisebb képernyőn kisebb maximális magasság
+        sm: 'calc(100vh - 200px)', // Tablet méretben kicsit nagyobb
+        md: 'calc(100vh - 100px)'  // Asztali méretben az eredeti
+      },
+      overflow: 'visible',
+      pb: {
+        xs: 10, // Kisebb képernyőn nagyobb padding alul
+        sm: 8,  // Tablet méretben kicsit kisebb
+        md: 7   // Asztali méretben az eredeti
+      }
+    }}>
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
@@ -1000,7 +1024,7 @@ const getDemographicChartData = () => {
           <Button onClick={applyFilters} variant="contained">Szűrés</Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Box>
   );
 };
 

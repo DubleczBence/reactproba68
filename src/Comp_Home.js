@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -363,6 +363,12 @@ const CompHome = ({ onSignOut }) => {
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [companyProfileData, setCompanyProfileData] = useState(null);
 
+  const [notifications, setNotifications] = useState([]);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [openNotifications, setOpenNotifications] = useState([]);
+  const notificationsRef = useRef([]);
+
+
   const [companySurveys, setCompanySurveys] = useState([]);
   const [selectedSurveyId, setSelectedSurveyId] = useState(null);
 
@@ -374,6 +380,91 @@ const CompHome = ({ onSignOut }) => {
     fifth: false,
     sixth: false
   });
+
+  const fetchNotifications = useCallback(async (updateLogin = false) => {
+    try {
+      const companyId = location.state?.cegId;
+      if (!companyId) return;
+      
+      const url = `http://localhost:3001/api/companies/notifications/${companyId}${updateLogin ? '?updateLogin=true' : ''}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) throw new Error('Failed to fetch notifications');
+      
+      const data = await response.json();
+      console.log('Notifications data:', data);
+      
+      // Calculate total new responses across all surveys
+      const totalNewResponses = data.reduce((total, notification) => total + notification.new_responses, 0);
+      
+      setNotifications(data);
+      setNotificationCount(totalNewResponses);
+      notificationsRef.current = data;
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  }, [location.state?.cegId]);
+
+
+  useEffect(() => {
+    fetchNotifications(false);
+    
+    // Set up a polling interval to check for new notifications
+    const intervalId = setInterval(() => {
+      fetchNotifications(false);
+    }, 60000); // Check every minute
+    
+    return () => clearInterval(intervalId);
+  }, [fetchNotifications]);
+
+  
+  // Make sure this function is correctly implemented
+  const handleNotificationClick = () => {
+    // Create snackbars for current notifications before fetching new ones
+    const currentNotifications = notificationsRef.current;
+    
+    if (currentNotifications.length > 0) {
+      const newOpenNotifications = currentNotifications.map((notification, index) => ({
+        id: notification.id,
+        message: `A "${notification.title}" kérdőívre ${notification.new_responses} új kitöltés érkezett.`,
+        open: true,
+        autoHideDuration: 6000 + (index * 1000)
+      }));
+      
+      setOpenNotifications(newOpenNotifications);
+    } else {
+      setOpenNotifications([{
+        id: 'no-notifications',
+        message: 'Nincs új értesítés',
+        open: true,
+        autoHideDuration: 3000
+      }]);
+    }
+    
+    // Then update the login time and reset notifications
+    fetchNotifications(true).then(() => {
+      setNotificationCount(0);
+    });
+  };
+  
+  // Comp_Home.js - useEffect a komponens betöltésekor
+  useEffect(() => {
+    fetchNotifications(false);
+    
+    // Set up a polling interval to check for new notifications
+    const intervalId = setInterval(() => {
+      fetchNotifications(false);
+    }, 60000); // Check every minute
+    
+    return () => clearInterval(intervalId);
+  }, [fetchNotifications]);
+  
+  // Hozzunk létre egy függvényt a snackbar bezárásához
+  const handleCloseNotification = (id) => {
+    setOpenNotifications(prev => prev.map(notif => 
+      notif.id === id ? { ...notif, open: false } : notif
+    ));
+  };
 
 
   const fetchCompanyProfile = useCallback(async () => {
@@ -1002,11 +1093,46 @@ const handleCardDialogClose = (cardName) => {
       alignItems: 'center'
     }} />
     
-    <IconButton aria-label="notifications">
-      <StyledBadge badgeContent={4} color="secondary">
+    <IconButton aria-label="notifications" onClick={handleNotificationClick}>
+      <StyledBadge badgeContent={notificationCount} color="secondary" invisible={notificationCount === 0}>
         <MailIcon />
       </StyledBadge>
     </IconButton>
+
+
+    {openNotifications.map((notification, index) => (
+  <Snackbar
+    key={notification.id}
+    open={notification.open}
+    autoHideDuration={notification.autoHideDuration}
+    onClose={() => handleCloseNotification(notification.id)}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    sx={{ bottom: { xs: `${(index * 60) + 16}px`, sm: `${(index * 60) + 16}px` } }}
+  >
+    <Alert
+      onClose={() => handleCloseNotification(notification.id)}
+      severity="info"
+      sx={{
+        width: '100%',
+        opacity: 0.9,
+        color: 'white',
+        '& .MuiAlert-icon': {
+          color: 'white'
+        },
+        '& .MuiAlert-message': {
+          color: 'white'
+        },
+        '& .MuiAlert-action': {
+          color: 'white'
+        },
+        backgroundColor: 'rgba(25, 118, 210, 0.95)'
+      }}
+    >
+      {notification.message}
+    </Alert>
+    </Snackbar>
+    ))}
+
     
     <Tooltip title="Account settings">
       <IconButton
@@ -1803,14 +1929,23 @@ const handleCardDialogClose = (cardName) => {
 {showStatisztika && (
   <Box sx={{ 
     position: 'absolute', 
-    top: '200px',
+    top: {
+      xs: '310px', // Kisebb képernyőn (mobilon) sokkal lejjebb kezdődik
+      sm: '270px', // Tablet méretben lejjebb
+      md: '180px'  // Asztali méretben az eredeti pozíció
+    },
     left: 0,
     right: 0,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    maxHeight: '70vh',
-    zIndex: 1
+    maxHeight: {
+      xs: 'calc(100vh - 350px)', // Kisebb képernyőn kisebb maximális magasság
+      sm: 'calc(100vh - 300px)', // Tablet méretben kicsit nagyobb
+      md: '70vh'                 // Asztali méretben az eredeti
+    },
+    zIndex: 1,
+    overflow: 'visible'
   }}>
     <Statisztika 
       onClose={() => setShowStatisztika(false)}

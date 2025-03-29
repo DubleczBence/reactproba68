@@ -51,7 +51,6 @@ router.post('/sign-up', async (req, res) => {
 router.post('/sign-in', async (req, res) => {
   const { ceg_email, jelszo } = req.body;
 
-  
   if (!ceg_email || !jelszo) {
     return res.status(400).json({ error: 'Minden mező kitöltése kötelező!' });
   }
@@ -67,8 +66,6 @@ router.post('/sign-in', async (req, res) => {
     }
 
     const company = companies[0];
-
-    
     const isPasswordValid = await bcrypt.compare(jelszo, company.jelszo);
 
     if (!isPasswordValid) {
@@ -81,6 +78,7 @@ router.post('/sign-in', async (req, res) => {
       { expiresIn: '1h' } 
     );
 
+    // NE rögzítsük a bejelentkezést, csak küldjük vissza a sikeres választ
     res.status(200).json({
       message: 'Bejelentkezés sikeres!',
       token,
@@ -534,6 +532,95 @@ router.get('/survey-demographics/:surveyId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching survey demographics:', error);
     res.status(500).json({ error: 'Failed to fetch survey demographics' });
+  }
+});
+
+
+router.get('/notifications/:companyId', async (req, res) => {
+  try {
+    const companyId = req.params.companyId;
+    console.log('Fetching notifications for company ID:', companyId);
+    
+    // Lekérjük a cég legutóbbi bejelentkezésének adatait és az utoljára látott válasz azonosítóját
+    const [lastLoginRows] = await db.promise().query(
+      `SELECT cl.login_time, cl.last_seen_answer_id
+       FROM company_logins cl
+       JOIN company_connections cc ON cl.id = cc.connection_id AND cc.connection_type = 'login'
+       WHERE cc.company_id = ?
+       ORDER BY cl.login_time DESC
+       LIMIT 1`,
+      [companyId]
+    );
+    
+    // Ha nincs bejelentkezés, akkor 0 értéket használunk
+    const lastSeenAnswerId = lastLoginRows.length > 0 ? 
+      (lastLoginRows[0].last_seen_answer_id || 0) : 0;
+    
+    console.log('Last seen answer ID:', lastSeenAnswerId);
+    
+    // Lekérjük a legnagyobb válasz azonosítót (legfrissebb válasz)
+    const [maxAnswerRows] = await db.promise().query(
+      `SELECT MAX(a.id) as max_answer_id
+       FROM answers a
+       JOIN survey_connections sc ON a.id = sc.connection_id AND sc.connection_type = 'answer'
+       JOIN survey_set s ON sc.survey_id = s.id
+       JOIN company_connections cc ON s.id = cc.connection_id AND cc.connection_type = 'survey'
+       WHERE cc.company_id = ?`,
+      [companyId]
+    );
+    
+    const currentMaxAnswerId = maxAnswerRows.length > 0 ? 
+      (maxAnswerRows[0].max_answer_id || 0) : 0;
+    
+    console.log('Current max answer ID:', currentMaxAnswerId);
+    
+    // Módosított lekérdezés: kitöltők számát számoljuk, nem a válaszok számát
+    const [notifications] = await db.promise().query(
+      `SELECT s.id, s.title, COUNT(DISTINCT uc.user_id) as new_responses
+       FROM survey_set s
+       JOIN company_connections cc ON s.id = cc.connection_id AND cc.connection_type = 'survey'
+       JOIN survey_connections sc ON s.id = sc.survey_id AND sc.connection_type = 'answer'
+       JOIN answers a ON sc.connection_id = a.id
+       JOIN user_connections uc ON a.id = uc.connection_id AND uc.connection_type = 'answer'
+       WHERE cc.company_id = ? 
+       AND a.id > ?
+       GROUP BY s.id
+       HAVING new_responses > 0
+       ORDER BY MAX(a.date_created) DESC`,
+      [companyId, lastSeenAnswerId]
+    );
+    
+    console.log('Notifications query result:', notifications);
+    
+    // Csak akkor frissítjük az utoljára látott válasz azonosítóját, ha a felhasználó kifejezetten ellenőrzi az értesítéseket
+    if (req.query.updateLogin === 'true' && currentMaxAnswerId > 0) {
+      try {
+        // Új bejelentkezési rekord létrehozása az utoljára látott válasz azonosítójával
+        const [loginResult] = await db.promise().query(
+          `INSERT INTO company_logins (login_time, last_seen_answer_id) VALUES (NOW(), ?)`,
+          [currentMaxAnswerId]
+        );
+        
+        const loginId = loginResult.insertId;
+        console.log('New login record created with ID:', loginId, 'and last_seen_answer_id:', currentMaxAnswerId);
+        
+        // Kapcsolat létrehozása a cég és a bejelentkezés között
+        await db.promise().query(
+          `INSERT INTO company_connections (company_id, connection_type, connection_id, created_at) 
+           VALUES (?, 'login', ?, NOW())`,
+          [companyId, loginId]
+        );
+        
+        console.log('Company-login connection created successfully');
+      } catch (error) {
+        console.error('Error recording login:', error);
+      }
+    }
+    
+    res.json(notifications);
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ error: 'Failed to fetch notifications' });
   }
 });
 
