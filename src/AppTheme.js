@@ -9,52 +9,9 @@ import { surfacesCustomizations } from './customizations/surfaces';
 import { colorSchemes, typography, shadows, shape } from './themePrimitives';
 
 function AppTheme({ children, disableCustomTheme, themeComponents }) {
-  const videoRef = React.useRef(null);
-  const [opacity, setOpacity] = React.useState(1);
   const { mode } = useColorScheme();
 
-  const videoSource = mode === 'light' 
-    ? "/kepek/AdobeStock_477969018_2.mp4" 
-    : "/kepek/AdobeStock_477969018.mp4";
-
-  React.useEffect(() => {
-    const videoElement = videoRef.current;
-    
-    if (videoElement) {
-      const handleLoadedMetadata = () => {
-        const duration = videoElement.duration;
-        
-        const setFadeTimer = () => {
-          const timeUntilEnd = (duration - videoElement.currentTime - 1) * 1000;
-          if (timeUntilEnd > 0) {
-            setTimeout(() => {
-              const minOpacity = mode === 'light' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches) 
-              ? 0.7 
-              : 0;
-              setOpacity(minOpacity);
-              
-              setTimeout(() => {
-                setOpacity(1);
-              }, 1000);
-            }, timeUntilEnd);
-          }
-        };
-        
-        setFadeTimer();
-        
-        videoElement.addEventListener('seeked', setFadeTimer);
-        videoElement.addEventListener('play', setFadeTimer);
-      };
-      
-      videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
-      
-      return () => {
-        videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
-        videoElement.removeEventListener('seeked', handleLoadedMetadata);
-        videoElement.removeEventListener('play', handleLoadedMetadata);
-      };
-    }
-  }, [mode]);
+  const backgroundImage = mode === 'light' ? '/kepek/new_bg-bright.png' : '/kepek/new_bg-dark.png';
 
   const theme = React.useMemo(() => {
     return disableCustomTheme
@@ -147,31 +104,27 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           left: 0,
           width: '100vw',
           height: '100vh',
-          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.3)',
+          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)',
           zIndex: -2,
         }}
       />
       
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
+      {/* Háttérkép a videó helyett */}
+      <div
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           width: '100vw',
           height: '100vh',
-          objectFit: 'cover',
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
           zIndex: -3,
-          opacity: opacity,
-          transition: 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'background-image 0.5s ease-in-out',
         }}
-      >
-        <source src={videoSource} type="video/mp4" />
-      </video>
+      />
 
       {children}
     </ThemeProvider>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, Grid, Box, useMediaQuery } from "@mui/material";
 import MuiCard from '@mui/material/Card';
 import { styled, useTheme } from '@mui/material/styles';
+import { get, post } from './services/apiService';
 
 const creditOptions = [
   { amount: 500, price: "10 000 Ft" },
@@ -31,9 +32,20 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
 
   useEffect(() => {
     const fetchCreditHistory = async () => {
-      const response = await fetch(`http://localhost:3001/api/companies/credit-history/${localStorage.getItem('cegId')}`);
-      const data = await response.json();
-      setCreditHistory(data);
+      try {
+        const data = await get(`/companies/credit-history/${localStorage.getItem('cegId')}`);
+        
+        // Ellenőrizzük, hogy a data egy tömb-e
+        if (Array.isArray(data)) {
+          setCreditHistory(data);
+        } else {
+          console.error('Expected array but got:', data);
+          setCreditHistory([]); // Üres tömböt állítunk be, ha nem tömböt kaptunk
+        }
+      } catch (error) {
+        console.error('Error fetching credit history:', error);
+        setCreditHistory([]); // Hiba esetén üres tömböt állítunk be
+      }
     };
     fetchCreditHistory();
   }, []);
@@ -46,25 +58,19 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
         return;
       }
   
-      const response = await fetch('http://localhost:3001/api/companies/purchase-credits', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ 
-          packageAmount: amount, 
-          companyId: parseInt(companyId) 
-        })
+      const data = await post('/companies/purchase-credits', { 
+        packageAmount: amount, 
+        companyId: parseInt(companyId) 
       });
   
-      if (response.ok) {
-        const data = await response.json();
-        onPurchase(data.currentCredits);
-
-        const historyResponse = await fetch(`http://localhost:3001/api/companies/credit-history/${companyId}`);
-        const historyData = await historyResponse.json();
+      onPurchase(data.currentCredits);
+  
+      const historyData = await get(`/companies/credit-history/${companyId}`);
+      if (Array.isArray(historyData)) {
         setCreditHistory(historyData);
+      } else {
+        console.error('Expected array but got:', historyData);
+        setCreditHistory([]); // Üres tömböt állítunk be, ha nem tömböt kaptunk
       }
     } catch (error) {
       console.error('Error purchasing credits:', error);

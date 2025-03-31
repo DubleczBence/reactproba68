@@ -11,6 +11,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { post } from './services/apiService';
+import { get } from './services/apiService';
 
 const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -85,23 +87,11 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
 
       const handleConfirmClose = async () => {
         try {
-          const response = await fetch(`http://localhost:3001/api/companies/close-survey/${surveyId}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-      
-          if (response.ok) {
-            setOpenDialog(false);
-            if (lezaras) lezaras();
-            handleCloseAndRefresh();
-          } else {
-            const errorData = await response.json();
-            console.error('Hiba történt a kérdőív lezárása során:', errorData.error);
-            alert(`Hiba történt a kérdőív lezárása során: ${errorData.error || 'Ismeretlen hiba'}`);
-          }
+          await post(`/companies/close-survey/${surveyId}`);
+          
+          setOpenDialog(false);
+          if (lezaras) lezaras();
+          handleCloseAndRefresh();
         } catch (error) {
           console.error('Hiba történt a kérdőív lezárása során:', error);
           alert('Hiba történt a kérdőív lezárása során. Kérjük, próbálja újra később.');
@@ -112,12 +102,15 @@ const HelyzetContainer = styled(MuiCard)(({ theme }) => ({
 
       useEffect(() => {
         const fetchSurveyStatus = async () => {
-          const response = await fetch(`http://localhost:3001/api/main/survey-status/${surveyId}`);
-          const data = await response.json();
-          setCompletionData({
-            completionCount: data.completion_count,
-            targetCount: data.mintavetel
-          });
+          try {
+            const data = await get(`/main/survey-status/${surveyId}`);
+            setCompletionData({
+              completionCount: data.completion_count,
+              targetCount: data.mintavetel
+            });
+          } catch (error) {
+            console.error('Error fetching survey status:', error);
+          }
         };
         fetchSurveyStatus();
       }, [surveyId]);

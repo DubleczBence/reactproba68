@@ -63,6 +63,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
+import { get, put } from './services/apiService';
 
 
 
@@ -109,8 +110,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.8)'
-    : 'rgba(2, 1, 14, 0.8)',
+    ? 'rgba(255, 255, 255, 0.5) !important'
+    : 'rgba(0, 0, 5, 0.8) !important',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -169,7 +170,7 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
         mt: 2, 
         mb: 2,
         backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.5)'
+      ? 'rgba(255, 255, 255, 0.005)'
       : theme.palette.background.default,
         boxShadow: theme.shadows[1],
         width: '18%', 
@@ -362,7 +363,7 @@ const CompHome = ({ onSignOut }) => {
   const [selectedParticipants, setSelectedParticipants] = useState(50);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [companyProfileData, setCompanyProfileData] = useState(null);
-
+  // eslint-disable-next-line no-unused-vars
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
   const [openNotifications, setOpenNotifications] = useState([]);
@@ -386,20 +387,18 @@ const CompHome = ({ onSignOut }) => {
       const companyId = location.state?.cegId;
       if (!companyId) return;
       
-      const url = `http://localhost:3001/api/companies/notifications/${companyId}${updateLogin ? '?updateLogin=true' : ''}`;
-      const response = await fetch(url);
+      const endpoint = `/companies/notifications/${companyId}${updateLogin ? '?updateLogin=true' : ''}`;
+      const data = await get(endpoint);
       
-      if (!response.ok) throw new Error('Failed to fetch notifications');
-      
-      const data = await response.json();
       console.log('Notifications data:', data);
       
       // Calculate total new responses across all surveys
-      const totalNewResponses = data.reduce((total, notification) => total + notification.new_responses, 0);
+      const notifications = Array.isArray(data) ? data : [];
+      const totalNewResponses = notifications.reduce((total, notification) => total + notification.new_responses, 0);
       
-      setNotifications(data);
+      setNotifications(notifications);
       setNotificationCount(totalNewResponses);
-      notificationsRef.current = data;
+      notificationsRef.current = notifications;
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
@@ -469,16 +468,19 @@ const CompHome = ({ onSignOut }) => {
 
   const fetchCompanyProfile = useCallback(async () => {
     try {
-      const companyId = location.state?.cegId;
-      if (!companyId) return;
+      const companyId = location.state?.cegId || localStorage.getItem('cegId');
+      console.log("Fetching profile for company ID:", companyId);
       
-      const response = await fetch(`http://localhost:3001/api/companies/profile/${companyId}`);
-      if (!response.ok) throw new Error('Failed to fetch company profile');
+      if (!companyId) {
+        console.error("No company ID available");
+        return;
+      }
       
-      const data = await response.json();
+      const data = await get(`/companies/profile/${companyId}`);
+      console.log("Received company profile data:", data);
       setCompanyProfileData(data);
     } catch (error) {
-      console.error('Error fetching company profile:', error);
+      console.error('Error fetching company profile:', error, error.stack);
       setSnackbar({
         open: true,
         message: 'Hiba történt a cég profil betöltése során',
@@ -504,17 +506,7 @@ const CompHome = ({ onSignOut }) => {
         return;
       }
       
-      const response = await fetch(`http://localhost:3001/api/companies/profile/${companyId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      if (!response.ok) throw new Error('Failed to update company profile');
-      
-      await response.json();
+      await put(`/companies/profile/${companyId}`, formData);
       
       setSnackbar({
         open: true,
@@ -533,6 +525,12 @@ const CompHome = ({ onSignOut }) => {
       });
     }
   };
+
+  useEffect(() => {
+    console.log("location.state:", location.state);
+    console.log("cegId from location:", location.state?.cegId);
+    console.log("cegId from localStorage:", localStorage.getItem('cegId'));
+  }, [location.state]);
 
 
   useEffect(() => {
@@ -634,21 +632,34 @@ const clearFilter = () => {
 
 const isFilterActive = surveyFilter.title !== '' || surveyFilter.date !== '' || 
                       surveyFilter.completionMin > 0 || surveyFilter.completionMax < 100;
-const displayedSurveys = isFilterActive ? filteredSurveys : companySurveys;
+
+const displayedSurveys = Array.isArray(isFilterActive ? filteredSurveys : companySurveys) 
+? (isFilterActive ? filteredSurveys : companySurveys) 
+: [];
 
 
-  useEffect(() => {
-    const fetchCredits = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/api/companies/credits/${localStorage.getItem('cegId')}`);
-        const data = await response.json();
+useEffect(() => {
+  const fetchCredits = async () => {
+    try {
+      // Használj try-catch blokkot a hibák kezelésére
+      const data = await get(`/companies/credits/${location.state?.cegId || localStorage.getItem('cegId')}`);
+      console.log("Credits data:", data); // Debug log
+      
+      // Ellenőrizd, hogy a válasz tartalmazza-e a credits mezőt
+      if (data && typeof data.credits === 'number') {
         setCredits(data.credits);
-      } catch (error) {
-        console.error('Error fetching credits:', error);
+      } else {
+        console.error("Invalid credits data format:", data);
+        setCredits(0); // Alapértelmezett érték
       }
-    };
-    fetchCredits();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching credits:', error);
+      setCredits(0); // Hiba esetén alapértelmezett érték
+    }
+  };
+  
+  fetchCredits();
+}, [location.state?.cegId]);
 
   const handleCreditPurchase = (newCredits) => {
     setCredits(newCredits);
@@ -657,12 +668,33 @@ const displayedSurveys = isFilterActive ? filteredSurveys : companySurveys;
 
   useEffect(() => {
     const fetchCompanySurveys = async () => {
-      const response = await fetch(`http://localhost:3001/api/main/company-surveys/${location.state.cegId}`);
-      const surveys = await response.json();
-      setCompanySurveys(surveys);
+      try {
+        // Ellenőrizd, hogy van-e cegId
+        const companyId = location.state?.cegId || localStorage.getItem('cegId');
+        if (!companyId) {
+          console.error("No company ID available");
+          return;
+        }
+        
+        const data = await get(`/main/company-surveys/${companyId}`);
+        
+        // Ellenőrizd a válasz formátumát
+        if (Array.isArray(data)) {
+          setCompanySurveys(data);
+        } else if (data && Array.isArray(data.surveys)) {
+          setCompanySurveys(data.surveys);
+        } else {
+          console.error("Invalid surveys data format:", data);
+          setCompanySurveys([]); // Üres tömb alapértelmezettként
+        }
+      } catch (error) {
+        console.error('Error fetching company surveys:', error);
+        setCompanySurveys([]); // Hiba esetén üres tömb
+      }
     };
+    
     fetchCompanySurveys();
-  }, [location.state.cegId]);
+  }, [location.state?.cegId]);
 
 
 
@@ -1424,6 +1456,14 @@ const handleCardDialogClose = (cardName) => {
           justifyContent: 'space-between',
           py: { xs: 2, sm: 0 },
           whiteSpace: "normal",
+          // Hozzáadott háttérszín beállítás világos módban
+          bgcolor: (theme) => theme.palette.mode === 'light' 
+            ? 'rgba(255, 255, 255, 1)' // Teljesen átlátszatlan fehér háttér világos módban
+            : undefined, // Sötét módban az alapértelmezett beállítás marad
+          // Opcionális: árnyék hozzáadása a jobb láthatóság érdekében
+          boxShadow: (theme) => theme.palette.mode === 'light'
+            ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
+            : undefined,
         }}
         variant="outlined"
       >

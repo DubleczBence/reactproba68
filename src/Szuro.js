@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiCard from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
+import { post } from './services/apiService';
 
 
 
@@ -84,21 +85,8 @@ const [vegzettseg, setVegzettseg] = React.useState('');
         console.log("Filter data being sent:", filterData);
       
         try {
-          const response = await fetch('http://localhost:3001/api/main/szures', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(filterData)
-          });
-
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-      
-        const data = await response.json();
-        onShowMintavetel(data.count, filterData);
+          const data = await post('/main/szures', filterData);
+          onShowMintavetel(data.count, filterData);
         } catch (error) {
           console.error('Hiba a szűrés során:', error);
         }

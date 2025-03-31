@@ -18,8 +18,8 @@ import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
+import { get } from './services/apiService';
 
-// Register Chart.js components
 ChartJS.register(
   ArcElement,
   CategoryScale,
@@ -157,10 +157,20 @@ const Statisztika = ({ onClose }) => {
 
   useEffect(() => {
     const fetchSurveys = async () => {
-      const cegId = localStorage.getItem('cegId');
-      const response = await fetch(`http://localhost:3001/api/main/company-surveys/${cegId}`);
-      const data = await response.json();
-      setCompanySurveys(data);
+      try {
+        const cegId = localStorage.getItem('cegId');
+        const data = await get(`/main/company-surveys/${cegId}`);
+        
+        if (Array.isArray(data)) {
+          setCompanySurveys(data);
+        } else {
+          console.error('Expected array but got:', data);
+          setCompanySurveys([]);
+        }
+      } catch (error) {
+        console.error('Error fetching surveys:', error);
+        setCompanySurveys([]);
+      }
     };
     fetchSurveys();
   }, []);
@@ -168,30 +178,34 @@ const Statisztika = ({ onClose }) => {
   useEffect(() => {
     if (selectedSurvey) {
       const fetchAnswers = async () => {
-        const response = await fetch(`http://localhost:3001/api/main/survey-answers/${selectedSurvey.id}`);
-        const data = await response.json();
-        setSurveyAnswers(data);
-        
-        // Az első nem szöveges kérdést választjuk ki a diagramhoz
-        const firstNonTextQuestion = data.find(q => q.type !== 'text');
-        if (firstNonTextQuestion) {
-          setSelectedQuestionForChart(firstNonTextQuestion);
+        try {
+          const data = await get(`/main/survey-answers/${selectedSurvey.id}`);
+          
+          if (Array.isArray(data)) {
+            setSurveyAnswers(data);
+            
+            // Az első nem szöveges kérdést választjuk ki a diagramhoz
+            const firstNonTextQuestion = data.find(q => q.type !== 'text');
+            if (firstNonTextQuestion) {
+              setSelectedQuestionForChart(firstNonTextQuestion);
+            }
+          } else {
+            console.error('Expected array but got:', data);
+            setSurveyAnswers([]);
+          }
+        } catch (error) {
+          console.error('Error fetching survey answers:', error);
+          setSurveyAnswers([]);
         }
       };
       
       const fetchDemographics = async () => {
         try {
-          const response = await fetch(`http://localhost:3001/api/companies/survey-demographics/${selectedSurvey.id}`, {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-          });
-          if (response.ok) {
-            const data = await response.json();
-            setDemographicData(data);
-          }
+          const data = await get(`/companies/survey-demographics/${selectedSurvey.id}`);
+          setDemographicData(data);
         } catch (error) {
           console.error('Error fetching demographics:', error);
+          setDemographicData(null);
         }
       };
       
@@ -203,22 +217,26 @@ const Statisztika = ({ onClose }) => {
   useEffect(() => {
     if (compareMode && selectedSurveysForComparison.length > 0) {
       const fetchComparisonData = async () => {
-        const comparisonResults = {};
-        
-        for (const surveyId of selectedSurveysForComparison) {
-          const response = await fetch(`http://localhost:3001/api/main/survey-answers/${surveyId}`);
-          const data = await response.json();
+        try {
+          const comparisonResults = {};
           
-          const surveyInfo = companySurveys.find(s => s.id === surveyId);
-          if (surveyInfo) {
-            comparisonResults[surveyId] = {
-              title: surveyInfo.title,
-              data: data
-            };
+          for (const surveyId of selectedSurveysForComparison) {
+            const data = await get(`/main/survey-answers/${surveyId}`);
+            
+            const surveyInfo = companySurveys.find(s => s.id === surveyId);
+            if (surveyInfo && Array.isArray(data)) {
+              comparisonResults[surveyId] = {
+                title: surveyInfo.title,
+                data: data
+              };
+            }
           }
+          
+          setComparisonData(comparisonResults);
+        } catch (error) {
+          console.error('Error fetching comparison data:', error);
+          setComparisonData({});
         }
-        
-        setComparisonData(comparisonResults);
       };
       
       fetchComparisonData();

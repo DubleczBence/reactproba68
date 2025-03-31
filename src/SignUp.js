@@ -18,10 +18,7 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-
-
-
+import MuiLink from '@mui/material/Link';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -32,14 +29,18 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
+  backgroundColor: theme.palette.mode === 'light' 
+    ? 'rgba(255, 255, 255, 0.8)'
+    : 'rgba(2, 1, 14, 0.8)',
+  [theme.breakpoints.up('sm')]: {
+    maxWidth: '450px',
+  },
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  [theme.breakpoints.up('sm')]: {
-    width: '450px',
-  },
   ...theme.applyStyles('dark', {
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+    backgroundColor: 'rgba(0, 2, 8, 0.8)',
   }),
 }));
 
@@ -51,12 +52,30 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     padding: theme.spacing(4),
   },
   '&::before': {
-  content: '""',
-  position: 'absolute',
-  inset: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  zIndex: -1,
-}
+    content: '""',
+    position: 'absolute',
+    inset: 0,
+    backgroundColor: theme.palette.mode === 'light' 
+      ? 'rgba(255, 255, 255, 0.3)'
+      : 'rgba(0, 0, 0, 0.5)',
+    zIndex: -1,
+    pointerEvents: 'none',
+  }
+}));
+
+const IllustrationContainer = styled(Box)(({ theme }) => ({
+  display: 'none', // Mobilon elrejtjük
+  [theme.breakpoints.up('md')]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: '100%',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 0,
+  },
 }));
 
 export default function SignUp(props) {
@@ -386,8 +405,22 @@ export default function SignUp(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 10 }} />
       <SignUpContainer direction="column" justifyContent="space-between">
+
+      <IllustrationContainer>
+          <img 
+            src="/kepek/illustration-login.png" 
+            alt="Login Illustration" 
+            style={{ 
+              maxWidth: '90%', 
+              maxHeight: '90%',
+              objectFit: 'contain',
+              opacity: 0.9
+            }} 
+          />
+        </IllustrationContainer>
+
         <Card variant="outlined">
           <Typography
             component="h1"
@@ -908,13 +941,16 @@ export default function SignUp(props) {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography sx={{ textAlign: 'center' }}>
               Már van fiókja?{' '}
-              <RouterLink
-                to="/sign-in"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
+              <MuiLink 
+                component={RouterLink} 
+                to="/sign-in" 
+                sx={{ 
+                  color: 'primary.main',
+                  cursor: 'pointer',
+                }}
               >
                 Bejelentkezés
-              </RouterLink>
+              </MuiLink>
             </Typography>
           </Box>
         </Card>

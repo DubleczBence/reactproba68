@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Typography, Button, Box, CardContent, Grid, useMediaQuery } from "@mui/material";
 import MuiCard from '@mui/material/Card';
 import { styled, useTheme } from '@mui/material/styles';
+import { get, post } from './services/apiService';
 
 
 const voucherOptions = [
@@ -45,8 +46,8 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
 
   const fetchCreditHistory = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/users/credit-history/${userId}`);
-      const data = await response.json();
+      // Használjuk a get függvényt a fetch helyett
+      const data = await get(`/users/credit-history/${userId}`);
       setCreditHistory(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching credit history:', error);
@@ -62,24 +63,15 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
 
   const handleVoucherPurchase = async (item) => {
     try {
-      const response = await fetch('http://localhost:3001/api/users/purchase-voucher', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          userId,
-          voucherName: item.name,
-          creditCost: item.creditCost
-        })
+      // Használjuk a post függvényt a fetch helyett
+      const response = await post('/users/purchase-voucher', {
+        userId,
+        voucherName: item.name,
+        creditCost: item.creditCost
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        onPurchase(data.currentCredits);
-        fetchCreditHistory();
-      }
+  
+      onPurchase(response.currentCredits);
+      fetchCreditHistory();
     } catch (error) {
       console.error('Error purchasing voucher:', error);
     }

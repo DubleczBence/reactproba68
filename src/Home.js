@@ -44,6 +44,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useTheme, createTheme, ThemeProvider } from '@mui/material/styles';
 import { Snackbar, Alert } from '@mui/material';
+import { get, post } from './services/apiService';
 
 
 
@@ -121,6 +122,23 @@ const UserContainer = styled(Stack)(({ theme }) => ({
     zIndex: -1,
     pointerEvents: 'none',
   }
+}));
+
+
+const IllustrationContainer = styled(Box)(({ theme }) => ({
+  display: 'none', // Mobilon elrejtjük
+  [theme.breakpoints.up('md')]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: '100%',
+    position: 'absolute',
+    right: '-5%',
+    top: 0,
+    zIndex: 0,
+    pointerEvents: 'none',
+  },
 }));
 
 
@@ -441,8 +459,8 @@ const Home = ({ onSignOut, onSendData }) => {
 
   const fetchCredits = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/users/credits/${userId}`);
-      const data = await response.json();
+      // Használjuk a get függvényt a fetch helyett
+      const data = await get(`/users/credits/${userId}`);
       setCredits(data.credits);
     } catch (error) {
       console.error('Error fetching credits:', error);
@@ -505,30 +523,35 @@ const Home = ({ onSignOut, onSendData }) => {
 
 
   const sendData = async () => {
-    const data = {
+    // Ellenőrizzük, hogy minden kötelező mező ki van-e töltve
+    if (!vegzettseg || !korcsoport || !regio || !nem || !anyagi) {
+      alert('Kérjük, töltsön ki minden mezőt!');
+      return;
+    }
+  
+    // Alakítsuk át a korcsoport dayjs objektumot ISO string formátumra
+    const formattedData = {
       vegzettseg,
-      korcsoport,
+      korcsoport: korcsoport.format('YYYY-MM-DD'), // ISO formátum
       regio,
       nem,
       anyagi,
+      userId: userId // Adjuk hozzá a felhasználó azonosítóját
     };
-
-    try {
-      const response = await fetch('http://localhost:3001/api/main/home', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(data)
-      });
   
-      if (response.ok) {
-        setIsFormFilled(true);
-        window.location.reload();
-      }
+    try {
+      console.log('Sending data:', formattedData); // Debug log
+      await post('/main/home', formattedData);
+      setIsFormFilled(true);
+      window.location.reload();
     } catch (error) {
       console.error('Error sending data:', error);
+      // Jelenítsünk meg egy hibaüzenetet a felhasználónak
+      setSnackbar({
+        open: true,
+        message: 'Hiba történt az adatok küldése során. Kérjük, próbálja újra!',
+        severity: 'error'
+      });
     }
   };
 
@@ -573,51 +596,25 @@ const [open, setOpen] = React.useState(false);
         console.error('Selected survey is missing or invalid');
         return;
       }
-  
+    
       const surveyId = selectedSurvey.id;
       console.log('Submitting survey with ID:', surveyId);
       console.log('Selected survey data:', selectedSurvey);
-  
+    
       const creditAmount = Math.floor(selectedSurvey.creditCost / 3);
       console.log('Credit amount calculated:', creditAmount);
-  
-      const response = await fetch('http://localhost:3001/api/main/submit-survey', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          surveyId: surveyId,
-          answers: Object.entries(answers).map(([questionId, value]) => ({
-            questionId,
-            value
-          }))
-        })
+    
+      // Használjuk a post függvényt a fetch helyett
+      await post('/main/submit-survey', {
+        surveyId: surveyId,
+        answers: Object.entries(answers).map(([questionId, value]) => ({
+          questionId,
+          value
+        }))
       });
-  
-      if (response.ok) {
-        const transactionResponse = await fetch('http://localhost:3001/api/users/add-survey-transaction', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify({
-            userId: userId,
-            amount: creditAmount,
-            title: selectedSurvey.title,
-            surveyId: surveyId
-          })
-        });
-  
-        if (!transactionResponse.ok) {
-          throw new Error('Transaction failed');
-        }
-  
-        await fetchCredits();
-        handleCloseSurvey();
-      }
+    
+      await fetchCredits();
+      handleCloseSurvey();
     } catch (error) {
       console.error('Error submitting survey:', error);
     }
@@ -648,12 +645,8 @@ const [open, setOpen] = React.useState(false);
 
   const fetchAvailableSurveys = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/main/available-surveys', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const data = await response.json();
+      // Használjuk a get függvényt a fetch helyett
+      const data = await get('/main/available-surveys');
       console.log('Fetched surveys:', data);
       console.log('Available survey IDs:', data.surveys ? data.surveys.map(s => s.id) : []);
       setAvailableSurveys(data.surveys || []);
@@ -681,15 +674,11 @@ const [open, setOpen] = React.useState(false);
         console.error('Survey not found in available surveys:', surveyId);
         return;
       }
-  
-      const response = await fetch(`http://localhost:3001/api/main/survey/${surveyId}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      const surveyData = await response.json();
+    
+      // Használjuk a get függvényt a fetch helyett
+      const surveyData = await get(`/main/survey/${surveyId}`);
       console.log('Survey data from API:', surveyData);
-  
+    
       const questions = Array.isArray(surveyData) ? surveyData : [];
       
       setSelectedSurvey({
@@ -701,7 +690,7 @@ const [open, setOpen] = React.useState(false);
           survey_id: surveyId
         }))
       });
-  
+    
       setShowSurvey(true);
     } catch (error) {
       console.error('Error opening survey:', error);
@@ -728,6 +717,19 @@ const [open, setOpen] = React.useState(false);
     <AppTheme {...onSendData}>
       <UserContainer direction="column" justifyContent="space-between">
       <React.Fragment>
+
+      <IllustrationContainer>
+        <img 
+          src="/kepek/illustration-kitolto_kerdoiv.png" 
+          alt="Kérdőív Illusztráció" 
+          style={{ 
+          maxWidth: '90%', 
+          maxHeight: '90%',
+          objectFit: 'contain',
+          opacity: 0.9
+            }} 
+        />
+      </IllustrationContainer>
 
       <Box 
   sx={{ 
@@ -1155,6 +1157,19 @@ const [open, setOpen] = React.useState(false);
 
             <CssBaseline enableColorScheme />
 
+            <IllustrationContainer>
+                <img 
+                  src="/kepek/illustration-kitolto_kerdoiv.png" 
+                  alt="Kérdőív Illusztráció" 
+                  style={{ 
+                    maxWidth: '90%', 
+                    maxHeight: '90%',
+                    objectFit: 'contain',
+                    opacity: 0.9
+                  }} 
+                />
+              </IllustrationContainer>
+
             <Box 
   sx={{ 
     width: '100%', 
@@ -1244,7 +1259,9 @@ const [open, setOpen] = React.useState(false);
               width: { xs: '95%', sm: '600px' },
               maxWidth: '600px',
               mx: 'auto',
-              mt: { xs: 0, sm: 2 }
+              mt: { xs: 0, sm: 2 },
+              position: 'relative', // Hozzáadva, hogy a z-index működjön
+              zIndex: 1 // Hozzáadva, hogy a kártya az illusztráció felett legyen
             }}>
       
             <FormControl sx={{ m: 1, minWidth: 240 }}>

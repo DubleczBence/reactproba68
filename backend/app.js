@@ -1,25 +1,40 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const szuresRoutes = require('./routes/szuresRoutes');
+const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const homeRoutes = require('./routes/homeRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const cors = require('cors');
+const szuresRoutes = require('./routes/szuresRoutes');
+const errorHandler = require('./middleware/error');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000' }));
 app.use(bodyParser.json());
-app.use('/api/users', userRoutes); 
-app.use('/api/main', szuresRoutes);
-app.use('/api/main', homeRoutes); 
+
+// Routes
+app.use('/api/users', userRoutes);
 app.use('/api/companies', companyRoutes);
+app.use('/api/main', homeRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/main', szuresRoutes);
 
+// Error handling middleware
+app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint not found' });
 });
+
+// Start server
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app; // Export for testing

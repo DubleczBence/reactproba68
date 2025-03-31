@@ -12,6 +12,7 @@ import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
+import { post } from './services/apiService';
 
 const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -35,8 +36,6 @@ const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
 const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost, onSuccess, onError, filterData }) => {
   const handleSubmit = async () => {
     console.log("Filter data in handleSubmit:", filterData);
-    const token = localStorage.getItem('token');
-
 
     if (!surveyTitle || questions.some(q => !q.questionText)) {
       onError('Minden mező kitöltése kötelező!');
@@ -44,34 +43,24 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
     }
     
     try {
-      const response = await fetch('http://localhost:3001/api/companies/create-survey', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+      await post('/companies/create-survey', {
+        title: surveyTitle,
+        questions: questions,
+        participantCount: participantCount,
+        filterCriteria: {
+          vegzettseg: filterData.vegzettseg,
+          korcsoport: filterData.korcsoport,
+          regio: filterData.regio,
+          nem: filterData.nem,
+          anyagi: filterData.anyagi
         },
-        body: JSON.stringify({
-          title: surveyTitle,
-          questions: questions,
-          participantCount: participantCount,
-          filterCriteria: {
-            vegzettseg: filterData.vegzettseg,
-            korcsoport: filterData.korcsoport,
-            regio: filterData.regio,
-            nem: filterData.nem,
-            anyagi: filterData.anyagi
-          },
-          creditCost: creditCost
-        })
+        creditCost: creditCost
       });
-  
-      if (response.ok) {
-        onSuccess();
-      } else {
-        onError('Hiba történt a kérdőív létrehozása során');
-      }
+      
+      onSuccess();
     } catch (error) {
       console.error('Error submitting survey:', error);
+      onError('Hiba történt a kérdőív létrehozása során');
     }
   };
   return (

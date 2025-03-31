@@ -59,6 +59,22 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   }
 }));
 
+
+const IllustrationContainer = styled(Box)(({ theme }) => ({
+  display: 'none', // Mobilon elrejtjük
+  [theme.breakpoints.up('md')]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: '100%',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    zIndex: 0,
+  },
+}));
+
 export default function SignIn(props) {
   const { onSignIn } = props;
   const [emailError, setEmailError] = React.useState(false);
@@ -199,7 +215,20 @@ export default function SignIn(props) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
-        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+        <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 10 }} />
+
+         <IllustrationContainer>
+          <img 
+            src="/kepek/illustration-login.png" 
+            alt="Login Illustration" 
+            style={{ 
+              maxWidth: '90%', 
+              maxHeight: '90%',
+              objectFit: 'contain',
+              opacity: 0.9
+            }} 
+          />
+        </IllustrationContainer>
         
         <Card variant="outlined">
         
@@ -341,13 +370,16 @@ export default function SignIn(props) {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography sx={{ textAlign: 'center' }}>
               Nincs fiókja?{' '}
-              <RouterLink
-                to="/sign-up"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
+              <MuiLink 
+                component={RouterLink} 
+                to="/sign-up" 
+                sx={{ 
+                  color: 'primary.main',
+                  cursor: 'pointer',
+                }}
               >
                 Regisztráció
-              </RouterLink>
+              </MuiLink>
             </Typography>
           </Box>
         </Card>
