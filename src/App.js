@@ -7,6 +7,7 @@ import Home from './Home';
 import CompHome from './Comp_Home';
 import AdminDashboard from './AdminDashboard'; 
 import CustomizedSnackbars from './CustomizedSnackbars';
+import { BackgroundProvider } from './BackgroundContext';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -173,6 +174,7 @@ function App() {
   };
 
   return (
+    <BackgroundProvider>
     <div>
       <Routes>
         <Route path="/" element={<SignIn onSignIn={HandleSignInData}/>} />
@@ -189,6 +191,7 @@ function App() {
         severity={snackbar.severity}
       />
     </div>
+    </BackgroundProvider>
   );
 }
 

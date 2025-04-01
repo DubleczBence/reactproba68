@@ -42,25 +42,14 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { useTheme, createTheme, ThemeProvider } from '@mui/material/styles';
+import { useTheme, ThemeProvider } from '@mui/material/styles';
 import { Snackbar, Alert } from '@mui/material';
 import { get, post } from './services/apiService';
+import { useMediaQuery } from '@mui/material';
 
 
 
 const SimpleBottomNavigation = ({ value, onChange }) => {
-  const theme = createTheme({
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 600,
-        md: 960,
-        lg: 1280,
-        xl: 1920,
-        custom: 730
-      },
-    },
-  });
 
   return (
     <BottomNavigation
@@ -70,8 +59,7 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
       sx={{
         mt: 2, 
         mb: 3,
-        backgroundColor: 'hsla(210, 100%, 10%, 0.1)', 
-        boxShadow: theme.shadows[1],
+        backgroundColor: 'transparent',
         width: '18%',
       }}
     >
@@ -117,8 +105,8 @@ const UserContainer = styled(Stack)(({ theme }) => ({
     position: 'absolute',
     inset: 0,
     backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.3)'
-      : 'rgba(0, 0, 0, 0.5)',
+      ? 'rgba(255, 255, 255, 0.2)'
+      : 'rgba(0, 0, 0, 0.2)',
     zIndex: -1,
     pointerEvents: 'none',
   }
@@ -353,6 +341,7 @@ const Home = ({ onSignOut, onSendData }) => {
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [userProfileData, setUserProfileData] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const isUnder1400 = useMediaQuery('(max-width:1400px)');
   
   const [answers, setAnswers] = useState({});
 
@@ -720,44 +709,51 @@ const [open, setOpen] = React.useState(false);
 
       <IllustrationContainer>
         <img 
-          src="/kepek/illustration-kitolto_kerdoiv.png" 
-          alt="Kérdőív Illusztráció" 
+          src={showUserCreditPage ? "/kepek/illustration-kitolto_kredit.png" : "/kepek/illustration-kitolto_kerdoiv.png"} 
+          alt={showUserCreditPage ? "Kredit Illusztráció" : "Kérdőív Illusztráció"} 
           style={{ 
-          maxWidth: '90%', 
-          maxHeight: '90%',
-          objectFit: 'contain',
-          opacity: 0.9
-            }} 
+            maxWidth: '90%', 
+            maxHeight: '90%',
+            objectFit: 'contain',
+            opacity: 0.9
+          }} 
         />
       </IllustrationContainer>
 
       <Box sx={{ 
-        position: 'absolute',
-        left: '6%',
-        top: '35%',
-        zIndex: 1,
-        width: '20%',
-        display: { xs: 'none', md: 'block' }
-      }}>
-        <Typography 
-          variant="h3" 
-          component="h2" 
-          sx={{ 
-            fontWeight: 'bold',
-            mb: 2,
-            fontSize: { md: '2.5rem', lg: '3rem' },
-            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
-          }}
-        >
-          Jutalmazzuk a véleményedet.
-        </Typography>
-        <Typography variant="h6" sx={{ 
-            mt: 6,
-            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
-          }}>
-          Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
-        </Typography>
-      </Box>
+          position: 'absolute',
+          left: { md: '4%', lg: '6%' },
+          top: '35%',
+          zIndex: 1,
+          width: { md: '25%', lg: '20%' },
+          maxWidth: '310px',
+          display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+          ml: { md: 0, lg: 2 }
+        }}>
+          <Typography 
+            variant="h3" 
+            component="h2" 
+            sx={{ 
+              fontWeight: 'bold',
+              mb: 2,
+              fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+              wordWrap: 'break-word',
+              hyphens: 'auto'
+            }}
+          >
+            Jutalmazzuk a véleményedet.
+          </Typography>
+          <Typography variant="h6" sx={{ 
+              mt: 3,
+              fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+              wordWrap: 'break-word',
+              hyphens: 'auto'
+            }}>
+            Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
+          </Typography>
+        </Box>
 
       <Box 
   sx={{ 
@@ -785,7 +781,7 @@ const [open, setOpen] = React.useState(false);
       width: { xs: '100%', md: '25%' }, 
       textAlign: { xs: 'center', md: 'left' },
       pl: { md: 20 },
-      color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+      color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
     }}
     onClick={() => {
       setShowUserCreditPage(true);
@@ -807,7 +803,7 @@ const [open, setOpen] = React.useState(false);
       mb: { xs: 1, md: 0 },
       whiteSpace: 'nowrap',
       zIndex: 4,
-      color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+      color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
     }}
   >
     Köszöntjük az oldalon, {name}!
@@ -853,7 +849,7 @@ const [open, setOpen] = React.useState(false);
     sx={{
       mt: 2,
       mb: 2,
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: 'transparent',
       boxShadow: theme.shadows[1],
       width: '18%',
       margin: '0 auto',
@@ -1100,7 +1096,7 @@ const [open, setOpen] = React.useState(false);
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          Kijelentkezés
         </MenuItem>
       </Menu>
 
@@ -1162,6 +1158,10 @@ const [open, setOpen] = React.useState(false);
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
+        TransitionProps={{ 
+          appear: true,
+          timeout: 300
+        }}
       >
         <DialogTitle>{"Kijelentkezés"}</DialogTitle>
         <DialogContent>
@@ -1199,34 +1199,6 @@ const [open, setOpen] = React.useState(false);
                   }} 
                 />
               </IllustrationContainer>
-
-              <Box sx={{ 
-                position: 'absolute',
-                right: '40%',
-                top: '25%',
-                zIndex: 1,
-                width: '40%',
-                display: { xs: 'none', md: 'block' }
-              }}>
-                <Typography 
-                  variant="h3" 
-                  component="h2" 
-                  sx={{ 
-                    fontWeight: 'bold',
-                    mb: 2,
-                    fontSize: { md: '2.5rem', lg: '3rem' },
-                    color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
-                  }}
-                >
-                  Jutalmazzuk a véleményedet.
-                </Typography>
-                <Typography variant="h6" sx={{ 
-                    mt: 6,
-                    color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
-                  }}>
-                  Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
-                </Typography>
-              </Box>
 
             <Box 
   sx={{ 
@@ -1569,7 +1541,7 @@ const [open, setOpen] = React.useState(false);
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          Kijelentkezés
         </MenuItem>
       </Menu>
 
@@ -1592,6 +1564,10 @@ const [open, setOpen] = React.useState(false);
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
+        TransitionProps={{ 
+          appear: true,
+          timeout: 300
+        }}
       >
         <DialogTitle>{"Kijelentkezés"}</DialogTitle>
         <DialogContent>

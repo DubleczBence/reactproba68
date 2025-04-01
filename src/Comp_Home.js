@@ -10,7 +10,6 @@ import ColorModeSelect from './ColorModeSelect';
 import Button from '@mui/material/Button';
 import AppTheme from './AppTheme';
 import CssBaseline from '@mui/material/CssBaseline';
-import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -64,6 +63,7 @@ import Select from '@mui/material/Select';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { get, put } from './services/apiService';
+import { useMediaQuery } from '@mui/material';
 
 
 
@@ -110,7 +110,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.5) !important'
+    ? 'rgba(255, 255, 255, 0.7) !important'
     : 'rgba(0, 0, 5, 0.8) !important',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
@@ -139,8 +139,8 @@ const CompHomeContainer = styled(Stack)(({ theme }) => ({
   position: 'absolute',
   inset: 0,
   backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.3)'
-      : 'rgba(0, 0, 0, 0.5)',
+      ? 'rgba(255, 255, 255, 0.2)'
+      : 'rgba(0, 0, 0, 0.2)',
   zIndex: -1,
 }
 }));
@@ -174,20 +174,17 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 
 const SimpleBottomNavigation = ({ value, onChange }) => {
-    const theme = useTheme();
 
   return (
     <BottomNavigation
       showLabels
       value={value}
       onChange={onChange}
+      
       sx={{
+        backgroundColor: 'transparent',
         mt: 2, 
         mb: 2,
-        backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.005)'
-      : theme.palette.background.default,
-        boxShadow: theme.shadows[1],
         width: '18%', 
       }}
     >
@@ -383,6 +380,7 @@ const CompHome = ({ onSignOut }) => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [openNotifications, setOpenNotifications] = useState([]);
   const notificationsRef = useRef([]);
+  const isUnder1400 = useMediaQuery('(max-width:1400px)');
 
 
   const [companySurveys, setCompanySurveys] = useState([]);
@@ -1093,11 +1091,13 @@ const handleCardDialogClose = (cardName) => {
         {!showCreditPage && !showStatisztika && (
           <Box sx={{ 
             position: 'absolute',
-            left: '6%',
+            left: { md: '4%', lg: '6%' },
             top: '35%',
             zIndex: 1,
-            width: '20%',
-            display: { xs: 'none', md: 'block' }
+            width: { md: '25%', lg: '20%' },
+            maxWidth: '360px',
+            display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+            ml: { md: 0, lg: 2 }
           }}>
             <Typography 
               variant="h3" 
@@ -1105,17 +1105,22 @@ const handleCardDialogClose = (cardName) => {
               sx={{ 
                 fontWeight: 'bold',
                 mb: 2,
-                fontSize: { md: '2.5rem', lg: '3rem' },
-                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+                fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+                wordWrap: 'break-word',
+                hyphens: 'auto'
               }}
             >
-              Készíts felmérést pillantok alatt!
+              Készíts felmérést pillanatok alatt!
             </Typography>
             <Typography variant="h6" sx={{ 
-                mt: 6,
-                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+                mt: 3,
+                fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+                wordWrap: 'break-word',
+                hyphens: 'auto'
               }}>
-              Tedd fel a kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól.
+              Tedd fel kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól.
             </Typography>
           </Box>
         )}
@@ -1124,11 +1129,13 @@ const handleCardDialogClose = (cardName) => {
         {showStatisztika && (
           <Box sx={{ 
             position: 'absolute',
-            left: '6%',
+            left: { md: '4%', lg: '6%' },
             top: '35%',
             zIndex: 1,
-            width: '20%',
-            display: { xs: 'none', md: 'block' }
+            width: { md: '25%', lg: '20%' },
+            maxWidth: '310px',
+            display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+            ml: { md: 0, lg: 2 }
           }}>
             <Typography 
               variant="h3" 
@@ -1136,17 +1143,23 @@ const handleCardDialogClose = (cardName) => {
               sx={{ 
                 fontWeight: 'bold',
                 mb: 2,
-                fontSize: { md: '2.5rem', lg: '3rem' },
-                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+                fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+                wordWrap: 'break-word',
+                hyphens: 'auto'
               }}
             >
               Adatok, amik segítenek a döntésben.
             </Typography>
             <Typography variant="h6" sx={{ 
-                mt: 6,
-                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+                mt: 3,
+                fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+                wordWrap: 'break-word',
+                hyphens: 'auto'
               }}>
-              Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket.
+              Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti
+              döntéseket.
             </Typography>
           </Box>
         )}
@@ -1190,6 +1203,7 @@ const handleCardDialogClose = (cardName) => {
       zIndex: 5,
       width: { xs: '100%', md: '25%' }, 
       textAlign: { xs: 'center', md: 'left' },
+      color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
       pl: { md: 20 },
     }}
     onClick={() => {
@@ -1212,6 +1226,7 @@ const handleCardDialogClose = (cardName) => {
       mt: { xs: 1, md: 0 },
       mb: { xs: 1, md: 0 },
       whiteSpace: 'nowrap',
+      color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
       zIndex: 4
     }}
   >
@@ -2150,7 +2165,7 @@ const handleCardDialogClose = (cardName) => {
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
-          Logout
+          Kijelentkezés
         </MenuItem>
       </Menu>
 
@@ -2167,6 +2182,10 @@ const handleCardDialogClose = (cardName) => {
         keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
+        TransitionProps={{
+          appear: 'true',
+          timeout: 300,
+        }}
       >
         <DialogTitle>{"Kijelentkezés"}</DialogTitle>
         <DialogContent>

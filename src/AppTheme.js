@@ -7,11 +7,12 @@ import { feedbackCustomizations } from './customizations/feedback';
 import { navigationCustomizations } from './customizations/navigation';
 import { surfacesCustomizations } from './customizations/surfaces';
 import { colorSchemes, typography, shadows, shape } from './themePrimitives';
+import { useBackground } from './BackgroundContext';
 
 function AppTheme({ children, disableCustomTheme, themeComponents }) {
+  // eslint-disable-next-line no-unused-vars
   const { mode } = useColorScheme();
-
-  const backgroundImage = mode === 'light' ? '/kepek/new_bg-bright.png' : '/kepek/new_bg-dark.png';
+  const { backgroundImage } = useBackground();
 
   const theme = React.useMemo(() => {
     return disableCustomTheme
@@ -104,7 +105,6 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           left: 0,
           width: '100vw',
           height: '100vh',
-          backgroundColor: mode === 'light' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)',
           zIndex: -2,
         }}
       />

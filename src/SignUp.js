@@ -19,6 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import MuiLink from '@mui/material/Link';
+import { useMediaQuery } from '@mui/material';
 
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -56,8 +57,8 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
     position: 'absolute',
     inset: 0,
     backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.3)'
-      : 'rgba(0, 0, 0, 0.5)',
+      ? 'rgba(255, 255, 255, 0.2)'
+      : 'rgba(0, 0, 0, 0.2)',
     zIndex: -1,
     pointerEvents: 'none',
   }
@@ -74,7 +75,7 @@ const IllustrationContainer = styled(Box)(({ theme }) => ({
     position: 'absolute',
     right: 0,
     top: 0,
-    zIndex: 0,
+    zIndex: -1,
   },
 }));
 
@@ -140,6 +141,7 @@ export default function SignUp(props) {
   const [cegjegyzek, setCegjegyzek] = React.useState('');
   const [helyrajziszam, setHelyrajziszam] = React.useState('');
   
+  const isUnder1100 = useMediaQuery('(max-width:1100px)');
 
 
   const handleChange = (event) => {
@@ -422,32 +424,39 @@ export default function SignUp(props) {
         </IllustrationContainer>
 
         <Box sx={{ 
-        position: 'absolute',
-        left: '15%',
-        top: '30%',
-        zIndex: 1,
-        width: '20%',
-        display: { xs: 'none', md: 'block' }
-      }}>
-        <Typography 
-          variant="h3" 
-          component="h2" 
-          sx={{ 
-            fontWeight: 'bold',
-            mb: 2,
-            fontSize: { md: '2.5rem', lg: '3rem' },
-            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
-          }}
-        >
-          Csatlakozz most!
-        </Typography>
-        <Typography variant="h6" sx={{ 
-            mt: 6,
-            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
-          }}>
-          Cégeknek gyors kutatás, válaszadóknak értékes jutalmak.
-        </Typography>
-      </Box>
+          position: 'absolute',
+          left: { md: '4%', lg: '6%' },
+          top: '35%',
+          zIndex: 1,
+          width: { md: '25%', lg: '20%' },
+          maxWidth: '360px',
+          display: (isUnder1100) ? 'none' : { xs: 'none', md: 'block' },
+          ml: { md: 0, lg: 2 }
+        }}>
+          <Typography 
+            variant="h3" 
+            component="h2" 
+            sx={{ 
+              fontWeight: 'bold',
+              mb: 2,
+              fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+              wordWrap: 'break-word',
+              hyphens: 'auto'
+            }}
+          >
+            Csatlakozz most!
+          </Typography>
+          <Typography variant="h6" sx={{ 
+              mt: 3,
+              fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+              wordWrap: 'break-word',
+              hyphens: 'auto'
+            }}>
+            Cégeknek gyors kutatás, válaszadóknak értékes jutalmak.
+          </Typography>
+        </Box>
 
         <Card variant="outlined">
           <Typography

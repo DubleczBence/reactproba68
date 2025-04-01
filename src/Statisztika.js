@@ -46,7 +46,17 @@ const StyledCard = styled(Card)(({ theme }) => ({
   padding: theme.spacing(4),
   marginTop: theme.spacing(2),
   marginBottom: theme.spacing(8), // Megtartjuk az alsó margót
-  overflow: 'auto'
+  overflow: 'auto',
+  backgroundColor: theme.palette.mode === 'light' 
+    ? 'rgba(255, 255, 255, 0.7) !important'
+    : 'rgba(0, 0, 5, 0.8) !important',
+  boxShadow:
+    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+  ...theme.applyStyles('dark', {
+    boxShadow:
+      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+      backgroundColor: 'rgba(18, 18, 18, 0.4)',
+  }),
 }));
 
 const AnswerBar = styled(Box)(({ theme }) => ({
@@ -591,29 +601,92 @@ const getDemographicChartData = () => {
             {surveysToDisplay.length > 0 ? (
               surveysToDisplay.map(survey => (
                 <Button
-                  key={survey.id}
-                  onClick={() => setSelectedSurvey(survey)}
-                  sx={{
-                    height: "80px",
-                    textAlign: "left",
-                    pl: 4,
-                    fontSize: "1.2rem",
-                    mb: 2,
-                    width: "100%",
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                  }}
-                  variant="outlined"
-                >
-                  <span>{survey.title}</span>
-                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, mr: 2 }}>
-                    <Typography>{survey.created_date}</Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography>{Math.round(survey.completion_percentage)}%</Typography>
-                      <Typography variant="caption">Kitöltöttség</Typography>
-                    </Box>
-                  </Box>
-                </Button>
+  key={survey.id}
+  onClick={() => setSelectedSurvey(survey)}
+  sx={{
+            height: { xs: "auto", sm: "80px" },
+            minHeight: { xs: "80px", sm: "80px" },
+            flexShrink: 0,
+            textAlign: "left",
+            pl: { xs: 2, sm: 4 },
+            fontSize: { xs: "0.9rem", sm: "1.2rem" },
+            mb: 2,
+            width: "100%",
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            justifyContent: 'space-between',
+            py: { xs: 2, sm: 0 },
+            whiteSpace: "normal",
+            // Hozzáadott háttérszín beállítás világos módban
+            bgcolor: (theme) => theme.palette.mode === 'light' 
+              ? 'rgba(255, 255, 255, 1)' // Teljesen átlátszatlan fehér háttér világos módban
+              : undefined, // Sötét módban az alapértelmezett beállítás marad
+            // Opcionális: árnyék hozzáadása a jobb láthatóság érdekében
+            boxShadow: (theme) => theme.palette.mode === 'light'
+              ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
+              : undefined,
+          }}
+          variant="outlined"
+        >
+          <Typography 
+            component="span" 
+            sx={{ 
+              fontSize: { xs: '0.9rem', sm: '1.2rem' },
+              mb: { xs: 1, sm: 0 },
+              width: { xs: '100%', sm: 'auto' },
+              wordBreak: "break-word"
+            }}
+          >
+            {survey.title}
+          </Typography>
+          
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'row', sm: 'row' }, 
+            alignItems: 'center', 
+            gap: { xs: 1, sm: 2 }, 
+            mr: { xs: 0, sm: 2 },
+            width: { xs: '100%', sm: 'auto' },
+            justifyContent: { xs: 'space-between', sm: 'flex-end' }
+          }}>
+            <Typography
+              component="span"
+              sx={{
+                width: "auto",
+                minWidth: { xs: "auto", sm: "150px" },
+                height: { xs: "auto", sm: "37px" },
+                borderRadius: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 10px",
+                fontSize: { xs: '0.8rem', sm: 'inherit' }
+              }}
+            >
+              {survey.created_date}
+            </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center',
+              minWidth: { xs: "60px", sm: "auto" }
+            }}>
+              <Typography sx={{ fontSize: { xs: '0.8rem', sm: 'inherit' } }}>
+                {Math.round(survey.completion_percentage)}%
+              </Typography>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  mt: -0.5,
+                  fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                }}
+              >
+                Folyamatban
+              </Typography>
+            </Box>
+          </Box>
+        </Button>
               ))
             ) : (
               <Typography sx={{ textAlign: 'center', mt: 4, color: 'text.secondary' }}>
