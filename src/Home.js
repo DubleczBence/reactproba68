@@ -731,6 +731,34 @@ const [open, setOpen] = React.useState(false);
         />
       </IllustrationContainer>
 
+      <Box sx={{ 
+        position: 'absolute',
+        left: '6%',
+        top: '35%',
+        zIndex: 1,
+        width: '20%',
+        display: { xs: 'none', md: 'block' }
+      }}>
+        <Typography 
+          variant="h3" 
+          component="h2" 
+          sx={{ 
+            fontWeight: 'bold',
+            mb: 2,
+            fontSize: { md: '2.5rem', lg: '3rem' },
+            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
+          }}
+        >
+          Jutalmazzuk a véleményedet.
+        </Typography>
+        <Typography variant="h6" sx={{ 
+            mt: 6,
+            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
+          }}>
+          Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
+        </Typography>
+      </Box>
+
       <Box 
   sx={{ 
     width: '100%', 
@@ -757,6 +785,7 @@ const [open, setOpen] = React.useState(false);
       width: { xs: '100%', md: '25%' }, 
       textAlign: { xs: 'center', md: 'left' },
       pl: { md: 20 },
+      color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
     }}
     onClick={() => {
       setShowUserCreditPage(true);
@@ -777,7 +806,8 @@ const [open, setOpen] = React.useState(false);
       mt: { xs: 1, md: 0 },
       mb: { xs: 1, md: 0 },
       whiteSpace: 'nowrap',
-      zIndex: 4
+      zIndex: 4,
+      color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
     }}
   >
     Köszöntjük az oldalon, {name}!
@@ -1169,6 +1199,34 @@ const [open, setOpen] = React.useState(false);
                   }} 
                 />
               </IllustrationContainer>
+
+              <Box sx={{ 
+                position: 'absolute',
+                right: '40%',
+                top: '25%',
+                zIndex: 1,
+                width: '40%',
+                display: { xs: 'none', md: 'block' }
+              }}>
+                <Typography 
+                  variant="h3" 
+                  component="h2" 
+                  sx={{ 
+                    fontWeight: 'bold',
+                    mb: 2,
+                    fontSize: { md: '2.5rem', lg: '3rem' },
+                    color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+                  }}
+                >
+                  Jutalmazzuk a véleményedet.
+                </Typography>
+                <Typography variant="h6" sx={{ 
+                    mt: 6,
+                    color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
+                  }}>
+                  Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
+                </Typography>
+              </Box>
 
             <Box 
   sx={{ 

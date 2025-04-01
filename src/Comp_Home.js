@@ -146,6 +146,21 @@ const CompHomeContainer = styled(Stack)(({ theme }) => ({
 }));
 
 
+const IllustrationContainer = styled(Box)(({ theme }) => ({
+  display: 'none', // Mobilon elrejtjük
+  [theme.breakpoints.up('md')]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: '100%',
+    position: 'absolute',
+    right: '-5%',
+    top: 0,
+    zIndex: 0,
+    pointerEvents: 'none',
+  },
+}));
 
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -1048,6 +1063,96 @@ const handleCardDialogClose = (cardName) => {
       <React.Fragment>
       
         <CssBaseline enableColorScheme />
+
+        <IllustrationContainer>
+  <img 
+    src={
+      showCreditPage 
+        ? "/kepek/illustration-ceg_kredit.png" 
+        : showStatisztika 
+          ? "/kepek/illustration-statisztika.png"
+          : "/kepek/illustration-ceg_kerdoiv.png"
+    } 
+    alt={
+      showCreditPage 
+        ? "Kredit Illusztráció" 
+        : showStatisztika 
+          ? "Statisztika Illusztráció"
+          : "Kérdőív Illusztráció"
+    } 
+    style={{ 
+      maxWidth: '90%', 
+      maxHeight: '90%',
+      objectFit: 'contain',
+      opacity: 0.9
+    }} 
+  />
+</IllustrationContainer>
+
+
+        {!showCreditPage && !showStatisztika && (
+          <Box sx={{ 
+            position: 'absolute',
+            left: '6%',
+            top: '35%',
+            zIndex: 1,
+            width: '20%',
+            display: { xs: 'none', md: 'block' }
+          }}>
+            <Typography 
+              variant="h3" 
+              component="h2" 
+              sx={{ 
+                fontWeight: 'bold',
+                mb: 2,
+                fontSize: { md: '2.5rem', lg: '3rem' },
+                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+              }}
+            >
+              Készíts felmérést pillantok alatt!
+            </Typography>
+            <Typography variant="h6" sx={{ 
+                mt: 6,
+                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+              }}>
+              Tedd fel a kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól.
+            </Typography>
+          </Box>
+        )}
+
+
+        {showStatisztika && (
+          <Box sx={{ 
+            position: 'absolute',
+            left: '6%',
+            top: '35%',
+            zIndex: 1,
+            width: '20%',
+            display: { xs: 'none', md: 'block' }
+          }}>
+            <Typography 
+              variant="h3" 
+              component="h2" 
+              sx={{ 
+                fontWeight: 'bold',
+                mb: 2,
+                fontSize: { md: '2.5rem', lg: '3rem' },
+                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+              }}
+            >
+              Adatok, amik segítenek a döntésben.
+            </Typography>
+            <Typography variant="h6" sx={{ 
+                mt: 6,
+                color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit',
+              }}>
+              Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket.
+            </Typography>
+          </Box>
+        )}
+
+
+
         <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"}  sx={{
         position: 'relative',
         height: '100vh',
@@ -1090,6 +1195,7 @@ const handleCardDialogClose = (cardName) => {
     onClick={() => {
       setShowCreditPage(true);
       setValue(1);
+      setShowStatisztika(false);  // Adj hozzá ezt a sort
     }}
   >
     {credits} Kredit
@@ -1204,6 +1310,8 @@ const handleCardDialogClose = (cardName) => {
     mb: 0,
     mt: 4,
   }}>
+
+
     <Button
       aria-describedby={filterId}
       onClick={handleFilterClick}
@@ -1235,6 +1343,7 @@ const handleCardDialogClose = (cardName) => {
 
       {/* Első Card */}
       { showFirstCard && !showCreditPage && (
+        
   <Card
     variant="outlined"
     sx={{
@@ -1245,6 +1354,7 @@ const handleCardDialogClose = (cardName) => {
       overflow: "auto",
     }}
   >
+
     <Button
       onClick={handleClickOpenKerd}
       sx={{
@@ -1958,7 +2068,7 @@ const handleCardDialogClose = (cardName) => {
         )}
 
         {/* Kredit oldal */}
-        {showCreditPage && (
+        {showCreditPage && !showStatisztika && (
           <Kredit 
             onClose={() => setShowCreditPage(false)}
             currentCredits={credits}
@@ -1966,7 +2076,7 @@ const handleCardDialogClose = (cardName) => {
           />
         )}
 
-{showStatisztika && (
+{showStatisztika && !showCreditPage && (
   <Box sx={{ 
     position: 'absolute', 
     top: {

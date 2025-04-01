@@ -229,6 +229,34 @@ export default function SignIn(props) {
             }} 
           />
         </IllustrationContainer>
+
+        <Box sx={{ 
+        position: 'absolute',
+        left: '15%',
+        top: '30%',
+        zIndex: 1,
+        width: '20%',
+        display: { xs: 'none', md: 'block' }
+      }}>
+        <Typography 
+          variant="h3" 
+          component="h2" 
+          sx={{ 
+            fontWeight: 'bold',
+            mb: 2,
+            fontSize: { md: '2.5rem', lg: '3rem' },
+            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
+          }}
+        >
+          Csatlakozz most!
+        </Typography>
+        <Typography variant="h6" sx={{ 
+            mt: 6,
+            color: theme => theme.palette.mode === 'light' ? '#fff' : 'inherit', // Világos témánál fehér szín
+          }}>
+          Cégeknek gyors kutatás, válaszadóknak értékes jutalmak.
+        </Typography>
+      </Box>
         
         <Card variant="outlined">
         
