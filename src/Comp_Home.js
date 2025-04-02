@@ -111,7 +111,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.7) !important'
-    : 'rgba(0, 0, 5, 0.8) !important',
+    : 'rgba(0, 0, 5, 0.55) !important',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
