@@ -79,8 +79,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.8)'
-    : 'rgba(2, 1, 14, 0.8)',
+    ? 'rgba(255, 255, 255, 0.55) !important'
+    : 'rgba(0, 0, 5, 0.55) !important',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
@@ -91,6 +91,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
       backgroundColor: 'rgba(18, 18, 18, 0.4)',
   }),
+  animation: 'fadeIn 0.5s ease-out',
+  '@keyframes fadeIn': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(10px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
 }));
 
 const UserContainer = styled(Stack)(({ theme }) => ({
@@ -126,6 +137,22 @@ const IllustrationContainer = styled(Box)(({ theme }) => ({
     top: 0,
     zIndex: 0,
     pointerEvents: 'none',
+  },
+  '& img': {
+    transition: 'opacity 0.5s ease, transform 0.5s ease',
+    opacity: 0,
+    transform: 'translateY(20px)',
+    animation: 'fadeInUp 0.5s forwards',
+  },
+  '@keyframes fadeInUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    '100%': {
+      opacity: 0.9,
+      transform: 'translateY(0)',
+    },
   },
 }));
 
@@ -709,6 +736,7 @@ const [open, setOpen] = React.useState(false);
 
       <IllustrationContainer>
         <img 
+          key={showUserCreditPage ? "userCredit" : "userSurvey"}
           src={showUserCreditPage ? "/kepek/illustration-kitolto_kredit.png" : "/kepek/illustration-kitolto_kerdoiv.png"} 
           alt={showUserCreditPage ? "Kredit Illusztráció" : "Kérdőív Illusztráció"} 
           style={{ 
@@ -721,39 +749,51 @@ const [open, setOpen] = React.useState(false);
       </IllustrationContainer>
 
       <Box sx={{ 
-          position: 'absolute',
-          left: { md: '4%', lg: '6%' },
-          top: '35%',
-          zIndex: 1,
-          width: { md: '25%', lg: '20%' },
-          maxWidth: '310px',
-          display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
-          ml: { md: 0, lg: 2 }
-        }}>
-          <Typography 
-            variant="h3" 
-            component="h2" 
-            sx={{ 
-              fontWeight: 'bold',
-              mb: 2,
-              fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
-              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-              wordWrap: 'break-word',
-              hyphens: 'auto'
-            }}
-          >
-            Jutalmazzuk a véleményedet.
-          </Typography>
-          <Typography variant="h6" sx={{ 
-              mt: 3,
-              fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
-              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-              wordWrap: 'break-word',
-              hyphens: 'auto'
-            }}>
-            Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
-          </Typography>
-        </Box>
+        position: 'absolute',
+        left: { md: '4%', lg: '6%' },
+        top: '35%',
+        zIndex: 1,
+        width: { md: '25%', lg: '20%' },
+        maxWidth: '360px',
+        display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+        ml: { md: 0, lg: 2 },
+        animation: 'fadeIn 0.7s forwards',
+        opacity: 0,
+        '@keyframes fadeIn': {
+          '0%': {
+            opacity: 0,
+            transform: 'translateX(-20px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateX(0)',
+          },
+        },
+      }}>
+        <Typography 
+          variant="h3" 
+          component="h2" 
+          sx={{ 
+            fontWeight: 'bold',
+            mb: 2,
+            fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}
+        >
+          Jutalmazzuk a véleményedet.
+        </Typography>
+        <Typography variant="h6" sx={{ 
+            mt: 3,
+            fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}>
+          Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
+        </Typography>
+      </Box>
 
       <Box 
   sx={{ 
@@ -896,7 +936,10 @@ const [open, setOpen] = React.useState(false);
                   mb: 2,
                   width: "100%",
                   display: 'flex',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  boxShadow: (theme) => theme.palette.mode === 'light'
+                  ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
+                  : '0 1px 3px rgba(179, 179, 179, 0.36), 0 1px 2px rgba(179, 179, 179, 0.31)',
                 }}
                 variant="outlined"
               >
@@ -1188,17 +1231,18 @@ const [open, setOpen] = React.useState(false);
             <CssBaseline enableColorScheme />
 
             <IllustrationContainer>
-                <img 
-                  src="/kepek/illustration-kitolto_kerdoiv.png" 
-                  alt="Kérdőív Illusztráció" 
-                  style={{ 
-                    maxWidth: '90%', 
-                    maxHeight: '90%',
-                    objectFit: 'contain',
-                    opacity: 0.9
-                  }} 
-                />
-              </IllustrationContainer>
+              <img 
+                key={showUserCreditPage ? "userCredit" : "userSurvey"} // Egyedi kulcs az animáció újraindításához
+                src={showUserCreditPage ? "/kepek/illustration-kitolto_kredit.png" : "/kepek/illustration-kitolto_kerdoiv.png"} 
+                alt={showUserCreditPage ? "Kredit Illusztráció" : "Kérdőív Illusztráció"} 
+                style={{ 
+                  maxWidth: '90%', 
+                  maxHeight: '90%',
+                  objectFit: 'contain',
+                  opacity: 0.9
+                }} 
+              />
+            </IllustrationContainer>
 
             <Box 
   sx={{ 

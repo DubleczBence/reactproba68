@@ -39,6 +39,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
     backgroundColor: 'rgba(0, 2, 8, 0.8)',
   }),
+  animation: 'fadeInUp 0.7s ease-out',
+  '@keyframes fadeInUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
 }));
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
@@ -73,6 +84,22 @@ const IllustrationContainer = styled(Box)(({ theme }) => ({
     right: 0,
     top: 0,
     zIndex: -1,
+  },
+  '& img': {
+    transition: 'opacity 0.5s ease, transform 0.5s ease',
+    opacity: 0,
+    transform: 'translateY(20px)',
+    animation: 'fadeInUp 0.5s forwards',
+  },
+  '@keyframes fadeInUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    '100%': {
+      opacity: 0.9,
+      transform: 'translateY(0)',
+    },
   },
 }));
 
@@ -218,8 +245,9 @@ export default function SignIn(props) {
       <SignInContainer direction="column" justifyContent="space-between">
         <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 10 }} />
 
-         <IllustrationContainer>
+        <IllustrationContainer>
           <img 
+            key="signin-illustration" // Egyedi kulcs
             src="/kepek/illustration-login.png" 
             alt="Login Illustration" 
             style={{ 
@@ -239,7 +267,19 @@ export default function SignIn(props) {
           width: { md: '25%', lg: '20%' },
           maxWidth: '360px',
           display: (isUnder1100) ? 'none' : { xs: 'none', md: 'block' },
-          ml: { md: 0, lg: 2 }
+          ml: { md: 0, lg: 2 },
+          animation: 'fadeIn 0.7s forwards',
+          opacity: 0,
+          '@keyframes fadeIn': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateX(-20px)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateX(0)',
+            },
+          },
         }}>
           <Typography 
             variant="h3" 

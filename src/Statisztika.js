@@ -57,6 +57,17 @@ const StyledCard = styled(Card)(({ theme }) => ({
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
       backgroundColor: 'rgba(18, 18, 18, 0.4)',
   }),
+  animation: 'fadeIn 0.5s ease-out',
+  '@keyframes fadeIn': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(10px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
 }));
 
 const AnswerBar = styled(Box)(({ theme }) => ({
@@ -618,14 +629,12 @@ const getDemographicChartData = () => {
             justifyContent: 'space-between',
             py: { xs: 2, sm: 0 },
             whiteSpace: "normal",
-            // Hozzáadott háttérszín beállítás világos módban
             bgcolor: (theme) => theme.palette.mode === 'light' 
-              ? 'rgba(255, 255, 255, 1)' // Teljesen átlátszatlan fehér háttér világos módban
-              : undefined, // Sötét módban az alapértelmezett beállítás marad
-            // Opcionális: árnyék hozzáadása a jobb láthatóság érdekében
+              ? 'rgba(255, 255, 255, 1)'
+              : undefined,
             boxShadow: (theme) => theme.palette.mode === 'light'
               ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
-              : undefined,
+              : '0 1px 3px rgba(179, 179, 179, 0.46), 0 1px 2px rgba(179, 179, 179, 0.51)',
           }}
           variant="outlined"
         >

@@ -25,17 +25,31 @@ const voucherOptions = [
 ];
 
 const StyledCard = styled(MuiCard)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignSelf: 'center',
-    width: '100%',
-    padding: theme.spacing(2),
-    gap: theme.spacing(1),
-    margin: 'auto',
-    overflow: 'auto',
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-    minHeight: '700px'
+  display: 'flex',
+  flexDirection: 'column',
+  alignSelf: 'center',
+  width: '100%',
+  padding: theme.spacing(2),
+  gap: theme.spacing(1),
+  margin: 'auto',
+  overflow: 'auto',
+  backgroundColor: theme.palette.mode === 'light' 
+    ? 'rgba(255, 255, 255, 0.7) !important'
+    : 'rgba(0, 0, 5, 0.8) !important',
+  boxShadow:
+    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
+  minHeight: '740px',
+  animation: 'fadeIn 0.5s ease-out',
+  '@keyframes fadeIn': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(10px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
 }));
 
 const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
@@ -98,14 +112,25 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
           flexShrink: 0,
           boxShadow: 'none',
           backgroundColor: 'transparent',
-          maxHeight: isMobile ? "500px" : "640px",
+          maxHeight: isMobile ? "400px" : "640px",
           overflowY: "auto",
-          margin: isMobile ? "20px auto 40px auto" : undefined,
+          margin: isMobile ? "20px auto" : undefined,
           order: isMobile ? 2 : 1,
           display: 'flex',
           flexDirection: 'column',
           minHeight: isMobile ? "300px" : "auto",
           zIndex: 10,
+          animation: 'slideInLeft 0.6s ease-out',
+          '@keyframes slideInLeft': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateX(-30px)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateX(0)',
+            },
+          },
         }}
       >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
@@ -172,6 +197,17 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
             margin: '0 auto',
             overflowY: 'auto',
             order: isMobile ? 1 : 2,
+            animation: 'fadeInUp 0.7s ease-out',
+            '@keyframes fadeInUp': {
+              '0%': {
+                opacity: 0,
+                transform: 'translateY(20px)',
+              },
+              '100%': {
+                opacity: 1,
+                transform: 'translateY(0)',
+              },
+            },
           }}
         >
           <Box sx={{

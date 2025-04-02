@@ -43,6 +43,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
     backgroundColor: 'rgba(0, 2, 8, 0.8)',
   }),
+  animation: 'fadeInUp 0.7s ease-out',
+  '@keyframes fadeInUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
@@ -76,6 +87,22 @@ const IllustrationContainer = styled(Box)(({ theme }) => ({
     right: 0,
     top: 0,
     zIndex: -1,
+  },
+  '& img': {
+    transition: 'opacity 0.5s ease, transform 0.5s ease',
+    opacity: 0,
+    transform: 'translateY(20px)',
+    animation: 'fadeInUp 0.5s forwards',
+  },
+  '@keyframes fadeInUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    '100%': {
+      opacity: 0.9,
+      transform: 'translateY(0)',
+    },
   },
 }));
 
@@ -411,52 +438,65 @@ export default function SignUp(props) {
       <SignUpContainer direction="column" justifyContent="space-between">
 
       <IllustrationContainer>
-          <img 
-            src="/kepek/illustration-login.png" 
-            alt="Login Illustration" 
-            style={{ 
-              maxWidth: '90%', 
-              maxHeight: '90%',
-              objectFit: 'contain',
-              opacity: 0.9
-            }} 
-          />
-        </IllustrationContainer>
+        <img 
+          key="signup-illustration" // Egyedi kulcs
+          src="/kepek/illustration-login.png" 
+          alt="Login Illustration" 
+          style={{ 
+            maxWidth: '90%', 
+            maxHeight: '90%',
+            objectFit: 'contain',
+            opacity: 0.9
+          }} 
+        />
+      </IllustrationContainer>
 
-        <Box sx={{ 
-          position: 'absolute',
-          left: { md: '4%', lg: '6%' },
-          top: '35%',
-          zIndex: 1,
-          width: { md: '25%', lg: '20%' },
-          maxWidth: '360px',
-          display: (isUnder1100) ? 'none' : { xs: 'none', md: 'block' },
-          ml: { md: 0, lg: 2 }
-        }}>
-          <Typography 
-            variant="h3" 
-            component="h2" 
-            sx={{ 
-              fontWeight: 'bold',
-              mb: 2,
-              fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
-              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-              wordWrap: 'break-word',
-              hyphens: 'auto'
-            }}
-          >
-            Csatlakozz most!
-          </Typography>
-          <Typography variant="h6" sx={{ 
-              mt: 3,
-              fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
-              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-              wordWrap: 'break-word',
-              hyphens: 'auto'
-            }}>
-            Cégeknek gyors kutatás, válaszadóknak értékes jutalmak.
-          </Typography>
-        </Box>
+      <Box sx={{ 
+        position: 'absolute',
+        left: { md: '4%', lg: '6%' },
+        top: '35%',
+        zIndex: 1,
+        width: { md: '25%', lg: '20%' },
+        maxWidth: '360px',
+        display: (isUnder1100) ? 'none' : { xs: 'none', md: 'block' },
+        ml: { md: 0, lg: 2 },
+        animation: 'fadeIn 0.7s forwards',
+        opacity: 0,
+        '@keyframes fadeIn': {
+          '0%': {
+            opacity: 0,
+            transform: 'translateX(-20px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateX(0)',
+          },
+        },
+      }}>
+        <Typography 
+          variant="h3" 
+          component="h2" 
+          sx={{ 
+            fontWeight: 'bold',
+            mb: 2,
+            fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}
+        >
+          Csatlakozz most!
+        </Typography>
+        <Typography variant="h6" sx={{ 
+            mt: 3,
+            fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}>
+          Cégeknek gyors kutatás, válaszadóknak értékes jutalmak.
+        </Typography>
+      </Box>
 
         <Card variant="outlined">
           <Typography

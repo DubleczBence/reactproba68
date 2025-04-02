@@ -110,7 +110,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.7) !important'
+    ? 'rgba(255, 255, 255, 0.55) !important'
     : 'rgba(0, 0, 5, 0.55) !important',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
@@ -122,6 +122,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
       backgroundColor: 'rgba(18, 18, 18, 0.4)',
   }),
+  animation: 'fadeIn 0.5s ease-out',
+  '@keyframes fadeIn': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(10px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
 }));
 
 
@@ -159,6 +170,22 @@ const IllustrationContainer = styled(Box)(({ theme }) => ({
     top: 0,
     zIndex: 0,
     pointerEvents: 'none',
+  },
+  '& img': {
+    transition: 'opacity 0.5s ease, transform 0.5s ease',
+    opacity: 0,
+    transform: 'translateY(20px)',
+    animation: 'fadeInUp 0.7s forwards',
+  },
+  '@keyframes fadeInUp': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateY(20px)',
+    },
+    '100%': {
+      opacity: 0.9,
+      transform: 'translateY(0)',
+    },
   },
 }));
 
@@ -1063,67 +1090,80 @@ const handleCardDialogClose = (cardName) => {
         <CssBaseline enableColorScheme />
 
         <IllustrationContainer>
-  <img 
-    src={
-      showCreditPage 
-        ? "/kepek/illustration-ceg_kredit.png" 
-        : showStatisztika 
-          ? "/kepek/illustration-statisztika.png"
-          : "/kepek/illustration-ceg_kerdoiv.png"
-    } 
-    alt={
-      showCreditPage 
-        ? "Kredit Illusztráció" 
-        : showStatisztika 
-          ? "Statisztika Illusztráció"
-          : "Kérdőív Illusztráció"
-    } 
-    style={{ 
-      maxWidth: '90%', 
-      maxHeight: '90%',
-      objectFit: 'contain',
-      opacity: 0.9
-    }} 
-  />
-</IllustrationContainer>
+          <img 
+            key={showCreditPage ? "credit" : showStatisztika ? "stats" : "survey"}
+            src={
+              showCreditPage 
+                ? "/kepek/illustration-ceg_kredit.png" 
+                : showStatisztika 
+                  ? "/kepek/illustration-statisztika.png"
+                  : "/kepek/illustration-ceg_kerdoiv.png"
+            } 
+            alt={
+              showCreditPage 
+                ? "Kredit Illusztráció" 
+                : showStatisztika 
+                  ? "Statisztika Illusztráció"
+                  : "Kérdőív Illusztráció"
+            } 
+            style={{ 
+              maxWidth: '90%', 
+              maxHeight: '90%',
+              objectFit: 'contain',
+              opacity: 0.9
+            }} 
+          />
+        </IllustrationContainer>
 
 
-        {!showCreditPage && !showStatisztika && (
-          <Box sx={{ 
-            position: 'absolute',
-            left: { md: '4%', lg: '6%' },
-            top: '35%',
-            zIndex: 1,
-            width: { md: '25%', lg: '20%' },
-            maxWidth: '360px',
-            display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
-            ml: { md: 0, lg: 2 }
-          }}>
-            <Typography 
-              variant="h3" 
-              component="h2" 
-              sx={{ 
-                fontWeight: 'bold',
-                mb: 2,
-                fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
-                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-                wordWrap: 'break-word',
-                hyphens: 'auto'
-              }}
-            >
-              Készíts felmérést pillanatok alatt!
-            </Typography>
-            <Typography variant="h6" sx={{ 
-                mt: 3,
-                fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
-                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-                wordWrap: 'break-word',
-                hyphens: 'auto'
-              }}>
-              Tedd fel kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól.
-            </Typography>
-          </Box>
-        )}
+      {!showCreditPage && !showStatisztika && (
+        <Box sx={{ 
+          position: 'absolute',
+          left: { md: '4%', lg: '6%' },
+          top: '35%',
+          zIndex: 1,
+          width: { md: '25%', lg: '20%' },
+          maxWidth: '360px',
+          display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+          ml: { md: 0, lg: 2 },
+          animation: 'fadeIn 0.7s forwards',
+          opacity: 0,
+          '@keyframes fadeIn': {
+            '0%': {
+              opacity: 0,
+              transform: 'translateX(-20px)',
+            },
+            '100%': {
+              opacity: 1,
+              transform: 'translateX(0)',
+            },
+          },
+        }}>
+          <Typography 
+            variant="h3" 
+            component="h2" 
+            sx={{ 
+              fontWeight: 'bold',
+              mb: 2,
+              fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+              wordWrap: 'break-word',
+              hyphens: 'auto'
+            }}
+          >
+            Készíts felmérést pillanatok alatt!
+          </Typography>
+          <Typography variant="h6" sx={{ 
+              mt: 3,
+              fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+              wordWrap: 'break-word',
+              hyphens: 'auto'
+            }}>
+            Tedd fel kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól.
+          </Typography>
+        </Box>
+      )}
 
 
         {showStatisztika && (
@@ -1135,7 +1175,19 @@ const handleCardDialogClose = (cardName) => {
             width: { md: '25%', lg: '20%' },
             maxWidth: '310px',
             display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
-            ml: { md: 0, lg: 2 }
+            ml: { md: 0, lg: 2 },
+            animation: 'fadeIn 0.7s forwards',
+            opacity: 0,
+            '@keyframes fadeIn': {
+              '0%': {
+                opacity: 0,
+                transform: 'translateX(-20px)',
+              },
+              '100%': {
+                opacity: 1,
+                transform: 'translateX(0)',
+              },
+            },
           }}>
             <Typography 
               variant="h3" 
@@ -1581,14 +1633,12 @@ const handleCardDialogClose = (cardName) => {
           justifyContent: 'space-between',
           py: { xs: 2, sm: 0 },
           whiteSpace: "normal",
-          // Hozzáadott háttérszín beállítás világos módban
           bgcolor: (theme) => theme.palette.mode === 'light' 
-            ? 'rgba(255, 255, 255, 1)' // Teljesen átlátszatlan fehér háttér világos módban
-            : undefined, // Sötét módban az alapértelmezett beállítás marad
-          // Opcionális: árnyék hozzáadása a jobb láthatóság érdekében
+            ? 'rgba(255, 255, 255, 1)'
+            : undefined,
           boxShadow: (theme) => theme.palette.mode === 'light'
             ? '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)'
-            : undefined,
+            : '0 1px 3px rgba(179, 179, 179, 0.36), 0 1px 2px rgba(179, 179, 179, 0.31)',
         }}
         variant="outlined"
       >
