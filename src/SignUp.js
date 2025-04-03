@@ -221,7 +221,7 @@ export default function SignUp(props) {
     if (!checked) {
       if (!email || !/\S+@\S+\.\S+/.test(email)) {
         setEmailError(true);
-        setEmailErrorMessage('Please enter a valid email address.');
+        setEmailErrorMessage('Írjon be egy érvényes email címet!');
         isValid = false;
       } else {
         setEmailError(false);
@@ -230,7 +230,7 @@ export default function SignUp(props) {
   
       if (!password || password.length < 6) {
         setPasswordError(true);
-        setPasswordErrorMessage('Password must be at least 6 characters long.');
+        setPasswordErrorMessage('A jelszónak legalább 6 karakter hosszúnak kell lennie!');
         isValid = false;
       } else {
         setPasswordError(false);
@@ -239,7 +239,7 @@ export default function SignUp(props) {
   
       if (!name || name.length < 1) {
         setNameError(true);
-        setNameErrorMessage('Name is required.');
+        setNameErrorMessage('Név megadása kötelező!');
         isValid = false;
       } else {
         setNameError(false);
@@ -248,7 +248,7 @@ export default function SignUp(props) {
       
       if (password !== confirmPassword) {
         setConfirmPasswordError(true);
-        setConfirmPasswordErrorMessage('Passwords do not match.');
+        setConfirmPasswordErrorMessage('Nem egyezik a jelszóval!');
         isValid = false;
       } else {
         setConfirmPasswordError(false);
@@ -258,7 +258,7 @@ export default function SignUp(props) {
     else {
       if (!cegnev || cegnev.length < 1) {
         setCompanyNameError(true);
-        setCompanyNameErrorMessage('Company name is required.');
+        setCompanyNameErrorMessage('Cég neve megadása kötelező!');
         isValid = false;
       } else {
         setCompanyNameError(false);
@@ -267,7 +267,7 @@ export default function SignUp(props) {
   
       if (!telefon || (telefon.startsWith('+36') && telefon.length !== 12) || (telefon.startsWith('06') && telefon.length !== 11) || (!telefon.startsWith('+36') && !telefon.startsWith('06')) || (!telefon.startsWith('+3620') && !telefon.startsWith('+3630') && !telefon.startsWith('+3670') && !telefon.startsWith('0620') && !telefon.startsWith('0630') && !telefon.startsWith('0670')) || !phoneRegex.test(telefon)) {
         setCompanyPhonenumberError(true);
-        setCompanyPhonenumberErrorMessage('The phone number must be valid and Hungarian.');
+        setCompanyPhonenumberErrorMessage('A telefonszámnak magyarnak kell lennie.');
         isValid = false;
       } else {
         setCompanyPhonenumberError(false);
@@ -276,7 +276,7 @@ export default function SignUp(props) {
   
       if (!ceg_email || !/\S+@\S+\.\S+/.test(ceg_email)) {
         setCompanyEmailError(true);
-        setCompanyEmailErrorMessage('Please enter a valid email address.');
+        setCompanyEmailErrorMessage('Írjon be egy érvényes email címet!');
         isValid = false;
       } else {
         setCompanyEmailError(false);
@@ -285,22 +285,22 @@ export default function SignUp(props) {
   
       if (!jelszo || jelszo.length < 6) {
         setCompanyPasswordError(true);
-        setCompanyPasswordErrorMessage('Password must be at least 6 characters long.');
+        setCompanyPasswordErrorMessage('A Jelszónak legalább 6 karakter hosszúnak kell lennie!');
         isValid = false;
       } 
       else if (!/[A-Z]/.test(jelszo)) {
         setCompanyPasswordError(true);
-        setCompanyPasswordErrorMessage('Password must contain at least one uppercase letter.');
+        setCompanyPasswordErrorMessage('A jelszónak tartalmaznia kell legalább egy nagybetűt.');
         isValid = false;
       } 
       else if (!/[a-z]/.test(jelszo)) {
         setCompanyPasswordError(true);
-        setCompanyPasswordErrorMessage('Password must contain at least one lowercase letter.');
+        setCompanyPasswordErrorMessage('A jelszónak tartalmaznia kell legalább egy kisbetűt.');
         isValid = false;
       } 
       else if (!/[0-9]/.test(jelszo)) {
         setCompanyPasswordError(true);
-        setCompanyPasswordErrorMessage('Password must contain at least one number.');
+        setCompanyPasswordErrorMessage('A jelszónak tartalmaznia kell legalább egy számot.');
         isValid = false;
       } 
       else {
@@ -310,7 +310,7 @@ export default function SignUp(props) {
       
       if (jelszo !== confirmJelszo) {
         setConfirmJelszoError(true);
-        setConfirmJelszoErrorMessage('Passwords do not match.');
+        setConfirmJelszoErrorMessage('A jelszó nem egyezik!');
         isValid = false;
       } else {
         setConfirmJelszoError(false);
@@ -319,7 +319,7 @@ export default function SignUp(props) {
   
       if (!telepules || telepules.length < 1) {
         setCompanySettlementError(true);
-        setCompanySettlementErrorMessage('Settelment is required.');
+        setCompanySettlementErrorMessage('Település megadása kötelező!');
         isValid = false;
       } 
       else {
@@ -329,7 +329,7 @@ export default function SignUp(props) {
   
       if (!megye || megye.length < 1) {
         setCompanyCountyError(true);
-        setCompanyCountyErrorMessage('County is required.');
+        setCompanyCountyErrorMessage('Megye megadása kötelező!');
         isValid = false;
       } 
       else {
@@ -339,7 +339,7 @@ export default function SignUp(props) {
   
       if (!ceges_szamla || ceges_szamla.length !== 24 || !/^\d+$/.test(ceges_szamla)) {
         setCompanyInvoiceError(true);
-        setCompanyInvoiceErrorMessage('Invoice must be 24 characters long and contain only numbers.');
+        setCompanyInvoiceErrorMessage('Számlaszámnak 24 számjegyűnek kell lennie.');
         isValid = false;
       }
       else {
@@ -349,7 +349,7 @@ export default function SignUp(props) {
   
       if (!hitelkartya || hitelkartya.length !== 16 || !/^\d+$/.test(hitelkartya)) {
         setCompanyCreditcardError(true);
-        setCompanyCreditcardErrorMessage('Credit card number must be 16 digits and contain only numbers.');
+        setCompanyCreditcardErrorMessage('Hitelkártyaszámnak 16 számjegyűnek kell lennie.');
         isValid = false;
       } 
       else {
@@ -368,7 +368,7 @@ export default function SignUp(props) {
   
       if (!cegjegyzek || cegjegyzek.length !== 10 || !/^\d{10}$/.test(cegjegyzek)) {
         setCompanyRegisterError(true);
-        setCompanyRegisterErrorMessage('Company register must be 10 digits long and contain only numbers.');
+        setCompanyRegisterErrorMessage('Cégjegyzékszámnak 10 számjegyűnek kell lennie.');
         isValid = false;
       } 
       else {
@@ -378,7 +378,7 @@ export default function SignUp(props) {
   
       if (!helyrajziszam ||  helyrajziszam.length < 1 || !/^\d{1,4}[-/]\d{1,4}$/.test(helyrajziszam)) {
         setCompanyGeographicNoError(true);
-        setCompanyGeographicNoErrorMessage('Geographic number is required and must contain only numbers, with an optional separator ("/" or "-").');
+        setCompanyGeographicNoErrorMessage('Helyrajziszám megadása kötelező és csak számot tartalmazhaz, választható ("/" vagy "-") elválasztóval.');
         isValid = false;
       } else {
         setCompanyGeographicNoError(false);

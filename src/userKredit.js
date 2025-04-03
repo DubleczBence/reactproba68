@@ -194,6 +194,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
             flexDirection: 'column',
             alignItems: 'center',
             padding: 2,
+            paddingBottom: 0,
             margin: '0 auto',
             overflowY: 'auto',
             order: isMobile ? 1 : 2,

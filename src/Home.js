@@ -826,6 +826,7 @@ const [open, setOpen] = React.useState(false);
     onClick={() => {
       setShowUserCreditPage(true);
       setShowSurvey(false);
+      setValue(1);
     }}
   >
     {credits} Kredit
@@ -1244,6 +1245,53 @@ const [open, setOpen] = React.useState(false);
               />
             </IllustrationContainer>
 
+            <Box sx={{ 
+        position: 'absolute',
+        left: { md: '4%', lg: '6%' },
+        top: '35%',
+        zIndex: 1,
+        width: { md: '25%', lg: '20%' },
+        maxWidth: '360px',
+        display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+        ml: { md: 0, lg: 2 },
+        animation: 'fadeIn 0.7s forwards',
+        opacity: 0,
+        '@keyframes fadeIn': {
+          '0%': {
+            opacity: 0,
+            transform: 'translateX(-20px)',
+          },
+          '100%': {
+            opacity: 1,
+            transform: 'translateX(0)',
+          },
+        },
+      }}>
+        <Typography 
+          variant="h3" 
+          component="h2" 
+          sx={{ 
+            fontWeight: 'bold',
+            mb: 2,
+            fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}
+        >
+          Jutalmazzuk a véleményedet.
+        </Typography>
+        <Typography variant="h6" sx={{ 
+            mt: 3,
+            fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}>
+          Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
+        </Typography>
+      </Box>
+
             <Box 
   sx={{ 
     width: '100%', 
@@ -1339,44 +1387,44 @@ const [open, setOpen] = React.useState(false);
             }}>
       
             <FormControl sx={{ m: 1, minWidth: 240 }}>
-  <InputLabel
-    id="demo-simple-select-autowidth-label"
-    sx={{
-      fontSize: '1.2rem', 
-      fontWeight: 'bold', 
-      lineHeight: '1.5',  
-      
-      '&.MuiInputLabel-shrink': {
-        transform: 'translate(0, -1.8rem)', 
-      },
-    }}
-  >
-    Legmagasabb végzettség
-  </InputLabel>
-  <Select
-  labelId="demo-simple-select-autowidth-label"
-  id="demo-simple-select-autowidth"
-  value={vegzettseg}
-  onChange={handleVegzettseg}
-  autoWidth
-  label="Legmagasabb végzettség"
-  sx={{
-    fontSize: '1.2rem', 
-    padding: '10px',    
-    height: '60px',     
-  }}
->
-    <MenuItem value="">
-      <em>None</em>
-    </MenuItem>
-    <MenuItem value={1}>Egyetem, főiskola stb. oklevéllel</MenuItem>
-    <MenuItem value={2}>Középfokú végzettség érettségi nélkül, szakmai végzettséggel</MenuItem>
-    <MenuItem value={3}>Középfokú végzettség érettségivel (szakmai végzettség nélkül)</MenuItem>
-    <MenuItem value={4}>Középfokú végzettség érettségivel (szakmai végzettségel)</MenuItem>
-    <MenuItem value={5}>Általános iskola 8. osztálya</MenuItem>
-    <MenuItem value={6}>8 általános iskolánál kevesebb</MenuItem>
-  </Select>
-</FormControl>
+              <InputLabel
+                id="demo-simple-select-autowidth-label"
+                sx={{
+                  fontSize: '1.2rem', 
+                  fontWeight: 'bold', 
+                  lineHeight: '1.5',  
+                  
+                  '&.MuiInputLabel-shrink': {
+                    transform: 'translate(0, -1.8rem)', 
+                  },
+                }}
+              >
+                Legmagasabb végzettség
+              </InputLabel>
+              <Select
+              labelId="demo-simple-select-autowidth-label"
+              id="demo-simple-select-autowidth"
+              value={vegzettseg}
+              onChange={handleVegzettseg}
+              autoWidth
+              label="Legmagasabb végzettség"
+              sx={{
+                fontSize: '1.2rem', 
+                padding: '10px',    
+                height: '60px',     
+              }}
+            >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={1}>Egyetem, főiskola stb. oklevéllel</MenuItem>
+                <MenuItem value={2}>Középfokú végzettség érettségi nélkül, szakmai végzettséggel</MenuItem>
+                <MenuItem value={3}>Középfokú végzettség érettségivel (szakmai végzettség nélkül)</MenuItem>
+                <MenuItem value={4}>Középfokú végzettség érettségivel (szakmai végzettségel)</MenuItem>
+                <MenuItem value={5}>Általános iskola 8. osztálya</MenuItem>
+                <MenuItem value={6}>8 általános iskolánál kevesebb</MenuItem>
+              </Select>
+            </FormControl>
 
 <LocalizationProvider dateAdapter={AdapterDayjs}>
   <DatePicker 
@@ -1390,7 +1438,9 @@ const [open, setOpen] = React.useState(false);
       textField: {
         onClick: () => setIsCalendarOpen(true),
         sx: {
-          width: '100%',
+          m: 1,                   // Margin hozzáadása, mint a többi FormControl-nál
+          minWidth: 240,          // Ugyanaz a minWidth, mint a többi FormControl-nál
+          width: 'auto',          // Explicit width: auto beállítás
           '& .MuiInputBase-root': {
             fontSize: '1.2rem',
             padding: '10px',
@@ -1400,7 +1450,11 @@ const [open, setOpen] = React.useState(false);
           '& .MuiInputLabel-root': {
             fontSize: '1.2rem',
             fontWeight: 'bold',
-            lineHeight: '1.5'
+            lineHeight: '1.5',
+            transform: 'translate(0px, -20px) scale(0.75)', // Ez a sor módosítja a label pozícióját
+            '&.Mui-focused, &.MuiFormLabel-filled': {
+              transform: 'translate(0px, -20px) scale(0.75)' // Fókuszált és kitöltött állapotban is
+            }
           },
           '& .MuiInputAdornment-root': {
             marginRight: '8px'

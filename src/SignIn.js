@@ -145,7 +145,7 @@ export default function SignIn(props) {
     if (!checked) {
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('Írjon be egy érvényes email címet!');
       isValid = false;
     } else {
       setEmailError(false);
@@ -154,7 +154,7 @@ export default function SignIn(props) {
 
     if (!password || password < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('A jelszónak legalább 6 karakter hosszúnak kell lennie!');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -166,7 +166,7 @@ export default function SignIn(props) {
     else{
       if (!ceg_email || !/\S+@\S+\.\S+/.test(ceg_email)) {
         setEmailError(true);
-        setEmailErrorMessage('Please enter a valid email address.');
+        setEmailErrorMessage('Írjon be egy érvényes email címet!');
         isValid = false;
       } else {
         setEmailError(false);
@@ -175,7 +175,7 @@ export default function SignIn(props) {
   
       if (!jelszo || jelszo < 6) {
         setPasswordError(true);
-        setPasswordErrorMessage('Password must be at least 6 characters long.');
+        setPasswordErrorMessage('Jelszó legalább 6 karakter hosszú kell legyen!');
         isValid = false;
       } else {
         setPasswordError(false);

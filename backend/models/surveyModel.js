@@ -207,7 +207,8 @@ class SurveyModel {
        FROM users_responses ur
        JOIN user_connections uc ON ur.user_id = uc.user_id
        JOIN survey_connections sc ON uc.connection_id = sc.connection_id
-       WHERE sc.survey_id = ? AND sc.connection_type = 'answer'
+       JOIN answers a ON sc.connection_id = a.id
+       WHERE sc.survey_id = ? AND sc.connection_type = 'answer' AND uc.connection_type = 'answer'
        GROUP BY ur.user_id`,
       [surveyId]
     );

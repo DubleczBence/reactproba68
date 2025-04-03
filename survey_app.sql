@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Már 29. 20:20
+-- Létrehozás ideje: 2025. Ápr 03. 11:16
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -398,7 +398,39 @@ INSERT INTO `answers` (`id`, `user_id`, `answer`, `question_id`, `date_created`)
 (358, 1021, '\"kgh\"', 252, '2025-03-29 20:17:37'),
 (359, 1021, '\"ggg\"', 246, '2025-03-29 20:19:56'),
 (360, 1021, '[\"dd\",\"hh\"]', 247, '2025-03-29 20:19:56'),
-(361, 1021, '\"ja\"', 248, '2025-03-29 20:19:56');
+(361, 1021, '\"ja\"', 248, '2025-03-29 20:19:56'),
+(362, 1021, '\"ss\"', 240, '2025-04-03 09:17:06'),
+(363, 1021, '[\"fff\",\"jjj\"]', 241, '2025-04-03 09:17:06'),
+(364, 1021, '\"nem\"', 242, '2025-04-03 09:17:06'),
+(365, 1021, '\"hf\"', 228, '2025-04-03 09:25:06'),
+(366, 1021, '[\"jh\",\"fhh\"]', 229, '2025-04-03 09:25:06'),
+(367, 1021, '\"adwad\"', 230, '2025-04-03 09:25:06'),
+(368, 1021, '\"hh\"', 231, '2025-04-03 09:25:06'),
+(369, 1021, '\"jja\"', 232, '2025-04-03 09:25:06'),
+(370, 1021, '\"aad\"', 224, '2025-04-03 09:25:17'),
+(371, 1021, '[\"ssdg\",\"dds\",\"dfg\"]', 225, '2025-04-03 09:25:17'),
+(372, 1021, '\"nem igen nem\"', 226, '2025-04-03 09:25:17'),
+(373, 1021, '\"hfjg\"', 227, '2025-04-03 09:25:17'),
+(374, 1021, '\"hf\"', 228, '2025-04-03 09:25:17'),
+(375, 1021, '[\"jh\",\"fhh\"]', 229, '2025-04-03 09:25:17'),
+(376, 1021, '\"adwad\"', 230, '2025-04-03 09:25:17'),
+(377, 1021, '\"hh\"', 231, '2025-04-03 09:25:17'),
+(378, 1021, '\"jja\"', 232, '2025-04-03 09:25:17'),
+(379, 1021, '\"jhjjh\"', 220, '2025-04-03 09:26:26'),
+(380, 1021, '[\"gg\",\"hh\",\"f\"]', 221, '2025-04-03 09:26:26'),
+(381, 1021, '\"wda\"', 222, '2025-04-03 09:26:26'),
+(382, 1021, '\"jaja\"', 223, '2025-04-03 09:26:26'),
+(383, 1021, '\"dsaff\"', 206, '2025-04-03 09:26:36'),
+(384, 1021, '[\"hhfh\",\"jjg\"]', 207, '2025-04-03 09:26:36'),
+(385, 1021, '\"ja\"', 208, '2025-04-03 09:26:36'),
+(386, 1021, '\"nem igen \"', 209, '2025-04-03 09:26:36'),
+(387, 1021, '\"jhjjh\"', 220, '2025-04-03 09:26:36'),
+(388, 1021, '[\"gg\",\"hh\",\"f\"]', 221, '2025-04-03 09:26:36'),
+(389, 1021, '\"wda\"', 222, '2025-04-03 09:26:36'),
+(390, 1021, '\"jaja\"', 223, '2025-04-03 09:26:36'),
+(391, 1023, '\"ggg\"', 246, '2025-04-03 09:49:18'),
+(392, 1023, '[\"dd\",\"hh\"]', 247, '2025-04-03 09:49:18'),
+(393, 1023, '\"jajajajaj\"', 248, '2025-04-03 09:49:18');
 
 -- --------------------------------------------------------
 
@@ -550,7 +582,10 @@ INSERT INTO `company_connections` (`id`, `company_id`, `connection_type`, `conne
 (120, 1, 'login', 20, '2025-03-29 19:17:50'),
 (121, 1, 'login', 21, '2025-03-29 19:17:59'),
 (122, 1, 'login', 22, '2025-03-29 19:20:16'),
-(123, 1, 'login', 23, '2025-03-29 19:20:20');
+(123, 1, 'login', 23, '2025-03-29 19:20:20'),
+(124, 1, 'login', 24, '2025-04-03 07:25:29'),
+(125, 1, 'login', 25, '2025-04-03 07:27:17'),
+(126, 1, 'login', 26, '2025-04-03 07:59:23');
 
 -- --------------------------------------------------------
 
@@ -560,37 +595,41 @@ INSERT INTO `company_connections` (`id`, `company_id`, `connection_type`, `conne
 
 CREATE TABLE `company_logins` (
   `id` int(11) NOT NULL,
-  `login_time` datetime NOT NULL DEFAULT current_timestamp()
+  `login_time` datetime NOT NULL DEFAULT current_timestamp(),
+  `last_seen_answer_id` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- A tábla adatainak kiíratása `company_logins`
 --
 
-INSERT INTO `company_logins` (`id`, `login_time`) VALUES
-(1, '2025-03-29 19:11:26'),
-(2, '2025-03-29 19:11:26'),
-(3, '2025-03-29 19:12:20'),
-(4, '2025-03-29 19:12:20'),
-(5, '2025-03-29 19:13:05'),
-(6, '2025-03-29 19:13:05'),
-(7, '2025-03-29 19:13:23'),
-(8, '2025-03-29 19:13:59'),
-(9, '2025-03-29 19:14:00'),
-(10, '2025-03-29 19:22:21'),
-(11, '2025-03-29 19:23:53'),
-(12, '2025-03-29 19:24:52'),
-(13, '2025-03-29 19:31:00'),
-(14, '2025-03-29 19:35:40'),
-(15, '2025-03-29 19:51:06'),
-(16, '2025-03-29 19:54:39'),
-(17, '2025-03-29 19:55:28'),
-(18, '2025-03-29 20:10:45'),
-(19, '2025-03-29 20:11:52'),
-(20, '2025-03-29 20:17:50'),
-(21, '2025-03-29 20:17:59'),
-(22, '2025-03-29 20:20:16'),
-(23, '2025-03-29 20:20:20');
+INSERT INTO `company_logins` (`id`, `login_time`, `last_seen_answer_id`) VALUES
+(1, '2025-03-29 19:11:26', 0),
+(2, '2025-03-29 19:11:26', 0),
+(3, '2025-03-29 19:12:20', 0),
+(4, '2025-03-29 19:12:20', 0),
+(5, '2025-03-29 19:13:05', 0),
+(6, '2025-03-29 19:13:05', 0),
+(7, '2025-03-29 19:13:23', 0),
+(8, '2025-03-29 19:13:59', 0),
+(9, '2025-03-29 19:14:00', 0),
+(10, '2025-03-29 19:22:21', 0),
+(11, '2025-03-29 19:23:53', 0),
+(12, '2025-03-29 19:24:52', 0),
+(13, '2025-03-29 19:31:00', 0),
+(14, '2025-03-29 19:35:40', 0),
+(15, '2025-03-29 19:51:06', 0),
+(16, '2025-03-29 19:54:39', 0),
+(17, '2025-03-29 19:55:28', 0),
+(18, '2025-03-29 20:10:45', 0),
+(19, '2025-03-29 20:11:52', 0),
+(20, '2025-03-29 20:17:50', 0),
+(21, '2025-03-29 20:17:59', 0),
+(22, '2025-03-29 20:20:16', 0),
+(23, '2025-03-29 20:20:20', 0),
+(24, '2025-04-03 09:25:29', 378),
+(25, '2025-04-03 09:27:17', 390),
+(26, '2025-04-03 09:59:23', 393);
 
 -- --------------------------------------------------------
 
@@ -1485,7 +1524,39 @@ INSERT INTO `survey_connections` (`id`, `survey_id`, `connection_type`, `connect
 (810, 57, 'answer', 359, '2025-03-29 19:19:56'),
 (811, 57, 'answer', 360, '2025-03-29 19:19:56'),
 (812, 57, 'answer', 361, '2025-03-29 19:19:56'),
-(813, 57, 'transaction', 59, '2025-03-29 19:19:56');
+(813, 57, 'transaction', 59, '2025-03-29 19:19:56'),
+(814, 55, 'answer', 362, '2025-04-03 07:17:06'),
+(815, 55, 'answer', 363, '2025-04-03 07:17:06'),
+(816, 55, 'answer', 364, '2025-04-03 07:17:06'),
+(817, 52, 'answer', 365, '2025-04-03 07:25:06'),
+(818, 52, 'answer', 366, '2025-04-03 07:25:06'),
+(819, 52, 'answer', 367, '2025-04-03 07:25:06'),
+(820, 52, 'answer', 368, '2025-04-03 07:25:06'),
+(821, 52, 'answer', 369, '2025-04-03 07:25:06'),
+(822, 51, 'answer', 370, '2025-04-03 07:25:17'),
+(823, 51, 'answer', 371, '2025-04-03 07:25:17'),
+(824, 51, 'answer', 372, '2025-04-03 07:25:17'),
+(825, 51, 'answer', 373, '2025-04-03 07:25:17'),
+(826, 51, 'answer', 374, '2025-04-03 07:25:17'),
+(827, 51, 'answer', 375, '2025-04-03 07:25:17'),
+(828, 51, 'answer', 376, '2025-04-03 07:25:17'),
+(829, 51, 'answer', 377, '2025-04-03 07:25:17'),
+(830, 51, 'answer', 378, '2025-04-03 07:25:17'),
+(831, 50, 'answer', 379, '2025-04-03 07:26:26'),
+(832, 50, 'answer', 380, '2025-04-03 07:26:26'),
+(833, 50, 'answer', 381, '2025-04-03 07:26:26'),
+(834, 50, 'answer', 382, '2025-04-03 07:26:26'),
+(835, 47, 'answer', 383, '2025-04-03 07:26:36'),
+(836, 47, 'answer', 384, '2025-04-03 07:26:36'),
+(837, 47, 'answer', 385, '2025-04-03 07:26:36'),
+(838, 47, 'answer', 386, '2025-04-03 07:26:36'),
+(839, 47, 'answer', 387, '2025-04-03 07:26:36'),
+(840, 47, 'answer', 388, '2025-04-03 07:26:36'),
+(841, 47, 'answer', 389, '2025-04-03 07:26:36'),
+(842, 47, 'answer', 390, '2025-04-03 07:26:36'),
+(843, 57, 'answer', 391, '2025-04-03 07:49:18'),
+(844, 57, 'answer', 392, '2025-04-03 07:49:18'),
+(845, 57, 'answer', 393, '2025-04-03 07:49:18');
 
 -- --------------------------------------------------------
 
@@ -1660,7 +1731,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `reset_code`, `reset_code_expires`, `credits`, `role`) VALUES
-(1, 'Bence Dublecz', 'dubleczbence@gmail.com', '$2b$10$Ywrk5Vhq2SMcbIs4RgjWB.0cSGFsL4S7hYfqzO2sIaFVWcgqSei8O', '33678', '2025-03-18 20:34:31', 185, 'user'),
+(1, 'Bence Dublecz', 'dubleczbence@gmail.com', '$2b$10$Ywrk5Vhq2SMcbIs4RgjWB.0cSGFsL4S7hYfqzO2sIaFVWcgqSei8O', '13283', '2025-04-03 11:33:15', 185, 'user'),
 (2, 'Nagy Tamás', 'nagytamas@gmail.com', '$2b$10$S1VSaCdog4mIIfBRTrxsvOhjn03PzDjcb3tHyW80ptULRATL7TjaK', NULL, NULL, 332, 'user'),
 (3, 'Balogh Árpád Zsolt', 'balogharpika@gmail.com', '$2b$10$hI4zm1PqeY5uaLkaLvO6uOKi40eQs/.7fbPAHvCaO/BL8Ri9aymru', NULL, NULL, 146, 'user'),
 (4, 'Kiss Béla', 'kissbela@gmail.com', '$2b$10$8pWD2eJO3jWY.o6BskNkNutDNNeu3OAwaHybR8CZdV7.VUBFLhtLm', NULL, NULL, 0, 'user'),
@@ -2681,8 +2752,12 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `reset_code`, `reset_cod
 (1017, 'nagynbafy', 'nagynagy@gmail.com', '$2b$10$E3F2VYurPKiXOTT.NafFXet.YsZgnyd6tC9CVQVUWhPTrWHzyBunS', NULL, NULL, 80, 'user'),
 (1018, 'lllll', 'oooo@gmail.com', '$2b$10$2Fdm1vb.lXGLQw7p.M004eOMhn63cOYmqFooHw1FuOZxHsBrHVVyu', NULL, NULL, 0, 'user'),
 (1019, 'Test User', 'test@example.com', '$2b$10$ikID9nQvwIETK8fEE8fK2.eUCW72HXhhg6oawDHzehSjc5GzHd8la', NULL, NULL, 0, 'user'),
-(1021, 'valaki kiki', 'valaki@gmail.com', '$2b$10$ucNR9yjKZeIMHddL535ax.fL5DL1TGzLIzOnv7.CKE5jk8t3O7cUi', NULL, NULL, 142, 'user'),
-(1022, 'aaaaa', 'aaa@gmail.com', '$2b$10$2o7NaUQK/Hdsfa3PTiJVvuqrEoJCxD9/a8nrzjcI4IprvftP6Upl6', NULL, NULL, 10, 'user');
+(1021, 'valaki kiki', 'valaki@gmail.com', '$2b$10$ucNR9yjKZeIMHddL535ax.fL5DL1TGzLIzOnv7.CKE5jk8t3O7cUi', NULL, NULL, 341, 'user'),
+(1022, 'aaaaa', 'aaa@gmail.com', '$2b$10$2o7NaUQK/Hdsfa3PTiJVvuqrEoJCxD9/a8nrzjcI4IprvftP6Upl6', NULL, NULL, 10, 'user'),
+(1023, 'Ploba Nő', 'plobano@gmail.com', '$2b$10$d.nHedNe4IPjo/k/TnlJbu5HiCMYuGCNHAPC0u8bgz5xNjXlnVIl2', NULL, NULL, 16, 'user'),
+(1024, 'Nem Naa', 'nemna@gail.com', '$2b$10$cISJlLc210TJdNTJw6ot8uI6/IfwvWFZlZEYgf1ZV4JXWJUXO72IS', NULL, NULL, 0, 'user'),
+(1025, 'Na Na', 'igen@gmail.com', '$2b$10$pX6ayvY8H.eWAwwfxS2wWeq26DGlCpPOj9Iks/vOxA7cMwT8jsaFq', NULL, NULL, 0, 'user'),
+(1026, 'Egy Kettő', 'egyketto@gmail.com', '$2b$10$2QythCLl37WBtfg91Eb6Kee0WzZ6T0FAbGfSTzVaO1uPKg4sXG8GC', NULL, NULL, 0, 'user');
 
 -- --------------------------------------------------------
 
@@ -3727,7 +3802,9 @@ INSERT INTO `users_responses` (`id`, `user_id`, `korcsoport`, `vegzettseg`, `reg
 (1018, 1018, '1991-03-28', '3', '16', '20', '27', '2025-03-20 21:07:41'),
 (1019, 1019, '1985-03-12', '2', '16', '20', '27', '2025-03-26 22:18:23'),
 (1020, 1021, '2025-03-04', '3', '16', '20', '26', '2025-03-29 18:35:16'),
-(1021, 1022, '1985-03-12', '2', '15', '20', '23', '2025-03-29 19:04:17');
+(1021, 1022, '1985-03-12', '2', '15', '20', '23', '2025-03-29 19:04:17'),
+(1022, 1023, '2001-04-18', '4', '15', '21', '26', '2025-04-03 07:49:07'),
+(1023, 1026, '1977-04-05', '2', '15', '20', '27', '2025-04-03 09:00:20');
 
 -- --------------------------------------------------------
 
@@ -5184,7 +5261,41 @@ INSERT INTO `user_connections` (`id`, `user_id`, `connection_type`, `connection_
 (1434, 1021, 'answer', 359, '2025-03-29 19:19:56'),
 (1435, 1021, 'answer', 360, '2025-03-29 19:19:56'),
 (1436, 1021, 'answer', 361, '2025-03-29 19:19:56'),
-(1437, 1021, 'transaction', 59, '2025-03-29 19:19:56');
+(1437, 1021, 'transaction', 59, '2025-03-29 19:19:56'),
+(1438, 1021, 'answer', 362, '2025-04-03 07:17:06'),
+(1439, 1021, 'answer', 363, '2025-04-03 07:17:06'),
+(1440, 1021, 'answer', 364, '2025-04-03 07:17:06'),
+(1441, 1021, 'answer', 365, '2025-04-03 07:25:06'),
+(1442, 1021, 'answer', 366, '2025-04-03 07:25:06'),
+(1443, 1021, 'answer', 367, '2025-04-03 07:25:06'),
+(1444, 1021, 'answer', 368, '2025-04-03 07:25:06'),
+(1445, 1021, 'answer', 369, '2025-04-03 07:25:06'),
+(1446, 1021, 'answer', 370, '2025-04-03 07:25:17'),
+(1447, 1021, 'answer', 371, '2025-04-03 07:25:17'),
+(1448, 1021, 'answer', 372, '2025-04-03 07:25:17'),
+(1449, 1021, 'answer', 373, '2025-04-03 07:25:17'),
+(1450, 1021, 'answer', 374, '2025-04-03 07:25:17'),
+(1451, 1021, 'answer', 375, '2025-04-03 07:25:17'),
+(1452, 1021, 'answer', 376, '2025-04-03 07:25:17'),
+(1453, 1021, 'answer', 377, '2025-04-03 07:25:17'),
+(1454, 1021, 'answer', 378, '2025-04-03 07:25:17'),
+(1455, 1021, 'answer', 379, '2025-04-03 07:26:26'),
+(1456, 1021, 'answer', 380, '2025-04-03 07:26:26'),
+(1457, 1021, 'answer', 381, '2025-04-03 07:26:26'),
+(1458, 1021, 'answer', 382, '2025-04-03 07:26:26'),
+(1459, 1021, 'answer', 383, '2025-04-03 07:26:36'),
+(1460, 1021, 'answer', 384, '2025-04-03 07:26:36'),
+(1461, 1021, 'answer', 385, '2025-04-03 07:26:36'),
+(1462, 1021, 'answer', 386, '2025-04-03 07:26:36'),
+(1463, 1021, 'answer', 387, '2025-04-03 07:26:36'),
+(1464, 1021, 'answer', 388, '2025-04-03 07:26:36'),
+(1465, 1021, 'answer', 389, '2025-04-03 07:26:36'),
+(1466, 1021, 'answer', 390, '2025-04-03 07:26:36'),
+(1467, 1023, 'response', 1022, '2025-04-03 07:49:07'),
+(1468, 1023, 'answer', 391, '2025-04-03 07:49:18'),
+(1469, 1023, 'answer', 392, '2025-04-03 07:49:18'),
+(1470, 1023, 'answer', 393, '2025-04-03 07:49:18'),
+(1471, 1026, 'response', 1023, '2025-04-03 09:00:20');
 
 -- --------------------------------------------------------
 
@@ -5317,7 +5428,7 @@ ALTER TABLE `vouchers`
 -- AUTO_INCREMENT a táblához `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=362;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=394;
 
 --
 -- AUTO_INCREMENT a táblához `companies`
@@ -5329,13 +5440,13 @@ ALTER TABLE `companies`
 -- AUTO_INCREMENT a táblához `company_connections`
 --
 ALTER TABLE `company_connections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
 
 --
 -- AUTO_INCREMENT a táblához `company_logins`
 --
 ALTER TABLE `company_logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT a táblához `credit_transactions`
@@ -5353,7 +5464,7 @@ ALTER TABLE `questions`
 -- AUTO_INCREMENT a táblához `survey_connections`
 --
 ALTER TABLE `survey_connections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=814;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=846;
 
 --
 -- AUTO_INCREMENT a táblához `survey_set`
@@ -5371,19 +5482,19 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1023;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1027;
 
 --
 -- AUTO_INCREMENT a táblához `users_responses`
 --
 ALTER TABLE `users_responses`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1022;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1024;
 
 --
 -- AUTO_INCREMENT a táblához `user_connections`
 --
 ALTER TABLE `user_connections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1438;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1472;
 
 --
 -- AUTO_INCREMENT a táblához `vouchers`

@@ -48,8 +48,8 @@ const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(8), // Megtartjuk az alsó margót
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
-    ? 'rgba(255, 255, 255, 0.7) !important'
-    : 'rgba(0, 0, 5, 0.8) !important',
+    ? 'rgba(255, 255, 255, 0.55) !important'
+    : 'rgba(0, 0, 5, 0.55) !important',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   ...theme.applyStyles('dark', {
@@ -546,8 +546,10 @@ const getDemographicChartData = () => {
           sx={{
             textAlign: 'center',
             mb: 1,
+            color: '#003092',
           }}
         >
+        
           {selectedSurvey ? 'Kérdőív statisztika' : 'Válasszon kérdőívet'}
         </Typography>
         
@@ -874,12 +876,12 @@ const getDemographicChartData = () => {
                     <FormControl fullWidth sx={{ mb: 3 }}>
                       <InputLabel 
                         sx={{ 
-                          transform: 'translate(0px, -15px) scale(0.75)',
+                          transform: 'translate(0px, -18px) scale(0.75)',
                           '&.Mui-focused': {
-                            transform: 'translate(0px, -15px) scale(0.75)'
+                            transform: 'translate(0px, -18px) scale(0.75)'
                           },
                           '&.MuiInputLabel-shrink': {
-                            transform: 'translate(0px, -15px) scale(0.75)'
+                            transform: 'translate(0px, -18px) scale(0.75)'
                           }
                         }}
                       >
