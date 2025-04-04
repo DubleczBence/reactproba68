@@ -241,14 +241,14 @@ const ProfileDialog = ({ open, onClose, userData, onSave }) => {
             onChange={handleChange}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
           <FormControl fullWidth>
           <InputLabel 
             shrink 
-            style={{ transform: 'translate(0, -14px) scale(0.75)' }}
+            style={{ transform: 'translate(0, -17px) scale(0.75)' }}
           >
             Régió
           </InputLabel>
@@ -271,7 +271,7 @@ const ProfileDialog = ({ open, onClose, userData, onSave }) => {
           
           <FormControl fullWidth>
             <InputLabel shrink 
-            style={{ transform: 'translate(0, -14px) scale(0.75)' }}
+            style={{ transform: 'translate(0, -17px) scale(0.75)' }}
             >
               Anyagi helyzet</InputLabel>
             <Select
@@ -298,7 +298,7 @@ const ProfileDialog = ({ open, onClose, userData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -309,7 +309,7 @@ const ProfileDialog = ({ open, onClose, userData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -320,7 +320,7 @@ const ProfileDialog = ({ open, onClose, userData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -331,7 +331,7 @@ const ProfileDialog = ({ open, onClose, userData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
         </Box>
@@ -605,11 +605,38 @@ const [open, setOpen] = React.useState(false);
 
   const [availableSurveys, setAvailableSurveys] = useState([]);
 
+  const isAllQuestionsAnswered = () => {
+    if (!selectedSurvey || !selectedSurvey.question) return false;
+
+    return selectedSurvey.question.every(question => {
+      if (answers[question.id]) {
+        if (question.type === "checkbox") {
+          return Array.isArray(answers[question.id]) && answers[question.id].length > 0;
+        }
+        if (question.type === "text") {
+          return answers[question.id].trim() !== '';
+        }
+        return true;
+      }
+      return false;
+    });
+  };
+
 
   const handleSubmitSurvey = async () => {
     try {
       if (!selectedSurvey || !selectedSurvey.id) {
         console.error('Selected survey is missing or invalid');
+        return;
+      }
+      
+      // Ellenőrizzük, hogy minden kérdésre van-e válasz
+      if (!isAllQuestionsAnswered()) {
+        setSnackbar({
+          open: true,
+          message: 'Kérjük, válaszoljon minden kérdésre a küldés előtt!',
+          severity: 'warning'
+        });
         return;
       }
     
@@ -1073,6 +1100,7 @@ const [open, setOpen] = React.useState(false);
                 onClick={handleSubmitSurvey}
                 variant="contained"
                 color="primary"
+                disabled={!isAllQuestionsAnswered()}
               >
                 Küldés
               </Button>

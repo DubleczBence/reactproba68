@@ -269,7 +269,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             onChange={handleChange}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -281,7 +281,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             onChange={handleChange}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -292,7 +292,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -303,7 +303,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -314,7 +314,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -325,7 +325,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -336,7 +336,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -347,7 +347,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -358,7 +358,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
           
@@ -369,7 +369,7 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
             InputProps={{ readOnly: true }}
             InputLabelProps={{
               shrink: true,
-              style: { transform: 'translate(0, -14px) scale(0.75)' }
+              style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
         </Box>
