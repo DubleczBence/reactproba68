@@ -424,7 +424,7 @@ export default function SignIn(props) {
               </>
             )}
 
-            <ForgotPassword open={open} handleClose={handleClose} />
+            <ForgotPassword open={open} handleClose={handleClose} isCompany={checked} />
             <Button
               type="submit"
               fullWidth
