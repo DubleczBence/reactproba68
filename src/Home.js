@@ -46,6 +46,7 @@ import { useTheme, ThemeProvider } from '@mui/material/styles';
 import { Snackbar, Alert } from '@mui/material';
 import { get, post } from './services/apiService';
 import { useMediaQuery } from '@mui/material';
+import { useSpring, animated } from 'react-spring';
 
 
 
@@ -142,7 +143,7 @@ const IllustrationContainer = styled(Box)(({ theme }) => ({
     transition: 'opacity 0.5s ease, transform 0.5s ease',
     opacity: 0,
     transform: 'translateY(20px)',
-    animation: 'fadeInUp 0.5s forwards',
+    animation: 'fadeInUp 0.7s forwards',
   },
   '@keyframes fadeInUp': {
     '0%': {
@@ -155,6 +156,104 @@ const IllustrationContainer = styled(Box)(({ theme }) => ({
     },
   },
 }));
+
+
+const TextCarousel = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const messages = [
+    {
+      title: "Jutalmazzuk a véleményedet.",
+      subtitle: "Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra."
+    },
+    {
+      title: "Követheted egyenleged.",
+      subtitle: "Nézd meg mennyi kreditet gyűjtöttél és mire tudod beváltani őket."
+    },
+    {
+      title: "Személyre szabott élmény.",
+      subtitle: "Állítsd be profilodat és kapj neked szóló kérdőíveket."
+    }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % messages.length);
+    }, 14000);
+    
+    return () => clearInterval(interval);
+  }, [messages.length]);
+
+  // Animation for text
+  const textProps = useSpring({
+    opacity: 1,
+    transform: 'translateY(0)',
+    from: { opacity: 0, transform: 'translateY(20px)' },
+    reset: true,
+    key: activeIndex,
+    config: { 
+      tension: 100,    // Lower for slower animation (default is 170)
+      friction: 20,    // Higher for more damping (default is 26)
+      mass: 1.7        // Higher for more "weight" feeling (default is 1)
+    }
+  });
+
+  return (
+    <Box>
+      <animated.div style={textProps}>
+        <Typography 
+          variant="h3" 
+          component="h2" 
+          sx={{ 
+            fontWeight: 'bold',
+            mb: 2,
+            fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}
+        >
+          {messages[activeIndex].title}
+        </Typography>
+        <Typography variant="h6" sx={{ 
+            mt: 3,
+            fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+            wordWrap: 'break-word',
+            hyphens: 'auto'
+          }}>
+          {messages[activeIndex].subtitle}
+        </Typography>
+      </animated.div>
+
+      {/* Indicator dots */}
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        mt: 3, 
+        gap: 1 
+      }}>
+        {messages.map((_, index) => (
+          <Box
+            key={index}
+            component="span"
+            onClick={() => setActiveIndex(index)}
+            sx={{
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              backgroundColor: activeIndex === index 
+                ? theme => theme.palette.mode === 'light' ? '#003092' : '#90caf9'
+                : theme => theme.palette.mode === 'light' ? 'rgba(0, 48, 146, 0.3)' : 'rgba(144, 202, 249, 0.3)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              transform: activeIndex === index ? 'scale(1.3)' : 'scale(1)',
+            }}
+          />
+        ))}
+      </Box>
+    </Box>
+  );
+};
 
 
 
@@ -776,51 +875,29 @@ const [open, setOpen] = React.useState(false);
       </IllustrationContainer>
 
       <Box sx={{ 
-        position: 'absolute',
-        left: { md: '4%', lg: '6%' },
-        top: '35%',
-        zIndex: 1,
-        width: { md: '25%', lg: '20%' },
-        maxWidth: '360px',
-        display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
-        ml: { md: 0, lg: 2 },
-        animation: 'fadeIn 0.7s forwards',
-        opacity: 0,
-        '@keyframes fadeIn': {
-          '0%': {
-            opacity: 0,
-            transform: 'translateX(-20px)',
-          },
-          '100%': {
-            opacity: 1,
-            transform: 'translateX(0)',
-          },
-        },
-      }}>
-        <Typography 
-          variant="h3" 
-          component="h2" 
-          sx={{ 
-            fontWeight: 'bold',
-            mb: 2,
-            fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
-            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-            wordWrap: 'break-word',
-            hyphens: 'auto'
-          }}
-        >
-          Jutalmazzuk a véleményedet.
-        </Typography>
-        <Typography variant="h6" sx={{ 
-            mt: 3,
-            fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
-            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-            wordWrap: 'break-word',
-            hyphens: 'auto'
-          }}>
-          Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
-        </Typography>
-      </Box>
+  position: 'absolute',
+  left: { md: '4%', lg: '6%' },
+  top: '35%',
+  zIndex: 1,
+  width: { md: '25%', lg: '20%' },
+  maxWidth: '360px',
+  display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+  ml: { md: 0, lg: 2 },
+  animation: 'fadeIn 0.7s forwards',
+  opacity: 0,
+  '@keyframes fadeIn': {
+    '0%': {
+      opacity: 0,
+      transform: 'translateX(-20px)',
+    },
+    '100%': {
+      opacity: 1,
+      transform: 'translateX(0)',
+    },
+  },
+}}>
+  <TextCarousel />
+</Box>
 
       <Box 
   sx={{ 
@@ -1274,51 +1351,29 @@ const [open, setOpen] = React.useState(false);
             </IllustrationContainer>
 
             <Box sx={{ 
-        position: 'absolute',
-        left: { md: '4%', lg: '6%' },
-        top: '35%',
-        zIndex: 1,
-        width: { md: '25%', lg: '20%' },
-        maxWidth: '360px',
-        display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
-        ml: { md: 0, lg: 2 },
-        animation: 'fadeIn 0.7s forwards',
-        opacity: 0,
-        '@keyframes fadeIn': {
-          '0%': {
-            opacity: 0,
-            transform: 'translateX(-20px)',
-          },
-          '100%': {
-            opacity: 1,
-            transform: 'translateX(0)',
-          },
-        },
-      }}>
-        <Typography 
-          variant="h3" 
-          component="h2" 
-          sx={{ 
-            fontWeight: 'bold',
-            mb: 2,
-            fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
-            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-            wordWrap: 'break-word',
-            hyphens: 'auto'
-          }}
-        >
-          Jutalmazzuk a véleményedet.
-        </Typography>
-        <Typography variant="h6" sx={{ 
-            mt: 3,
-            fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
-            color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-            wordWrap: 'break-word',
-            hyphens: 'auto'
-          }}>
-          Töltsd ki a kérdőíveket, gyűjts pontokat, és váltsd be értékes ajándékokra.
-        </Typography>
-      </Box>
+              position: 'absolute',
+              left: { md: '4%', lg: '6%' },
+              top: '35%',
+              zIndex: 1,
+              width: { md: '25%', lg: '20%' },
+              maxWidth: '360px',
+              display: (showUserCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+              ml: { md: 0, lg: 2 },
+              animation: 'fadeIn 0.7s forwards',
+              opacity: 0,
+              '@keyframes fadeIn': {
+                '0%': {
+                  opacity: 0,
+                  transform: 'translateX(-20px)',
+                },
+                '100%': {
+                  opacity: 1,
+                  transform: 'translateX(0)',
+                },
+              },
+            }}>
+              <TextCarousel />
+            </Box>
 
             <Box 
   sx={{ 
@@ -1409,7 +1464,7 @@ const [open, setOpen] = React.useState(false);
               width: { xs: '95%', sm: '600px' },
               maxWidth: '600px',
               mx: 'auto',
-              mt: { xs: 0, sm: 2 },
+              mt: { xs: 0, sm: 10 },
               position: 'relative', // Hozzáadva, hogy a z-index működjön
               zIndex: 1 // Hozzáadva, hogy a kártya az illusztráció felett legyen
             }}>

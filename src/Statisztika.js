@@ -37,15 +37,17 @@ const StyledCard = styled(Card)(({ theme }) => ({
   width: '95%',
   maxWidth: '700px',
   height: 'auto',
-  minHeight: '300px', // Jelentősen csökkentett minimum magasság
-  maxHeight: {
-    xs: 'calc(100vh - 350px)', // Kisebb képernyőn kisebb maximális magasság
-    sm: 'calc(100vh - 300px)', // Tablet méretben kicsit nagyobb
-    md: 'calc(100vh - 250px)'  // Asztali méretben az eredeti
+  minHeight: '300px',
+  maxHeight: 'calc(100vh - 250px)',  // Egységes maxHeight
+  [theme.breakpoints.down('sm')]: {
+    maxHeight: 'calc(100vh - 300px)',
+  },
+  [theme.breakpoints.down('xs')]: {
+    maxHeight: 'calc(100vh - 350px)',
   },
   padding: theme.spacing(4),
   marginTop: theme.spacing(2),
-  marginBottom: theme.spacing(8), // Megtartjuk az alsó margót
+  marginBottom: theme.spacing(8),
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.55) !important'
@@ -546,10 +548,9 @@ const getDemographicChartData = () => {
           sx={{
             textAlign: 'center',
             mb: 1,
-            color: '#003092',
+            color: theme => theme.palette.mode === 'light' ? '#003092' : 'white',
           }}
         >
-        
           {selectedSurvey ? 'Kérdőív statisztika' : 'Válasszon kérdőívet'}
         </Typography>
         

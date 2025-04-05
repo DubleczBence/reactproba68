@@ -64,6 +64,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { get, put } from './services/apiService';
 import { useMediaQuery } from '@mui/material';
+import TextCarousel from './TextCarousel';
 
 
 
@@ -528,6 +529,41 @@ const CompHome = ({ onSignOut }) => {
       });
     }
   }, [location.state?.cegId, setSnackbar]);
+
+
+
+  const companyMessages = [
+    {
+      title: "Készíts felmérést pillanatok alatt!",
+      subtitle: "Tedd fel kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól."
+    },
+    {
+      title: "Kövesd egyenleged!",
+      subtitle: "Nézd meg kreditjeid állását és vásárolj újakat a kutatásaidhoz."
+    },
+    {
+      title: "Adatok, amik segítenek a döntésben.",
+      subtitle: "Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket."
+    }
+  ];
+
+
+
+
+  const statisticsMessages = [
+    {
+      title: "Adatok, amik segítenek a döntésben.",
+      subtitle: "Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket."
+    },
+    {
+      title: "Vizuális elemzés egyszerűen.",
+      subtitle: "Kördiagramok, oszlopdiagramok és részletes statisztikák segítenek az adatok értelmezésében."
+    },
+    {
+      title: "Rugalmas adatkezelés.",
+      subtitle: "Töltsd le a diagramokat képként, exportáld az adatokat CSV formátumban, vagy hasonlítsd össze különböző kérdőívek eredményeit."
+    }
+  ];
 
 
 
@@ -1116,54 +1152,32 @@ const handleCardDialogClose = (cardName) => {
         </IllustrationContainer>
 
 
-      {!showCreditPage && !showStatisztika && (
-        <Box sx={{ 
-          position: 'absolute',
-          left: { md: '4%', lg: '6%' },
-          top: '35%',
-          zIndex: 1,
-          width: { md: '25%', lg: '20%' },
-          maxWidth: '360px',
-          display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
-          ml: { md: 0, lg: 2 },
-          animation: 'fadeIn 0.7s forwards',
-          opacity: 0,
-          '@keyframes fadeIn': {
-            '0%': {
-              opacity: 0,
-              transform: 'translateX(-20px)',
+        {!showCreditPage && !showStatisztika && (
+          <Box sx={{ 
+            position: 'absolute',
+            left: { md: '4%', lg: '6%' },
+            top: '35%',
+            zIndex: 1,
+            width: { md: '25%', lg: '20%' },
+            maxWidth: '360px',
+            display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
+            ml: { md: 0, lg: 2 },
+            animation: 'fadeIn 0.7s forwards',
+            opacity: 0,
+            '@keyframes fadeIn': {
+              '0%': {
+                opacity: 0,
+                transform: 'translateX(-20px)',
+              },
+              '100%': {
+                opacity: 1,
+                transform: 'translateX(0)',
+              },
             },
-            '100%': {
-              opacity: 1,
-              transform: 'translateX(0)',
-            },
-          },
-        }}>
-          <Typography 
-            variant="h3" 
-            component="h2" 
-            sx={{ 
-              fontWeight: 'bold',
-              mb: 2,
-              fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
-              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-              wordWrap: 'break-word',
-              hyphens: 'auto'
-            }}
-          >
-            Készíts felmérést pillanatok alatt!
-          </Typography>
-          <Typography variant="h6" sx={{ 
-              mt: 3,
-              fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
-              color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-              wordWrap: 'break-word',
-              hyphens: 'auto'
-            }}>
-            Tedd fel kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól.
-          </Typography>
-        </Box>
-      )}
+          }}>
+            <TextCarousel messages={companyMessages} />
+          </Box>
+        )}
 
 
         {showStatisztika && (
@@ -1171,7 +1185,7 @@ const handleCardDialogClose = (cardName) => {
             position: 'absolute',
             left: { md: '4%', lg: '6%' },
             top: '35%',
-            zIndex: 1,
+            zIndex: 1500,
             width: { md: '25%', lg: '20%' },
             maxWidth: '310px',
             display: (showCreditPage || isUnder1400) ? 'none' : { xs: 'none', md: 'block' },
@@ -1189,30 +1203,7 @@ const handleCardDialogClose = (cardName) => {
               },
             },
           }}>
-            <Typography 
-              variant="h3" 
-              component="h2" 
-              sx={{ 
-                fontWeight: 'bold',
-                mb: 2,
-                fontSize: { md: '1.8rem', lg: '2.2rem', xl: '2.5rem' },
-                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-                wordWrap: 'break-word',
-                hyphens: 'auto'
-              }}
-            >
-              Adatok, amik segítenek a döntésben.
-            </Typography>
-            <Typography variant="h6" sx={{ 
-                mt: 3,
-                fontSize: { md: '0.85rem', lg: '0.95rem', xl: '1.1rem' },
-                color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
-                wordWrap: 'break-word',
-                hyphens: 'auto'
-              }}>
-              Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti
-              döntéseket.
-            </Typography>
+            <TextCarousel messages={statisticsMessages} />
           </Box>
         )}
 
@@ -1422,33 +1413,46 @@ const handleCardDialogClose = (cardName) => {
     }}
   >
 
-    <Button
-      onClick={handleClickOpenKerd}
-      sx={{
-        height: { xs: "auto", sm: "80px" },
-        minHeight: "60px",
-        width: "100%",
-        justifyContent: "flex-start",
-        textAlign: "left",
-        pl: { xs: 2, sm: 4 },
-        fontSize: { xs: "1rem", sm: "1.2rem" },
-        flexShrink: 0,
-        mb: 2,
-        whiteSpace: "normal",
-      }}
-      variant="outlined"
-      startIcon={
-        <AddCircleOutlineIcon
-          sx={{
-            width: { xs: "24px", sm: "32px" },
-            height: { xs: "24px", sm: "32px" },
-            mr: { xs: 1, sm: 2 },
-          }}
-        />
-      }
-    >
-      Kérdőív létrehozása
-    </Button>
+      <Button
+        onClick={handleClickOpenKerd}
+        sx={{
+          height: { xs: "auto", sm: "80px" },
+          minHeight: "60px",
+          width: "100%",
+          justifyContent: "flex-start",
+          textAlign: "left",
+          pl: { xs: 2, sm: 4 },
+          fontSize: { xs: "1rem", sm: "1.2rem" },
+          flexShrink: 0,
+          mb: 2,
+          whiteSpace: "normal",
+          bgcolor: (theme) => theme.palette.mode === 'light' 
+              ? 'rgba(25, 118, 210, 0.08)' // Halvány kék háttér világos módban
+              : 'rgba(25, 118, 210, 0.15) !important', // Kicsit erősebb kék háttér sötét módban, !important-tal
+          color: (theme) => theme.palette.mode === 'light'
+              ? 'rgba(25, 118, 210, 1)'
+              : '#ffffff',
+          border: '2px solid rgba(25, 118, 210, 0.87) !important', // Halvány kék keret
+          '&:hover': {
+            bgcolor: (theme) => theme.palette.mode === 'light'
+              ? 'rgba(25, 118, 210, 0.12)' // Kicsit erősebb kék hover állapotban világos módban
+              : 'rgba(25, 118, 210, 0.25) !important', // Erősebb kék hover állapotban sötét módban, !important-tal
+            border: '2px solid rgba(25, 118, 210, 0.7)', // Erősebb kék keret hover állapotban
+          },
+        }}
+        variant="outlined"
+        startIcon={
+          <AddCircleOutlineIcon
+            sx={{
+              width: { xs: "24px", sm: "32px" },
+              height: { xs: "24px", sm: "32px" },
+              mr: { xs: 1, sm: 2 },
+            }}
+          />
+        }
+      >
+        Kérdőív létrehozása
+      </Button>
 
 
     <Popover
