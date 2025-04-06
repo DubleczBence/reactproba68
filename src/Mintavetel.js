@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -44,27 +44,39 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
   const initialValue = Math.max(50, Math.min(Math.floor(userCount / 2), userCount));
   const [value, setValue] = React.useState(initialValue);
 
+  const [cost, setCost] = useState(0);
 
+
+  const calculateCost = (participants) => {
+    const baseCost = 100;
+    const additionalParticipants = Math.max(0, participants - 50);
+    const additionalCost = Math.ceil(additionalParticipants / 10) * 20;
+    return baseCost + additionalCost;
+  };
 
   useEffect(() => {
     if (value > userCount) {
       setValue(userCount);
     }
+    setCost(calculateCost(value));
   }, [userCount, value]);
 
 
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
+    setCost(calculateCost(newValue));
   };
 
   const handleInputChange = (event) => {
     const inputValue = event.target.value === '' ? 0 : Number(event.target.value);
-    setValue(Math.max(50, Math.min(inputValue, userCount)));
+    const newValue = Math.max(50, Math.min(inputValue, userCount));
+    setValue(newValue);
+    setCost(calculateCost(newValue));
   };
 
 
   const handleNext = () => {
-    onNext(value); 
+    onNext(value, cost); 
   };
 
 
@@ -139,6 +151,33 @@ const MintavetelContainer = styled(MuiCard)(({ theme }) => ({
           />
         </Box>
       </Box>
+
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          alignItems: "center", 
+          justifyContent: "center", 
+          textAlign: "center",
+          mt: 2,
+          color: 'error.light'
+        }}
+      >
+        Mintavétel költsége: {cost} kredit
+      </Typography>
+
+
+      <Typography 
+        variant="body2" 
+        sx={{ 
+          alignItems: "center", 
+          justifyContent: "center", 
+          textAlign: "center",
+          mt: 1,
+          color: 'text.secondary'
+        }}
+      >
+        (Alapköltség: 100 kredit, minden további 10 fő után +20 kredit)
+      </Typography>
   
   
       <Box

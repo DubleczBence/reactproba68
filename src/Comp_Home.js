@@ -393,7 +393,123 @@ const ProfileDialog = ({ open, onClose, companyData, onSave }) => {
 
 
 const CompHome = ({ onSignOut }) => {
+
+  const companyMessages = [
+    {
+      title: "Készíts felmérést pillanatok alatt!",
+      subtitle: "Tedd fel kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól."
+    },
+    {
+      title: "Kövesd egyenleged!",
+      subtitle: "Nézd meg kreditjeid állását és vásárolj újakat a kutatásaidhoz."
+    },
+    {
+      title: "Adatok, amik segítenek a döntésben.",
+      subtitle: "Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket."
+    }
+  ];
+
+
+  const questionnaireMessages = [
+    {
+      title: "Kérdőív létrehozása - Első lépések",
+      subtitle: "Add meg a kérdőív címét, amely tömören összefoglalja a felmérés célját. A jó cím segít a válaszadóknak megérteni, mire számíthatnak."
+    },
+    {
+      title: "Kérdések hozzáadása",
+      subtitle: "Válassz a feleletválasztó, jelölőnégyzet vagy szöveges válasz típusok közül. Minden kérdés 30 kreditbe kerül, a 4-nél több válaszlehetőség pedig további 10 kredit/opció."
+    },
+    {
+      title: "Tippek a hatékony kérdőívhez",
+      subtitle: "Tartsd rövidnek és lényegre törőnek a kérdéseket. Kerüld a sugalmazó megfogalmazást. A logikus sorrendben feltett kérdések jobb válaszadási arányt eredményeznek."
+    }
+  ];
+
+
+  const targetGroupMessages = [
+    {
+      title: "Célcsoport meghatározása",
+      subtitle: "Válaszd ki a felmérésed célcsoportját demográfiai jellemzők alapján. Minél pontosabb a célcsoport, annál relevánsabb válaszokat kapsz."
+    },
+    {
+      title: "Szűrési feltételek",
+      subtitle: "Szűrhetsz végzettség, korcsoport, régió, nem és anyagi helyzet szerint. A több szűrő használata csökkenti az elérhető válaszadók számát, de növeli a relevancia szintjét."
+    },
+    {
+      title: "Előnézet és létszám",
+      subtitle: "A jobb oldalon láthatod, hány potenciális válaszadó felel meg a beállított feltételeknek. Túl kevés válaszadó esetén fontold meg a szűrők lazítását."
+    }
+  ];
+
+
+  const samplingMessages = [
+    {
+      title: "Mintavétel beállítása",
+      subtitle: "Határozd meg, hány válaszadótól szeretnél visszajelzést kapni. A nagyobb minta pontosabb eredményeket ad, de több kreditbe kerül."
+    },
+    {
+      title: "Költségek kalkulációja",
+      subtitle: "A mintavétel költsége a válaszadók számától és a kérdőív komplexitásától függ. A csúszkával állíthatod be a kívánt mintaszámot."
+    },
+    {
+      title: "Statisztikai megbízhatóság",
+      subtitle: "50+ válaszadó esetén már megbízható következtetéseket vonhatsz le. 200+ válaszadó esetén az eredmények statisztikailag is jelentősek lesznek."
+    }
+  ];
+
+
+  const overviewMessages = [
+    {
+      title: "Kérdőív áttekintése",
+      subtitle: "Ellenőrizd a kérdőív beállításait, kérdéseit és a kiválasztott célcsoportot. Most még bármit módosíthatsz a véglegesítés előtt."
+    },
+    {
+      title: "Költségek összesítése",
+      subtitle: "Itt láthatod a teljes költséget, amely a kérdések számából, a válaszlehetőségekből és a kiválasztott mintaszámból tevődik össze."
+    },
+    {
+      title: "Indítás előtti ellenőrzőlista",
+      subtitle: "Ellenőrizd, hogy minden kérdés érthető-e, a célcsoport megfelelő-e, és rendelkezésre áll-e elegendő kredit a felmérés elindításához."
+    }
+  ];
+
+
+  const statusMessages = [
+    {
+      title: "Kérdőív állapota",
+      subtitle: "Itt láthatod, hányan töltötték ki eddig a kérdőívet és milyen arányban a célul kitűzött mintaszámhoz képest."
+    },
+    {
+      title: "Valós idejű adatok",
+      subtitle: "Az adatok folyamatosan frissülnek. Új kitöltések esetén értesítést kapsz, és azonnal megtekintheted az eredményeket."
+    },
+    {
+      title: "Eredmények elemzése",
+      subtitle: "A kitöltések beérkezése után részletes statisztikákat és grafikonokat kapsz, amelyek segítenek az adatok értelmezésében."
+    }
+  ];
+
+
+  const statisticsMessages = [
+    {
+      title: "Adatok, amik segítenek a döntésben.",
+      subtitle: "Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket."
+    },
+    {
+      title: "Vizuális elemzés egyszerűen.",
+      subtitle: "Kördiagramok, oszlopdiagramok és részletes statisztikák segítenek az adatok értelmezésében."
+    },
+    {
+      title: "Rugalmas adatkezelés.",
+      subtitle: "Töltsd le a diagramokat képként, exportáld az adatokat CSV formátumban, vagy hasonlítsd össze különböző kérdőívek eredményeit."
+    }
+  ];
+
+
+  const [questionsCost, setQuestionsCost] = useState(0);
+  const [sampleCost, setSampleCost] = useState(0);
   const [surveyTotalCost, setSurveyTotalCost] = useState(0);
+  const [currentMessageSet, setCurrentMessageSet] = useState(companyMessages);
   const [credits, setCredits] = useState(0);
   const location = useLocation();
   console.log(location);
@@ -529,42 +645,6 @@ const CompHome = ({ onSignOut }) => {
       });
     }
   }, [location.state?.cegId, setSnackbar]);
-
-
-
-  const companyMessages = [
-    {
-      title: "Készíts felmérést pillanatok alatt!",
-      subtitle: "Tedd fel kérdéseidet, és szerezz gyors, releváns válaszokat valódi felhasználóktól."
-    },
-    {
-      title: "Kövesd egyenleged!",
-      subtitle: "Nézd meg kreditjeid állását és vásárolj újakat a kutatásaidhoz."
-    },
-    {
-      title: "Adatok, amik segítenek a döntésben.",
-      subtitle: "Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket."
-    }
-  ];
-
-
-
-
-  const statisticsMessages = [
-    {
-      title: "Adatok, amik segítenek a döntésben.",
-      subtitle: "Elemezd a beérkezett válaszokat átlátható statisztikákkal, és hozd meg a legjobb üzleti döntéseket."
-    },
-    {
-      title: "Vizuális elemzés egyszerűen.",
-      subtitle: "Kördiagramok, oszlopdiagramok és részletes statisztikák segítenek az adatok értelmezésében."
-    },
-    {
-      title: "Rugalmas adatkezelés.",
-      subtitle: "Töltsd le a diagramokat képként, exportáld az adatokat CSV formátumban, vagy hasonlítsd össze különböző kérdőívek eredményeit."
-    }
-  ];
-
 
 
   const handleSaveCompanyProfile = async (formData) => {
@@ -823,7 +903,7 @@ const handleAddQuestion = () => {
       options: [{ id: uuidv4(), label: "" }], 
     },
   ]);
-  setSurveyTotalCost(prev => prev + 30);
+  setQuestionsCost(prev => prev + 30);
   }
   else {
     alert("Nincs elegendő kredit a kérdés hozzáadásához!");
@@ -837,7 +917,9 @@ const handleRemoveQuestion = (id) => {
     const questionToRemove = prev.find(q => q.id === id);
     const extraOptions = questionToRemove.options.length > 4 ? questionToRemove.options.length - 4 : 0;
     const creditToRefund = 30 + (extraOptions * 10);
-    setCredits(prevCredit => prevCredit + creditToRefund);
+    
+    setQuestionsCost(prevCost => prevCost - creditToRefund);
+    
     return prev.filter(q => q.id !== id);
   });
 };
@@ -871,8 +953,7 @@ const handleAddOption = (questionId) => {
     prev.map((q) => {
       if (q.id === questionId) {
         if (q.options.length >= 4 && credits >= 10) {
-          
-          setSurveyTotalCost(prev => prev + 10);
+          setQuestionsCost(prev => prev + 10);
           return {
             ...q,
             options: [
@@ -881,7 +962,6 @@ const handleAddOption = (questionId) => {
             ],
           };
         } else if (q.options.length < 4) {
-          
           return {
             ...q,
             options: [
@@ -907,9 +987,8 @@ const handleRemoveOption = (questionId, optionId) => {
           (option) => option.id !== optionId
         );
 
-        
         if (wasAboveLimit) {
-          setCredits((prevCredit) => prevCredit + 10); 
+          setQuestionsCost(prevCost => prevCost - 10);
         }
 
         return {
@@ -947,6 +1026,7 @@ const handleCardDialogClose = (cardName) => {
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
+      setCurrentMessageSet(questionnaireMessages);
     };
   
     const handleCloseKerd = () => {
@@ -956,6 +1036,7 @@ const handleCardDialogClose = (cardName) => {
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
+      setCurrentMessageSet(companyMessages);
     };
 
 
@@ -967,6 +1048,7 @@ const handleCardDialogClose = (cardName) => {
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
+      setCurrentMessageSet(targetGroupMessages);
     };
 
 
@@ -977,6 +1059,7 @@ const handleCardDialogClose = (cardName) => {
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
+      setCurrentMessageSet(questionnaireMessages);
     };
 
 
@@ -987,6 +1070,7 @@ const handleCardDialogClose = (cardName) => {
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
+      setCurrentMessageSet(companyMessages);
     };
 
 
@@ -999,6 +1083,7 @@ const handleCardDialogClose = (cardName) => {
       setShowThirdCard(false);
       setShowFourthCard(true);
       setShowFifthCard(false);
+      setCurrentMessageSet(samplingMessages);
     };
 
 
@@ -1009,17 +1094,21 @@ const handleCardDialogClose = (cardName) => {
       setShowFourthCard(false);
       setShowFifthCard(false);
       setShowSixthCard(false);
+      setCurrentMessageSet(targetGroupMessages);
     };
 
 
-    const handleClickOpenAttekintes = (participantCount) => {
+    const handleClickOpenAttekintes = (participantCount, cost) => {
       setSelectedParticipants(participantCount);
+      setSampleCost(cost)
+      setSurveyTotalCost(questionsCost + cost);
       setShowFirstCard(false); 
       setShowSecondCard(false); 
       setShowThirdCard(false);
       setShowFourthCard(false);
       setShowFifthCard(true);
       setShowSixthCard(false);
+      setCurrentMessageSet(overviewMessages);
     };
 
     const handleCloseAttekintes = () => {
@@ -1029,6 +1118,7 @@ const handleCardDialogClose = (cardName) => {
       setShowFourthCard(true);
       setShowFifthCard(false);
       setShowSixthCard(false);
+      setCurrentMessageSet(samplingMessages);
     };
 
 
@@ -1043,6 +1133,7 @@ const handleCardDialogClose = (cardName) => {
         setShowFifthCard(false);
         setShowSixthCard(false);
         setShowStatisztika(false);
+        setCurrentMessageSet(companyMessages);
       } else if (newValue === 1) {
         setShowCreditPage(true);
         setShowFirstCard(false);
@@ -1061,6 +1152,7 @@ const handleCardDialogClose = (cardName) => {
         setShowFifthCard(false);
         setShowSixthCard(false);
         setShowStatisztika(true);
+        setCurrentMessageSet(statisticsMessages);
       }
     };
 
@@ -1079,6 +1171,11 @@ const handleCardDialogClose = (cardName) => {
       setShowSecondCard(false);
       setShowFirstCard(false);
       setShowSixthCard(true);
+      setCurrentMessageSet(statusMessages);
+
+      setQuestionsCost(0);
+      setSampleCost(0);
+      setSurveyTotalCost(0);
     };
   
   
@@ -1175,7 +1272,7 @@ const handleCardDialogClose = (cardName) => {
               },
             },
           }}>
-            <TextCarousel messages={companyMessages} />
+            <TextCarousel messages={currentMessageSet} />
           </Box>
         )}
 
@@ -2030,7 +2127,7 @@ const handleCardDialogClose = (cardName) => {
           color: 'error.light' 
         }}
       >
-        Költség: {surveyTotalCost} kredit
+        Költség: {questionsCost} kredit
       </Typography>
 
 
@@ -2115,16 +2212,18 @@ const handleCardDialogClose = (cardName) => {
         {/* Ötödik Card */}
         {!showFirstCard && !showSecondCard && !showThirdCard && !showFourthCard && showFifthCard && (
           <Attekintes
-            surveyTitle={surveyTitle}
-            questions={questions}
-            onClose={() => handleCardDialogOpen('fifth')}
-            onBack={handleCloseAttekintes}
-            participantCount={selectedParticipants}
-            creditCost={surveyTotalCost}
-            onSuccess={handleSurveySuccess}
-            onError={handleSurveyError}
-            filterData={filterData}
-          />
+          surveyTitle={surveyTitle}
+          questions={questions}
+          onClose={() => handleCardDialogOpen('fifth')}
+          onBack={handleCloseAttekintes}
+          participantCount={selectedParticipants}
+          creditCost={surveyTotalCost}
+          questionsCost={questionsCost}
+          sampleCost={sampleCost}  // Itt adjuk át a mintavétel költségét
+          onSuccess={handleSurveySuccess}
+          onError={handleSurveyError}
+          filterData={filterData}
+        />
         )}
 
         {/* Hatodik Card */}

@@ -47,6 +47,8 @@ import { Snackbar, Alert } from '@mui/material';
 import { get, post } from './services/apiService';
 import { useMediaQuery } from '@mui/material';
 import { useSpring, animated } from 'react-spring';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 
 
 
@@ -184,18 +186,22 @@ const TextCarousel = () => {
   }, [messages.length]);
 
   // Animation for text
-  const textProps = useSpring({
+  const [textProps, api] = useSpring(() => ({
     opacity: 1,
     transform: 'translateY(0)',
     from: { opacity: 0, transform: 'translateY(20px)' },
-    reset: true,
-    key: activeIndex,
-    config: { 
-      tension: 100,    // Lower for slower animation (default is 170)
-      friction: 20,    // Higher for more damping (default is 26)
-      mass: 1.7        // Higher for more "weight" feeling (default is 1)
-    }
-  });
+    config: { duration: 800 }
+  }));
+
+  useEffect(() => {
+    api.start({
+      opacity: 1,
+      transform: 'translateY(0)',
+      from: { opacity: 0, transform: 'translateY(20px)' },
+      reset: true
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeIndex]);
 
   return (
     <Box>
@@ -468,6 +474,7 @@ const Home = ({ onSignOut, onSendData }) => {
   const [userProfileData, setUserProfileData] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const isUnder1400 = useMediaQuery('(max-width:1400px)');
+  const [submittingSurvey, setSubmittingSurvey] = useState(false);
   
   const [answers, setAnswers] = useState({});
 
@@ -738,6 +745,8 @@ const [open, setOpen] = React.useState(false);
         });
         return;
       }
+
+      setSubmittingSurvey(true);
     
       const surveyId = selectedSurvey.id;
       console.log('Submitting survey with ID:', surveyId);
@@ -745,20 +754,26 @@ const [open, setOpen] = React.useState(false);
     
       const creditAmount = Math.floor(selectedSurvey.creditCost / 3);
       console.log('Credit amount calculated:', creditAmount);
+
+      const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
     
       // Használjuk a post függvényt a fetch helyett
-      await post('/main/submit-survey', {
+      const postPromise = post('/main/submit-survey', {
         surveyId: surveyId,
         answers: Object.entries(answers).map(([questionId, value]) => ({
           questionId,
           value
         }))
       });
+
+      await Promise.all([postPromise, delayPromise]);
     
       await fetchCredits();
+      setSubmittingSurvey(false);
       handleCloseSurvey();
     } catch (error) {
       console.error('Error submitting survey:', error);
+      setSubmittingSurvey(false);
     }
   };
 
@@ -858,6 +873,16 @@ const [open, setOpen] = React.useState(false);
     <ThemeProvider theme={theme}>
     <AppTheme {...onSendData}>
       <UserContainer direction="column" justifyContent="space-between">
+      <Backdrop
+          sx={{
+            color: '#fff',
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)'
+          }}
+          open={submittingSurvey}
+        >
+          <CircularProgress color="primary" size={40} thickness={4} />
+        </Backdrop>
       <React.Fragment>
 
       <IllustrationContainer>
@@ -1177,7 +1202,7 @@ const [open, setOpen] = React.useState(false);
                 onClick={handleSubmitSurvey}
                 variant="contained"
                 color="primary"
-                disabled={!isAllQuestionsAnswered()}
+                disabled={!isAllQuestionsAnswered() || submittingSurvey}
               >
                 Küldés
               </Button>

@@ -13,6 +13,9 @@ import FormGroup from '@mui/material/FormGroup';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { post } from './services/apiService';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useState } from 'react';
+import Backdrop from '@mui/material/Backdrop';
 
 const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -33,7 +36,11 @@ const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost, onSuccess, onError, filterData }) => {
+const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost, questionsCost, 
+  sampleCost,  onSuccess, onError, filterData }) => {
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async () => {
     console.log("Filter data in handleSubmit:", filterData);
 
@@ -41,9 +48,14 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
       onError('Minden mező kitöltése kötelező!');
       return;
     }
+
+    setIsSubmitting(true);
     
     try {
-      await post('/companies/create-survey', {
+
+      const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
+
+      const postPromise = post('/companies/create-survey', {
         title: surveyTitle,
         questions: questions,
         participantCount: participantCount,
@@ -56,14 +68,30 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
         },
         creditCost: creditCost
       });
+
+      await Promise.all([postPromise, delayPromise]);
       
+      setIsSubmitting(false);
       onSuccess();
     } catch (error) {
       console.error('Error submitting survey:', error);
+      setIsSubmitting(false);
       onError('Hiba történt a kérdőív létrehozása során');
     }
   };
   return (
+    <>
+    <Backdrop
+        sx={{
+          color: '#fff',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          position: 'absolute'
+        }}
+        open={isSubmitting}
+      >
+        <CircularProgress color="primary" size={40} thickness={4} />
+      </Backdrop>
     <AttekintesContainer
       noValidate
       autoComplete="off"
@@ -78,6 +106,9 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
         overflow: "auto"
       }}
     >
+
+      
+
       <Typography variant="h4" sx={{ mt: 1, ml: 2 }}>
         Áttekintés
       </Typography>
@@ -153,57 +184,36 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
         mb: 5
       }}>
           
-          <Box sx={{ 
-            textAlign: 'center',
-            mb: { xs: 2, sm: 0 } // Csak mobil nézetben ad alsó margót
-          }}>
-            <Typography variant="h6" sx={{ textAlign: 'center', mb: 0.5, lineHeight: 1, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
-              Mintavétel
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline' }}>
-              <Typography variant="h4" sx={{ mr: 1, lineHeight: 1,  fontSize: { xs: '1.1rem', sm: '1.7rem' } }}>
-                {participantCount}
-              </Typography>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  lineHeight: 1,
-                  fontSize: { xs: '1rem', sm: '1.25rem' } // Kisebb betűméret mobil nézetben
-                }}
-              >
-                fő
-              </Typography>
-            </Box>
-          </Box>
-
-          
           <Box sx={{ textAlign: 'center' }}>
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              textAlign: 'center', 
-              mb: 0.5, 
-              lineHeight: 1,
-              fontSize: { xs: '1rem', sm: '1.1rem' } // Kisebb betűméret mobil nézetben
-            }}
-          >
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                textAlign: 'center', 
+                mb: 0.5, 
+                lineHeight: 1,
+                fontSize: { xs: '1rem', sm: '1.1rem' } 
+              }}
+            >
               Költség
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline' }}>
-            <Typography 
+              <Typography 
                 variant="h4" 
                 sx={{ 
                   mr: 1, 
                   lineHeight: 1,
-                  fontSize: { xs: '1.1rem', sm: '1.7rem' } // Kisebb betűméret mobil nézetben
+                  fontSize: { xs: '1.1rem', sm: '1.7rem' } 
                 }}
               >
                 {creditCost}
               </Typography>
-              <Typography variant="h6" sx={{ lineHeight: 1,  fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+              <Typography variant="h6" sx={{ lineHeight: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 kredit
               </Typography>
             </Box>
+            <Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'text.secondary' }}>
+              (Kérdések: {questionsCost} kredit, Mintavétel: {sampleCost} kredit)
+            </Typography>
           </Box>
         </Box>
 
@@ -226,37 +236,39 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
           />
         </Box>
 
-<Box
-  sx={{
-    display: "flex",         
-    flexDirection: "row",    
-    alignItems: "center",    
-    justifyContent: "center", 
-    gap: 2,                  
-    mt: "auto",  
-    mb: 2,       
-  }}>
-  <Button
-    onClick={handleSubmit}
-    variant="outlined"
-    sx={{
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
-      width: "82px",
-      border: "none", 
-      borderRadius: "10px", 
-      backgroundColor: (theme) => theme.palette.background.paper,
-      color: (theme) => theme.palette.text.primary,
-      "&:hover": {
-        backgroundColor: (theme) =>
-          theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
-      },
-    }}
-  >
-    Megerősítés
-  </Button>
-  <Button
+    <Box
+      sx={{
+        display: "flex",         
+        flexDirection: "row",    
+        alignItems: "center",    
+        justifyContent: "center", 
+        gap: 2,                  
+        mt: "auto",  
+        mb: 2,       
+      }}>
+      <Button
+          onClick={handleSubmit}
+          variant="outlined"
+          disabled={isSubmitting}
+          sx={{
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            width: "100px",
+            border: "none", 
+            borderRadius: "10px", 
+            backgroundColor: (theme) => theme.palette.background.paper,
+            color: (theme) => theme.palette.text.primary,
+            "&:hover": {
+              backgroundColor: (theme) =>
+                theme.palette.mode === "dark" ? "#2c2c2c" : "#eaeaea",
+            }
+          }}
+        >
+          Megerősítés
+        </Button>
+
+    <Button
     onClick={onBack}
     variant="outlined"
     sx={{
@@ -293,6 +305,7 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
         <CloseIcon />
       </Button>
     </AttekintesContainer>
+    </>
   );
 };
 

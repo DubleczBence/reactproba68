@@ -17,6 +17,8 @@ import ColorModeSelect from './ColorModeSelect';
 import { Link as RouterLink } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
 import { useMediaQuery } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -111,7 +113,7 @@ export default function SignIn(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const [checked, setChecked] = React.useState(false);
-
+  const [isLoading, setIsLoading] = React.useState(false);
 
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
@@ -192,13 +194,12 @@ export default function SignIn(props) {
     if (!validateInputs()) {
       return; 
     }
+    setIsLoading(true);
     
     const data = new FormData(event.currentTarget);
 
-
+    setTimeout(() => {
     if (!checked) {
-   
-
     const userData = {
       email: data.get('email'),
       password: data.get('password'),
@@ -208,7 +209,6 @@ export default function SignIn(props) {
       onSignIn({ type: 'user', data: userData }); 
     }
   } else {
-    
     const cegData = {
       ceg_email: data.get('ceg_email'),
       jelszo: data.get('jelszo'),
@@ -218,6 +218,7 @@ export default function SignIn(props) {
       onSignIn({ type: 'company', data: cegData });
     }
   }
+  }, 2000);
 };
   
 
@@ -243,6 +244,16 @@ export default function SignIn(props) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
+      <Backdrop
+          sx={{
+            color: '#fff',
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)'
+          }}
+          open={isLoading}
+        >
+          <CircularProgress color="primary" size={40} thickness={4} />
+        </Backdrop>
         <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 10 }} />
 
         <IllustrationContainer>
@@ -430,6 +441,7 @@ export default function SignIn(props) {
               fullWidth
               variant="contained"
               onClick={validateInputs}
+              disabled={isLoading}
             >
               {checked ? 'Cég Bejelentkezés' : 'Felhasználó Bejelentkezés'}
             </Button>
