@@ -104,10 +104,10 @@ return (
   autoComplete="off"
   variant="outlined"
   sx={{
-    top: "4px",
-    mt: 7, 
+    top: "3px",
+    mt: 4, 
     width: "95% !important",
-    height: "60% !important",
+    height: "76% !important",
     maxWidth: "700px !important",
     position: "relative",
     padding: "10px",
