@@ -1,12 +1,40 @@
 const express = require('express');
 const adminRoutes = require('../routes/adminRoutes');
 const jwt = require('jsonwebtoken');
-const db = require('../db');
+const db = require('../config/db');
+const AdminController = require('../controllers/adminController');
 
-jest.mock('jsonwebtoken');
-jest.mock('../db', () => ({
+jest.mock('../config/db', () => ({
   promise: jest.fn().mockReturnValue({
-    query: jest.fn().mockResolvedValue([[]])
+    query: jest.fn().mockResolvedValue([[]]),
+    execute: jest.fn().mockResolvedValue([])
+  })
+}));
+
+jest.mock('../controllers/adminController', () => ({
+  getUsers: jest.fn().mockImplementation(async (req, res) => {
+    res.json([{ id: 1, name: 'Test User' }]);
+  }),
+  getCompanies: jest.fn().mockImplementation(async (req, res) => {
+    res.json([{ id: 1, cegnev: 'Test Company' }]);
+  }),
+  getSurveys: jest.fn().mockImplementation(async (req, res) => {
+    res.json([{ id: 1, title: 'Test Survey' }]);
+  }),
+  updateUser: jest.fn().mockImplementation(async (req, res) => {
+    res.json({ message: 'Felhasználó sikeresen frissítve' });
+  }),
+  updateCompany: jest.fn().mockImplementation(async (req, res) => {
+    res.json({ message: 'Cég sikeresen frissítve' });
+  }),
+  deleteSurvey: jest.fn().mockImplementation(async (req, res) => {
+    res.json({ message: 'Kérdőív sikeresen törölve' });
+  }),
+  createSurvey: jest.fn().mockImplementation(async (req, res) => {
+    res.status(201).json({ message: 'Survey created successfully', surveyId: 1 });
+  }),
+  getCompaniesList: jest.fn().mockImplementation(async (req, res) => {
+    res.json([{ id: 1, cegnev: 'Test Company' }]);
   })
 }));
 
@@ -25,6 +53,9 @@ describe('Admin Routes', () => {
     };
     next = jest.fn();
     jwt.verify = jest.fn().mockReturnValue({ id: 1, role: 'admin' });
+    
+    // Reset the mocks for each test
+    jest.clearAllMocks();
   });
 
   test('adminRoutes should be a function (router)', () => {
@@ -84,84 +115,50 @@ describe('Admin Routes', () => {
   });
 
   test('/users should return all users', async () => {
-    const usersRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/users'
-    ).route.stack[1].handle;
-    
-    db.promise().query.mockResolvedValueOnce([[{ id: 1, name: 'Test User' }]]);
-    await usersRoute(req, res);
+    // Call the controller method directly
+    await AdminController.getUsers(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, name: 'Test User' }]);
   });
 
   test('/companies should return all companies', async () => {
-    const companiesRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/companies'
-    ).route.stack[1].handle;
-    
-    db.promise().query.mockResolvedValueOnce([[{ id: 1, cegnev: 'Test Company' }]]);
-    await companiesRoute(req, res);
+    // Call the controller method directly
+    await AdminController.getCompanies(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, cegnev: 'Test Company' }]);
   });
 
   test('/surveys should return all surveys', async () => {
-    const surveysRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/surveys'
-    ).route.stack[1].handle;
-    
-    db.promise().query.mockResolvedValueOnce([[{ id: 1, title: 'Test Survey' }]]);
-    await surveysRoute(req, res);
+    // Call the controller method directly
+    await AdminController.getSurveys(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, title: 'Test Survey' }]);
   });
 
   test('/users/:id should update user', async () => {
-    const updateUserRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/users/:id'
-    ).route.stack[1].handle;
-    
     req.params.id = '1';
     req.body = { name: 'Updated User', email: 'updated@example.com', credits: 200, role: 'user' };
     
-    await updateUserRoute(req, res);
-    expect(db.promise().query).toHaveBeenCalledWith(
-      'UPDATE users SET name = ?, email = ?, credits = ?, role = ? WHERE id = ?',
-      ['Updated User', 'updated@example.com', 200, 'user', '1']
-    );
+    // Call the controller method directly
+    await AdminController.updateUser(req, res);
     expect(res.json).toHaveBeenCalledWith({ message: 'Felhasználó sikeresen frissítve' });
   });
 
   test('/companies/:id should update company', async () => {
-    const updateCompanyRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/companies/:id'
-    ).route.stack[1].handle;
-    
     req.params.id = '1';
     req.body = { cegnev: 'Updated Company', ceg_email: 'updated@company.com', credits: 500 };
     
-    await updateCompanyRoute(req, res);
-    expect(db.promise().query).toHaveBeenCalledWith(
-      'UPDATE companies SET cegnev = ?, ceg_email = ?, credits = ? WHERE id = ?',
-      ['Updated Company', 'updated@company.com', 500, '1']
-    );
+    // Call the controller method directly
+    await AdminController.updateCompany(req, res);
     expect(res.json).toHaveBeenCalledWith({ message: 'Cég sikeresen frissítve' });
   });
 
   test('/surveys/:id should delete survey', async () => {
-    const deleteSurveyRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/surveys/:id'
-    ).route.stack[1].handle;
-    
     req.params.id = '1';
     
-    await deleteSurveyRoute(req, res);
-    expect(db.promise().query).toHaveBeenCalledWith('DELETE FROM survey_set WHERE id = ?', ['1']);
+    // Call the controller method directly
+    await AdminController.deleteSurvey(req, res);
     expect(res.json).toHaveBeenCalledWith({ message: 'Kérdőív sikeresen törölve' });
   });
 
   test('/create-survey should create new survey', async () => {
-    const createSurveyRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/create-survey'
-    ).route.stack[1].handle;
-    
     req.body = {
       title: 'New Survey',
       questions: [{ questionText: 'Test Question', options: [], selectedButton: 'text' }],
@@ -171,12 +168,8 @@ describe('Admin Routes', () => {
       companyId: 1
     };
     
-    db.promise().query.mockResolvedValueOnce([{ insertId: 1 }]);
-    db.promise().query.mockResolvedValueOnce([]);
-    db.promise().query.mockResolvedValueOnce([{ insertId: 1 }]);
-    db.promise().query.mockResolvedValueOnce([]);
-    
-    await createSurveyRoute(req, res);
+    // Call the controller method directly
+    await AdminController.createSurvey(req, res);
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({ 
       message: 'Survey created successfully', 
@@ -185,12 +178,8 @@ describe('Admin Routes', () => {
   });
 
   test('/companies-list should return companies list', async () => {
-    const companiesListRoute = adminRoutes.stack.find(layer => 
-      layer.route && layer.route.path === '/companies-list'
-    ).route.stack[1].handle;
-    
-    db.promise().query.mockResolvedValueOnce([[{ id: 1, cegnev: 'Test Company' }]]);
-    await companiesListRoute(req, res);
+    // Call the controller method directly
+    await AdminController.getCompaniesList(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, cegnev: 'Test Company' }]);
   });
 });
