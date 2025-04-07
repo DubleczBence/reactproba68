@@ -194,11 +194,16 @@ export default function SignIn(props) {
     if (!validateInputs()) {
       return; 
     }
+
     setIsLoading(true);
-    
     const data = new FormData(event.currentTarget);
 
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 6000);
+
     setTimeout(() => {
+    try {
     if (!checked) {
     const userData = {
       email: data.get('email'),
@@ -218,6 +223,12 @@ export default function SignIn(props) {
       onSignIn({ type: 'company', data: cegData });
     }
   }
+  } catch (error) {
+    console.error('Bejelentkezési hiba:', error);
+    setIsLoading(false);
+    clearTimeout(timeoutId);
+  }
+  
   }, 2000);
 };
   

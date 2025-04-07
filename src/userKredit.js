@@ -107,7 +107,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
         sx={{
           position: isMobile ? 'static' : 'absolute',
           left: isMobile ? 'auto' : '20px',
-          top: isMobile ? 'auto' : '145px',
+          top: isMobile ? 'auto' : '200px',
           width: isMobile ? "95%" : (isNarrow ? "400px" : "550px"),
           flexShrink: 0,
           boxShadow: 'none',
