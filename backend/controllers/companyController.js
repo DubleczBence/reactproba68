@@ -260,13 +260,16 @@ class CompanyController {
     try {
       const companyId = req.user.id;
       const surveyId = req.params.surveyId;
-
+  
       const isOwner = await SurveyModel.checkSurveyOwnership(companyId, surveyId);
       if (!isOwner) {
         return res.status(403).json({ error: 'Nincs jogosultsága a kérdőív lezárásához' });
       }
-
-      await SurveyModel.closeSurvey(surveyId);
+  
+      // Aktuális dátum az end_date-hez
+      const currentDate = new Date();
+      
+      await SurveyModel.closeSurvey(surveyId, currentDate);
       res.status(200).json({ message: 'Kérdőív sikeresen lezárva' });
     } catch (error) {
       console.error('Error closing survey:', error);

@@ -4,11 +4,17 @@ class SurveyModel {
   static async create(surveyData) {
     const { title, participantCount, filterCriteria, creditCost, description = "Default survey description" } = surveyData;
     
+    const currentDate = new Date();
+    
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + 1);
+    
     const [surveyResult] = await db.promise().query(
       `INSERT INTO survey_set (
         title, description, mintavetel, 
-        vegzettseg, korcsoport, regio, nem, anyagi, credit_cost, is_active
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+        vegzettseg, korcsoport, regio, nem, anyagi, credit_cost, is_active,
+        start_date, end_date
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
       [
         title, description, participantCount,
         filterCriteria.vegzettseg || null,
@@ -16,7 +22,9 @@ class SurveyModel {
         filterCriteria.regio || null,
         filterCriteria.nem || null,
         filterCriteria.anyagi || null,
-        creditCost
+        creditCost,
+        currentDate,
+        endDate
       ]
     );
   
@@ -180,10 +188,10 @@ class SurveyModel {
     return answerCounts;
   }
 
-  static async closeSurvey(surveyId) {
+  static async closeSurvey(surveyId, endDate = new Date()) {
     await db.promise().query(
-      'UPDATE survey_set SET is_active = 0 WHERE id = ?',
-      [surveyId]
+      'UPDATE survey_set SET is_active = 0, end_date = ? WHERE id = ?',
+      [endDate, surveyId]
     );
   }
 
