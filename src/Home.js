@@ -498,10 +498,11 @@ const Home = ({ onSignOut, onSendData }) => {
       // Csak naplózzuk, hogy frissítettük a kredit előzményeket
       console.log('Refreshing credit history for user:', userId);
       await get(`/users/credit-history/${userId}`);
-    } catch (error) {
-      console.error('Error fetching credit history:', error);
-    }
-  }, [userId]);
+    console.log('Credit history refreshed');
+  } catch (error) {
+    console.error('Error fetching credit history:', error);
+  }
+}, [userId]);
 
 
   const fetchUserProfile = useCallback(async () => {
