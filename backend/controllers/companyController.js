@@ -117,8 +117,8 @@ class CompanyController {
   
       const transactionId = await TransactionModel.createCreditTransaction(creditCost, "spend", companyId, true);
       
-      await TransactionModel.connectToCompany(companyId, transactionId);
-      await TransactionModel.connectToSurvey(surveyId, transactionId);
+      await TransactionModel.connectToCompany(companyId, transactionId, true);
+      await TransactionModel.connectToSurvey(surveyId, transactionId, true);
   
       res.status(201).json({ message: 'Survey created successfully' });
     } catch (error) {
