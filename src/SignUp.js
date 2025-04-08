@@ -438,17 +438,7 @@ export default function SignUp(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ 
-      position: 'fixed', 
-      top: '1rem', 
-      right: '1rem', 
-      zIndex: 10,
-      // Mobilnézetben kisebb méret és nagyobb távolság a tetejétől
-      '@media (max-width: 600px)': {
-        top: '0.5rem',
-        right: '0.5rem',
-      }
-      }} />
+      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 10 }} />
       <SignUpContainer direction="column" justifyContent="space-between">
 
       <IllustrationContainer>

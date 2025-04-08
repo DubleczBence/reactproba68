@@ -49,6 +49,7 @@ import { useMediaQuery } from '@mui/material';
 import { useSpring, animated } from 'react-spring';
 import CircularProgress from '@mui/material/CircularProgress';
 import Backdrop from '@mui/material/Backdrop';
+import { voucherOptions } from './userKredit';
 
 
 
@@ -80,6 +81,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
+  marginTop: theme.spacing(2),
+  marginBottom: theme.spacing(4),
   overflow: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.55) !important'
@@ -108,9 +111,10 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 const UserContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-  minHeight: '100%',
+  height: 'auto',
+  minHeight: '100vh',
   padding: theme.spacing(2),
+  overflowY: 'auto',
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
   },
@@ -269,7 +273,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 
-const ProfileDialog = ({ open, onClose, userData, onSave }) => {
+const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
   const [formData, setFormData] = useState({
     name: '',
     regio: '',
@@ -439,6 +443,77 @@ const ProfileDialog = ({ open, onClose, userData, onSave }) => {
               style: { transform: 'translate(0, -17px) scale(0.75)' }
             }}
           />
+          
+          {/* Kuponok megjelenítése */}
+          {userVouchers && userVouchers.length > 0 && (
+            <Box>
+            <Typography variant="h6" sx={{ mb: 2 }}>Vásárolt kuponok</Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              gap: 2,
+              justifyContent: 'flex-start'
+            }}>
+              {userVouchers.map((voucher) => {
+                // Kép kiválasztása a kupon neve alapján
+                let imageName = 'default.png';
+                
+                // Keressük meg a megfelelő képet a voucherOptions alapján
+                voucherOptions.forEach(category => {
+                  category.items.forEach(item => {
+                    if (item.name === voucher.name || 
+                        voucher.name.includes(item.name) || 
+                        item.name.includes(voucher.name)) {
+                      imageName = item.image;
+                    }
+                  });
+                });
+                
+                return (
+                  <Box 
+                    key={voucher.id} 
+                    sx={{ 
+                      width: '80px', 
+                      height: '80px', 
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                      position: 'relative'
+                    }}
+                  >
+                    <img 
+                      src={`/kepek/${imageName}`} 
+                      alt={voucher.name}
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        objectFit: 'cover' 
+                      }}
+                    />
+                    <Tooltip title={`${voucher.name} - ${voucher.credit_cost} kredit`}>
+                      <Box sx={{ 
+                        position: 'absolute', 
+                        bottom: 0, 
+                        left: 0, 
+                        right: 0,
+                        backgroundColor: 'rgba(0,0,0,0.6)',
+                        color: 'white',
+                        padding: '4px',
+                        fontSize: '10px',
+                        textAlign: 'center',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                      }}>
+                        {voucher.name}
+                      </Box>
+                    </Tooltip>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+          )}
         </Box>
       </DialogContent>
       <DialogActions>
@@ -475,6 +550,11 @@ const Home = ({ onSignOut, onSendData }) => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const isUnder1400 = useMediaQuery('(max-width:1400px)');
   const [submittingSurvey, setSubmittingSurvey] = useState(false);
+
+  const [confirmPurchaseOpen, setConfirmPurchaseOpen] = useState(false);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const [purchaseSuccess, setPurchaseSuccess] = useState(false);
+  const [userVouchers, setUserVouchers] = useState([]);
   
   const [answers, setAnswers] = useState({});
 
@@ -528,6 +608,74 @@ const Home = ({ onSignOut, onSendData }) => {
       });
     }
   }, [userId]);
+
+  const handleVoucherSelect = (voucher) => {
+    setSelectedVoucher(voucher);
+    setConfirmPurchaseOpen(true);
+  };
+
+  const confirmVoucherPurchase = async () => {
+    if (!selectedVoucher) return;
+    
+    try {
+      // Kupon vásárlás API hívás
+      const response = await post('/api/users/purchase-voucher', {
+        userId: userId,
+        voucherName: selectedVoucher.name,
+        creditCost: selectedVoucher.creditCost
+      });
+      
+      if (response.success) {
+        // Frissítsük a kredit egyenleget
+        fetchCredits();
+        
+        // Sikeres vásárlás után
+        setPurchaseSuccess(true);
+        fetchUserVouchers(); // Frissítsük a kuponok listáját
+        
+        // Zárjuk be a megerősítő dialógust
+        setConfirmPurchaseOpen(false);
+        
+        // 5 másodperc után rejtsük el a sikeres vásárlás üzenetet
+        setTimeout(() => {
+          setPurchaseSuccess(false);
+        }, 5000);
+        
+        // Snackbar értesítés
+        setSnackbar({
+          open: true,
+          message: 'Sikeres kupon vásárlás! A kuponjait a profil menüben tekintheti meg.',
+          severity: 'success'
+        });
+      } else {
+        throw new Error(response.message || 'Sikertelen vásárlás');
+      }
+    } catch (error) {
+      console.error('Error purchasing voucher:', error);
+      setSnackbar({
+        open: true,
+        message: 'Hiba történt a kupon vásárlása során: ' + (error.message || 'Ismeretlen hiba'),
+        severity: 'error'
+      });
+      setConfirmPurchaseOpen(false);
+    }
+  };
+
+  // Kuponok lekérése a felhasználóhoz
+  const fetchUserVouchers = useCallback(async () => {
+    try {
+      if (!userId) return;
+      
+      const data = await get(`/users/vouchers/${userId}`);
+      setUserVouchers(data.vouchers || []);
+    } catch (error) {
+      console.error('Error fetching user vouchers:', error);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    fetchUserVouchers();
+  }, [fetchUserVouchers]);
   
   const handleSaveUserProfile = async (formData) => {
     try {
@@ -1028,18 +1176,16 @@ const [open, setOpen] = React.useState(false);
   </Box>
 </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: { xs: 4, sm: 2 }, marginBottom: { xs: 2, sm: 2 }}}>
   <SimpleBottomNavigation 
     value={value}
     onChange={handleNavigationChange}
     sx={{
-      mt: 2,
-      mb: 2,
       backgroundColor: 'transparent',
       boxShadow: theme.shadows[1],
-      width: '18%',
+      width: { xs: '50%', sm: '18%' },
       margin: '0 auto',
-      position: 'fixed',
+      position: { xs: 'relative', sm: 'fixed' },
       top: '80px',
       left: '50%',
       transform: 'translateX(-50%)',
@@ -1052,9 +1198,10 @@ const [open, setOpen] = React.useState(false);
           <Card
             variant="outlined"
             sx={{
-              mt: 3,
+              mt: { xs: 8, sm: 3 },
               width: "95% !important",
-              height: "70vh",
+              height: { xs: "auto", sm: "70vh" },
+              minHeight: { xs: "50vh", sm: "70vh" },
               maxWidth: "700px !important",
               position: "relative",
               padding: "20px",
@@ -1233,8 +1380,46 @@ const [open, setOpen] = React.useState(false);
             currentCredits={credits}
             onPurchase={handleCreditPurchase}
             userId={userId}
+            onVoucherSelect={handleVoucherSelect}
           />
         )}
+
+        <Dialog
+          open={confirmPurchaseOpen}
+          onClose={() => setConfirmPurchaseOpen(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Kupon vásárlás megerősítése"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Biztosan meg szeretné vásárolni a(z) {selectedVoucher?.name} kupont {selectedVoucher?.creditCost} kreditért?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmPurchaseOpen(false)}>Mégse</Button>
+            <Button onClick={confirmVoucherPurchase} autoFocus>
+              Vásárlás
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Snackbar
+          open={purchaseSuccess}
+          autoHideDuration={5000}
+          onClose={() => setPurchaseSuccess(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={() => setPurchaseSuccess(false)} 
+            severity="success" 
+            sx={{ width: '100%' }}
+          >
+            Sikeres vásárlás! A kuponjait a profil menüben tekintheti meg.
+          </Alert>
+        </Snackbar>
 
         <CssBaseline enableColorScheme />
 
@@ -1296,6 +1481,7 @@ const [open, setOpen] = React.useState(false);
         onClose={() => setProfileDialogOpen(false)}
         userData={userProfileData}
         onSave={handleSaveUserProfile}
+        userVouchers={userVouchers}
       />
 
       <Snackbar 
