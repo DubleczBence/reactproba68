@@ -745,7 +745,7 @@ const [open, setOpen] = React.useState(false);
         });
         return;
       }
-
+  
       setSubmittingSurvey(true);
     
       const surveyId = selectedSurvey.id;
@@ -754,23 +754,28 @@ const [open, setOpen] = React.useState(false);
     
       const creditAmount = Math.floor(selectedSurvey.creditCost / 3);
       console.log('Credit amount calculated:', creditAmount);
-
+  
       const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
     
-      // Használjuk a post függvényt a fetch helyett
+      // Módosított rész: küldjük el a felhasználó azonosítóját és a kredit mennyiségét is
       const postPromise = post('/main/submit-survey', {
         surveyId: surveyId,
+        userId: userId, // Adjuk hozzá a felhasználó azonosítóját
+        amount: creditAmount, // Adjuk hozzá a kredit mennyiségét
         answers: Object.entries(answers).map(([questionId, value]) => ({
           questionId,
           value
         }))
       });
-
+  
       await Promise.all([postPromise, delayPromise]);
     
       await fetchCredits();
       setSubmittingSurvey(false);
       handleCloseSurvey();
+      
+      // Frissítsük a kredit előzményeket is
+      fetchCreditHistory();
     } catch (error) {
       console.error('Error submitting survey:', error);
       setSubmittingSurvey(false);

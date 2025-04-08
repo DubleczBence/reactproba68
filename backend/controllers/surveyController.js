@@ -66,19 +66,25 @@ class SurveyController {
   static async submitSurvey(req, res) {
     const { surveyId, answers } = req.body;
     const userId = req.user.id;
-
+  
     try {
       const [survey] = await SurveyModel.getSurveyById(surveyId);
       const userCreditReward = Math.floor(survey.credit_cost / 3);
-
+  
       for (const answer of answers) {
         const answerId = await AnswerModel.createAnswer(userId, answer.questionId, answer.value);
         await AnswerModel.connectToUser(userId, answerId);
         await AnswerModel.connectToSurvey(surveyId, answerId);
       }
-
+  
       await UserModel.updateCredits(userId, userCreditReward);
-
+      
+      const transactionId = await TransactionModel.createCreditTransaction(userCreditReward, "survey");
+      
+      await TransactionModel.connectToUser(userId, transactionId);
+      
+      await TransactionModel.connectToSurvey(surveyId, transactionId);
+  
       res.status(200).json({ 
         message: 'Survey submitted successfully',
         creditsEarned: userCreditReward

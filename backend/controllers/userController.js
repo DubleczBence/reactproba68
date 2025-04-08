@@ -184,17 +184,17 @@ class UserController {
   }
 
   static async addSurveyTransaction(req, res) {
-    const { userId, amount, title, surveyId } = req.body;
+    const { userId, amount, surveyId } = req.body;
     console.log('Received transaction data:', req.body);
   
     try {
       // Kezdjük a tranzakciót
       await db.promise().query('START TRANSACTION');
   
-      // Tranzakció létrehozása
+      // Tranzakció létrehozása - adjuk hozzá a user_id mezőt is
       const [transactionResult] = await db.promise().query(
-        'INSERT INTO transactions (amount, transaction_type, transaction_date) VALUES (?, ?, NOW())',
-        [amount, 'survey']
+        'INSERT INTO transactions (user_id, amount, transaction_type, transaction_date) VALUES (?, ?, ?, NOW())',
+        [userId, amount, 'survey']
       );
       const transactionId = transactionResult.insertId;
   
@@ -231,7 +231,7 @@ class UserController {
       });
     } catch (error) {
       console.error('Error adding survey transaction:', error);
-
+  
       try {
         // Próbáljuk meg végrehajtani a ROLLBACK utasítást
         await db.promise().query('ROLLBACK');
