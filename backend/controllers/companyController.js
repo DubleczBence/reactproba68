@@ -2,7 +2,7 @@ const CompanyModel = require('../models/companyModel');
 const SurveyModel = require('../models/surveyModel');
 const TransactionModel = require('../models/transactionModel');
 const QuestionModel = require('../models/questionModel');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { generateToken, verifyToken } = require('../utils/tokenService');
 const { sendEmail } = require('../utils/emailService');
 

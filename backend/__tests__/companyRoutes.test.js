@@ -1,12 +1,12 @@
 const express = require('express');
 const companyRoutes = require('../routes/companyRoutes');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 const nodemailer = require('nodemailer');
 const CompanyController = require('../controllers/companyController');
 
-jest.mock('bcrypt');
+jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 jest.mock('../config/db', () => ({
   promise: jest.fn().mockReturnValue({

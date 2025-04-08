@@ -2,7 +2,7 @@ const db = require('../config/db');
 const UserModel = require('../models/userModel');
 const TransactionModel = require('../models/transactionModel');
 const VoucherModel = require('../models/voucherModel');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { generateToken } = require('../utils/tokenService');
 const { sendEmail } = require('../utils/emailService');
 
