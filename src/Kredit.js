@@ -80,15 +80,26 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
       onPurchase(data.currentCredits);
   
       const historyData = await get(`/companies/credit-history/${companyId}`);
+      console.log('Credit history data:', historyData); // Add this line to debug
+
       if (Array.isArray(historyData)) {
-        setCreditHistory(historyData);
-      } else {
-        console.error('Expected array but got:', historyData);
-        setCreditHistory([]); // Üres tömböt állítunk be, ha nem tömböt kaptunk
+      // Check for duplicate transactions
+      const uniqueTransactions = historyData.filter((transaction, index, self) =>
+        index === self.findIndex((t) => t.id === transaction.id)
+      );
+      
+      if (uniqueTransactions.length !== historyData.length) {
+        console.warn('Duplicate transactions found in credit history!');
       }
-    } catch (error) {
-      console.error('Error purchasing credits:', error);
+      
+      setCreditHistory(uniqueTransactions); // Use unique transactions
+    } else {
+      console.error('Expected array but got:', historyData);
+      setCreditHistory([]);
     }
+  } catch (error) {
+    console.error('Error purchasing credits:', error);
+  }
   };
 
   return (
@@ -133,7 +144,12 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
   }}
 >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
-        {creditHistory.map((transaction) => (
+        {creditHistory
+          // Filter out duplicates based on transaction ID
+          .filter((transaction, index, self) => 
+            index === self.findIndex((t) => t.id === transaction.id)
+          )
+          .map((transaction) => (
           <Button
             key={transaction.id}
             sx={{
