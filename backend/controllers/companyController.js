@@ -182,7 +182,7 @@ class CompanyController {
     console.log("Received request:", { packageAmount, companyId });
     
     try {
-      const transactionId = await TransactionModel.createCreditTransaction(packageAmount, "purchase");
+      const transactionId = await TransactionModel.createCreditTransaction(packageAmount, "purchase", companyId);
       
       await TransactionModel.connectToCompany(companyId, transactionId);
 

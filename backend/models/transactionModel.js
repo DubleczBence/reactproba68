@@ -1,14 +1,14 @@
 const db = require('../config/db');
 
 class TransactionModel {
-  static async createCreditTransaction(amount, type) {
+  static async createCreditTransaction(amount, type, userId) {
     const validTypes = ['survey', 'purchase'];
     if (!validTypes.includes(type)) {
       throw new Error(`Invalid transaction type: ${type}. Valid types are: ${validTypes.join(', ')}`);
     }
     const [result] = await db.promise().query(
-      'INSERT INTO transactions (amount, transaction_type, transaction_date) VALUES (?, ?, NOW())',
-      [amount, type]
+      'INSERT INTO transactions (amount, transaction_type, transaction_date, user_id) VALUES (?, ?, NOW(), ?)',
+      [amount, type, userId]
     );
     return result.insertId;
   }
