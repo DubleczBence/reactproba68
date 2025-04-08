@@ -28,6 +28,24 @@ class UserController {
     }
   }
 
+  static async getUserVouchers(req, res) {
+    try {
+      const userId = req.params.userId;
+      
+      // Check if the user is authorized to access these vouchers
+      if (req.user.id != userId && req.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Unauthorized access to user vouchers' });
+      }
+      
+      const vouchers = await VoucherModel.getUserVouchers(userId);
+      
+      res.json({ vouchers });
+    } catch (error) {
+      console.error('Error fetching user vouchers:', error);
+      res.status(500).json({ error: 'Failed to fetch user vouchers' });
+    }
+  }
+
   static async login(req, res) {
     const { email, password } = req.body;
 

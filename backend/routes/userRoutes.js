@@ -25,6 +25,7 @@ router.post('/purchase-voucher', authenticateUser, validateVoucherPurchase, User
 router.post('/add-survey-transaction', authenticateUser, UserController.addSurveyTransaction);
 router.get('/profile/:userId', authenticateUser, UserController.getProfile);
 router.put('/profile/:userId', authenticateUser, UserController.updateProfile);
+router.get('/vouchers/:userId', authenticateToken, UserController.getUserVouchers);
 
 // Kuponokkal kapcsolatos végpontok
 router.get('/vouchers/:userId', authenticateUser, async (req, res) => {
