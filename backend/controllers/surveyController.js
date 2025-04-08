@@ -2,6 +2,7 @@ const SurveyModel = require('../models/surveyModel');
 const AnswerModel = require('../models/answerModel');
 const UserModel = require('../models/userModel');
 const TransactionModel = require('../models/transactionModel');
+const db = require('../config/db');
 
 class SurveyController {
   static async getSurveyById(req, res) {
