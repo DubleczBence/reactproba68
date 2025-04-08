@@ -58,64 +58,33 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
   const isNarrow = useMediaQuery('(max-width:1700px) and (min-width:901px)');
 
-  const handleSubmitSurvey = async () => {
+  const fetchCreditHistory = useCallback(async () => {
     try {
-      if (!selectedSurvey || !selectedSurvey.id) {
-        console.error('Selected survey is missing or invalid');
-        return;
-      }
+      // Használjuk a get függvényt a kredit előzmények lekéréséhez
+      const data = await get(`/users/credit-history/${userId}`);
       
-      // Ellenőrizzük, hogy minden kérdésre van-e válasz
-      if (!isAllQuestionsAnswered()) {
-        setSnackbar({
-          open: true,
-          message: 'Kérjük, válaszoljon minden kérdésre a küldés előtt!',
-          severity: 'warning'
-        });
-        return;
-      }
-  
-      setSubmittingSurvey(true);
-    
-      const surveyId = selectedSurvey.id;
-      console.log('Submitting survey with ID:', surveyId);
-      console.log('Selected survey data:', selectedSurvey);
-    
-      const creditAmount = Math.floor(selectedSurvey.creditCost / 3);
-      console.log('Credit amount calculated:', creditAmount);
-  
-      const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
-    
-      // Módosított rész: küldjük el a felhasználó azonosítóját és a kredit mennyiségét is
-      const postPromise = post('/main/submit-survey', {
-        surveyId: surveyId,
-        userId: userId, // Adjuk hozzá a felhasználó azonosítóját
-        amount: creditAmount, // Adjuk hozzá a kredit mennyiségét
-        answers: Object.entries(answers).map(([questionId, value]) => ({
-          questionId,
-          value
-        }))
-      });
-  
-      await Promise.all([postPromise, delayPromise]);
-    
-      await fetchCredits();
-      setSubmittingSurvey(false);
-      handleCloseSurvey();
+      // Formázott dátum hozzáadása minden tranzakcióhoz
+      const formattedData = Array.isArray(data) ? data.map(transaction => ({
+        ...transaction,
+        formatted_date: new Date(transaction.transaction_date).toLocaleDateString('hu-HU', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      })) : [];
       
-      // Frissítsük a kredit előzményeket is
-      fetchCreditHistory();
+      setCreditHistory(formattedData);
     } catch (error) {
-      console.error('Error submitting survey:', error);
-      setSubmittingSurvey(false);
+      console.error('Error fetching credit history:', error);
+      setCreditHistory([]);
     }
-  };
-
+  }, [userId]);
 
   useEffect(() => {
     fetchCreditHistory();
   }, [fetchCreditHistory]);
-
 
   const handleVoucherPurchase = async (item) => {
     try {
