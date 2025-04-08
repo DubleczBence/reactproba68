@@ -62,9 +62,12 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
     try {
       // Használjuk a get függvényt a kredit előzmények lekéréséhez
       const data = await get(`/users/credit-history/${userId}`);
+
+      const uniqueTransactions = Array.isArray(data) ? 
+      Array.from(new Map(data.map(item => [item.id, item])).values()) : [];
       
       // Formázott dátum hozzáadása minden tranzakcióhoz
-      const formattedData = Array.isArray(data) ? data.map(transaction => ({
+      const formattedData = uniqueTransactions.map(transaction => ({
         ...transaction,
         formatted_date: new Date(transaction.transaction_date).toLocaleDateString('hu-HU', {
           year: 'numeric',
@@ -73,7 +76,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose }) => {
           hour: '2-digit',
           minute: '2-digit'
         })
-      })) : [];
+      }));
       
       setCreditHistory(formattedData);
     } catch (error) {
