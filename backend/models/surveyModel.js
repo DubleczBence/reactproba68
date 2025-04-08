@@ -40,8 +40,8 @@ class SurveyModel {
 
   static async addQuestion(surveyId, question) {
     const [questionResult] = await db.promise().query(
-      'INSERT INTO questions (question, frm_option, type) VALUES (?, ?, ?)',
-      [question.questionText, JSON.stringify(question.options), question.selectedButton]
+      'INSERT INTO questions (question, frm_option, type, order_by) VALUES (?, ?, ?, ?)',
+      [question.questionText, JSON.stringify(question.options), question.selectedButton, question.order_by || 0]
     );
     
     await db.promise().query(

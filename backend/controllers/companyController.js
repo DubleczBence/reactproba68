@@ -97,11 +97,14 @@ class CompanyController {
       
       await SurveyModel.connectToCompany(surveyId, companyId);
   
-      for (const question of questions) {
+      // Kérdések létrehozása sorrendben
+      for (let i = 0; i < questions.length; i++) {
+        const question = questions[i];
         const questionId = await QuestionModel.create({
           questionText: question.questionText, 
           options: question.options, 
-          selectedButton: question.selectedButton
+          selectedButton: question.selectedButton,
+          order_by: i // Sorrend index alapján
         });
         
         await SurveyModel.addQuestion(surveyId, {

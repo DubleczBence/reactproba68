@@ -2,11 +2,11 @@ const db = require('../config/db');
 
 class QuestionModel {
   static async create(questionData) {
-    const { questionText, options, selectedButton } = questionData;
+    const { questionText, options, selectedButton, order_by = 0 } = questionData;
     
     const [questionResult] = await db.promise().query(
-      'INSERT INTO questions (question, frm_option, type) VALUES (?, ?, ?)',
-      [questionText, JSON.stringify(options), selectedButton]
+      'INSERT INTO questions (question, frm_option, type, order_by) VALUES (?, ?, ?, ?)',
+      [questionText, JSON.stringify(options), selectedButton, order_by]
     );
     
     return questionResult.insertId;
