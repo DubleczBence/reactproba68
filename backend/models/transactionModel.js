@@ -1,12 +1,7 @@
 const db = require('../config/db');
 
 class TransactionModel {
-  static async createCreditTransaction(amount, type, userId, isCompany = null) {
-    // Ha az isCompany nincs megadva, akkor a típus alapján határozzuk meg
-    if (isCompany === null) {
-      isCompany = type === 'spend'; // Ha 'spend', akkor céges tranzakció
-    }
-    
+  static async createCreditTransaction(amount, type, entityId = null, isCompany = false) {
     // Különböző validálás a felhasználók és cégek számára
     const validTypes = isCompany ? ['spend', 'purchase'] : ['survey', 'purchase'];
     
@@ -14,26 +9,39 @@ class TransactionModel {
       throw new Error(`Invalid transaction type: ${type}. Valid types for ${isCompany ? 'companies' : 'users'} are: ${validTypes.join(', ')}`);
     }
     
-    // Különböző táblák és oszlopnevek a felhasználók és cégek számára
-    const table = isCompany ? 'credit_transactions' : 'transactions';
-    const idColumn = isCompany ? 'company_id' : 'user_id';
-    const dateColumn = isCompany ? 'created_at' : 'transaction_date';
+    let result;
     
-    const [result] = await db.promise().query(
-      `INSERT INTO ${table} (amount, transaction_type, ${dateColumn}, ${idColumn}) VALUES (?, ?, NOW(), ?)`,
-      [amount, type, userId]
-    );
+    if (isCompany) {
+      // Céges tranzakció létrehozása a credit_transactions táblában
+      [result] = await db.promise().query(
+        `INSERT INTO credit_transactions (amount, transaction_type, created_at) VALUES (?, ?, NOW())`,
+        [amount, type]
+      );
+      
+      // Kapcsolat létrehozása a company_connections táblában
+      if (entityId) {
+        await db.promise().query(
+          `INSERT INTO company_connections (company_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
+          [entityId, result.insertId]
+        );
+      }
+    } else {
+      // Felhasználói tranzakció létrehozása a transactions táblában
+      [result] = await db.promise().query(
+        `INSERT INTO transactions (user_id, amount, transaction_type, transaction_date) VALUES (?, ?, ?, NOW())`,
+        [entityId, amount, type]
+      );
+      
+      // Kapcsolat létrehozása a user_connections táblában
+      if (entityId) {
+        await db.promise().query(
+          `INSERT INTO user_connections (user_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
+          [entityId, result.insertId]
+        );
+      }
+    }
     
     return result.insertId;
-  }
-
-  static async connectToCompany(companyId, transactionId, isCompany = false) {
-    const table = isCompany ? 'credit_transactions' : 'transactions';
-    
-    await db.promise().query(
-      `UPDATE ${table} SET company_id = ? WHERE id = ?`,
-      [companyId, transactionId]
-    );
   }
   
   static async connectToSurvey(surveyId, transactionId, isCompany = false) {
@@ -70,13 +78,6 @@ class TransactionModel {
     );
     
     return transactionResult.insertId;
-  }
-
-  static async connectToUser(userId, transactionId) {
-    await db.promise().query(
-      'INSERT INTO user_connections (user_id, connection_type, connection_id) VALUES (?, "transaction", ?)',
-      [userId, transactionId]
-    );
   }
 
   static async getUserCreditHistory(userId) {

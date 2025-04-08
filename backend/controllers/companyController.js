@@ -115,7 +115,7 @@ class CompanyController {
         });
       }
   
-      const transactionId = await TransactionModel.createCreditTransaction(creditCost, "spend", companyId, true);
+      const transactionId = await TransactionModel.createCreditTransaction(creditCost, "spend", null, true);
       
       await TransactionModel.connectToCompany(companyId, transactionId, true);
       await TransactionModel.connectToSurvey(surveyId, transactionId, true);
