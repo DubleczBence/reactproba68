@@ -30,6 +30,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
+  marginTop: theme.spacing(2),
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.8)'
     : 'rgba(2, 1, 14, 0.8)',
@@ -60,8 +61,11 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
   height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
   minHeight: '100%',
   padding: theme.spacing(2),
+  paddingTop: theme.spacing(6),
+  overflowY: 'auto',
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
+    paddingTop: theme.spacing(8),
   },
   '&::before': {
     content: '""',
@@ -434,7 +438,17 @@ export default function SignUp(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 10 }} />
+      <ColorModeSelect sx={{ 
+      position: 'fixed', 
+      top: '1rem', 
+      right: '1rem', 
+      zIndex: 10,
+      // Mobilnézetben kisebb méret és nagyobb távolság a tetejétől
+      '@media (max-width: 600px)': {
+        top: '0.5rem',
+        right: '0.5rem',
+      }
+      }} />
       <SignUpContainer direction="column" justifyContent="space-between">
 
       <IllustrationContainer>
