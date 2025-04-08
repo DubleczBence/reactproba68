@@ -1,15 +1,23 @@
 const db = require('../config/db');
 
 class TransactionModel {
-  static async createCreditTransaction(amount, type, userId) {
-    const validTypes = ['survey', 'purchase'];
+  static async createCreditTransaction(amount, type, userId, isCompany = false) {
+    // Különböző validálás a felhasználók és cégek számára
+    const validTypes = isCompany ? ['spend', 'purchase'] : ['survey', 'purchase'];
+    
     if (!validTypes.includes(type)) {
-      throw new Error(`Invalid transaction type: ${type}. Valid types are: ${validTypes.join(', ')}`);
+      throw new Error(`Invalid transaction type: ${type}. Valid types for ${isCompany ? 'companies' : 'users'} are: ${validTypes.join(', ')}`);
     }
+    
+    // Különböző táblák a felhasználók és cégek számára
+    const table = isCompany ? 'credit_transactions' : 'transactions';
+    const idColumn = isCompany ? 'company_id' : 'user_id';
+    
     const [result] = await db.promise().query(
-      'INSERT INTO transactions (amount, transaction_type, transaction_date, user_id) VALUES (?, ?, NOW(), ?)',
+      `INSERT INTO ${table} (amount, transaction_type, transaction_date, ${idColumn}) VALUES (?, ?, NOW(), ?)`,
       [amount, type, userId]
     );
+    
     return result.insertId;
   }
 

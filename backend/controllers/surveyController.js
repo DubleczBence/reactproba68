@@ -85,7 +85,7 @@ class SurveyController {
       await UserModel.updateCredits(userId, userCreditReward);
       
       // Tranzakció létrehozása
-      const transactionId = await TransactionModel.createCreditTransaction(userCreditReward, "survey", userId);
+      const transactionId = await TransactionModel.createCreditTransaction(userCreditReward, "survey", userId, false);
       
       // Kapcsolat létrehozása a felhasználó és a tranzakció között
       await TransactionModel.connectToUser(userId, transactionId);

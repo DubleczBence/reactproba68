@@ -115,7 +115,7 @@ class CompanyController {
         });
       }
   
-      const transactionId = await TransactionModel.createCreditTransaction(creditCost, "spend");
+      const transactionId = await TransactionModel.createCreditTransaction(creditCost, "spend", true);
       
       await TransactionModel.connectToCompany(companyId, transactionId);
       await TransactionModel.connectToSurvey(surveyId, transactionId);
@@ -182,7 +182,7 @@ class CompanyController {
     console.log("Received request:", { packageAmount, companyId });
     
     try {
-      const transactionId = await TransactionModel.createCreditTransaction(packageAmount, "purchase", companyId);
+      const transactionId = await TransactionModel.createCreditTransaction(packageAmount, "purchase", companyId, true);
       
       await TransactionModel.connectToCompany(companyId, transactionId);
 
