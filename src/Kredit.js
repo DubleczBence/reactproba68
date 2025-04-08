@@ -145,11 +145,25 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
 >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
         {creditHistory
-          // Filter out duplicates based on transaction ID
-          .filter((transaction, index, self) => 
-            index === self.findIndex((t) => t.id === transaction.id)
-          )
-          .map((transaction) => (
+        .filter((transaction, index, self) => 
+          index === self.findIndex((t) => t.id === transaction.id)
+        )
+        .map((transaction) => {
+          // Dátum korrekció - ha van created_at vagy transaction_date mező
+          let formattedDate = transaction.formatted_date;
+          if (transaction.created_at) {
+            // Ha van created_at mező, akkor azt használjuk
+            const date = new Date(transaction.created_at);
+            formattedDate = date.toLocaleString('hu-HU', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+          }
+
+          return (
           <Button
             key={transaction.id}
             sx={{
@@ -170,7 +184,7 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
                 {transaction.transaction_type === 'purchase' ? 'Kredit vásárlás' : transaction.survey_title}
               </Typography>
               <Typography variant="caption" color="textSecondary">
-                {transaction.formatted_date}
+                {formattedDate}
               </Typography>
             </Box>
             <Typography 
@@ -181,7 +195,8 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
               {transaction.transaction_type === 'purchase' ? '+' : '-'}{transaction.amount} kredit
             </Typography>
           </Button>
-        ))}
+        );
+        })}
       </Card>
 
       <Box sx={{
