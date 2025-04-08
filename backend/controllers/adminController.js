@@ -68,17 +68,18 @@ class AdminController {
     try {
       const surveyId = await SurveyModel.create({
         title, 
+        description: "Default survey description", // Alapértelmezett érték
         participantCount, 
         filterCriteria, 
         creditCost
       });
       
       await SurveyModel.connectToCompany(surveyId, companyId);
-
+  
       for (const question of questions) {
         await SurveyModel.addQuestion(surveyId, question);
       }
-
+  
       res.status(201).json({ message: 'Survey created successfully', surveyId });
     } catch (error) {
       console.error('Error creating survey:', error);

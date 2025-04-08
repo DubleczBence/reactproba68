@@ -2,15 +2,15 @@ const db = require('../config/db');
 
 class SurveyModel {
   static async create(surveyData) {
-    const { title, participantCount, filterCriteria, creditCost } = surveyData;
+    const { title, participantCount, filterCriteria, creditCost, description = "Default survey description" } = surveyData;
     
     const [surveyResult] = await db.promise().query(
       `INSERT INTO survey_set (
-        title, mintavetel, 
+        title, description, mintavetel, 
         vegzettseg, korcsoport, regio, nem, anyagi, credit_cost, is_active
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
       [
-        title, participantCount,
+        title, description, participantCount,
         filterCriteria.vegzettseg || null,
         filterCriteria.korcsoport || null,
         filterCriteria.regio || null,
@@ -19,7 +19,7 @@ class SurveyModel {
         creditCost
       ]
     );
-
+  
     return surveyResult.insertId;
   }
 

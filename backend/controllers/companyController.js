@@ -83,18 +83,20 @@ class CompanyController {
     
     try {
       const companyId = req.user.id;
-
+  
       await CompanyModel.updateCredits(companyId, -creditCost);
-
+  
+      // Adjunk hozzá egy alapértelmezett description értéket
       const surveyId = await SurveyModel.create({
         title, 
+        description: "Default survey description", // Alapértelmezett érték
         participantCount, 
         filterCriteria, 
         creditCost
       });
       
       await SurveyModel.connectToCompany(surveyId, companyId);
-
+  
       for (const question of questions) {
         const questionId = await QuestionModel.create({
           questionText: question.questionText, 
@@ -109,12 +111,12 @@ class CompanyController {
           selectedButton: question.selectedButton
         });
       }
-
+  
       const transactionId = await TransactionModel.createCreditTransaction(creditCost, "spend");
       
       await TransactionModel.connectToCompany(companyId, transactionId);
       await TransactionModel.connectToSurvey(surveyId, transactionId);
-
+  
       res.status(201).json({ message: 'Survey created successfully' });
     } catch (error) {
       console.error('Error creating survey:', error);
