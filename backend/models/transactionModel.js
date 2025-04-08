@@ -58,12 +58,25 @@ class TransactionModel {
   }
   
   static async connectToSurvey(surveyId, transactionId, isCompany = false) {
-    const table = isCompany ? 'credit_transactions' : 'transactions';
-    
-    await db.promise().query(
-      `UPDATE ${table} SET survey_id = ? WHERE id = ?`,
-      [surveyId, transactionId]
-    );
+    try {
+      if (isCompany) {
+        // Céges tranzakciók esetén a survey_connections táblát használjuk
+        await db.promise().query(
+          `INSERT INTO survey_connections (survey_id, connection_type, connection_id, created_at) 
+           VALUES (?, 'transaction', ?, NOW())`,
+          [surveyId, transactionId]
+        );
+      } else {
+        // Felhasználói tranzakciók esetén a transactions táblában frissítjük a survey_id mezőt
+        await db.promise().query(
+          `UPDATE transactions SET survey_id = ? WHERE id = ?`,
+          [surveyId, transactionId]
+        );
+      }
+    } catch (error) {
+      console.error('Error connecting transaction to survey:', error);
+      throw error;
+    }
   }
 
   static async getCompanyCreditHistory(companyId) {
