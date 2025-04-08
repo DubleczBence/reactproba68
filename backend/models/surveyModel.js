@@ -217,7 +217,7 @@ class SurveyModel {
        JOIN survey_connections sc ON uc.connection_id = sc.connection_id
        JOIN answers a ON sc.connection_id = a.id
        WHERE sc.survey_id = ? AND sc.connection_type = 'answer' AND uc.connection_type = 'answer'
-       GROUP BY ur.user_id`,
+       GROUP BY ur.user_id, ur.vegzettseg, ur.nem, ur.regio, ur.anyagi_helyzet, ur.korcsoport`,
       [surveyId]
     );
     return demographics;
