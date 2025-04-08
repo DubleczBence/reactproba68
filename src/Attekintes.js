@@ -57,6 +57,7 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
 
       const postPromise = post('/companies/create-survey', {
         title: surveyTitle,
+        description: "Default description",
         questions: questions,
         participantCount: participantCount,
         filterCriteria: {
