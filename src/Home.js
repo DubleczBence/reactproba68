@@ -110,11 +110,15 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
+
 const UserContainer = styled(Stack)(({ theme }) => ({
   height: 'auto',
   minHeight: '100vh',
   padding: theme.spacing(2),
   overflowY: 'auto',
+  overflowX: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
   },
@@ -1176,7 +1180,7 @@ const [open, setOpen] = React.useState(false);
   </Box>
 </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: { xs: 4, sm: 2 }, marginBottom: { xs: 2, sm: 2 }}}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: { xs: 1, sm: 2 }, marginBottom: { xs: 1, sm: 2 }}}>
   <SimpleBottomNavigation 
     value={value}
     onChange={handleNavigationChange}
@@ -1194,25 +1198,27 @@ const [open, setOpen] = React.useState(false);
   />
 </Box>
 
-      {!showUserCreditPage && !showSurvey && (
-          <Card
-            variant="outlined"
-            sx={{
-              mt: { xs: 8, sm: 3 },
-              width: "95% !important",
-              height: { xs: "auto", sm: "70vh" },
-              minHeight: { xs: "50vh", sm: "70vh" },
-              maxWidth: "700px !important",
-              position: "relative",
-              padding: "20px",
-              overflow: "auto",
-              '& .MuiButton-root': {
-              minHeight: '80px',
-              height: '80px !important',
-              flexShrink: 0
-              }
-            }}
-          >
+          {!showUserCreditPage && !showSurvey && (
+            <Card
+              variant="outlined"
+              sx={{
+                mt: { xs: 2, sm: 3 }, // Reduced top margin on mobile from 8 to 2
+                mb: { xs: 2, sm: 3 }, // Added bottom margin
+                width: "95% !important",
+                height: { xs: "auto", sm: "70vh" },
+                minHeight: { xs: "50vh", sm: "70vh" },
+                maxWidth: "700px !important",
+                position: "relative",
+                padding: "20px",
+                overflow: "auto", // Ensure overflow is set to auto
+                overflowY: "scroll", // Force vertical scrolling
+                '& .MuiButton-root': {
+                  minHeight: '80px',
+                  height: '80px !important',
+                  flexShrink: 0
+                }
+              }}
+            >
             <Typography variant="h5" sx={{ mt: 1, ml: 2, mb: 3 }}>
               Elérhető kérdőívek ({availableSurveys.length})
             </Typography>
