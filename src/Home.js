@@ -83,7 +83,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   marginTop: theme.spacing(2),
   marginBottom: theme.spacing(4),
-  overflow: 'auto',
+  overflow: 'auto !important',
+  maxHeight: '70vh',
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.55) !important'
     : 'rgba(0, 0, 5, 0.55) !important',
@@ -112,19 +113,20 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 
 const UserContainer = styled(Stack)(({ theme }) => ({
-  height: 'auto',
-  minHeight: '100vh',
+  height: '100vh', // Set to 100vh to take full viewport height
+  width: '100%',
   padding: theme.spacing(2),
-  overflowY: 'auto',
+  overflowY: 'auto !important', // Force vertical scrolling
   overflowX: 'hidden',
   display: 'flex',
   flexDirection: 'column',
+  position: 'relative', // Ensure proper stacking context
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
   },
   '&::before': {
     content: '""',
-    position: 'absolute',
+    position: 'fixed', // Change to fixed so it doesn't affect scrolling
     inset: 0,
     backgroundColor: theme.palette.mode === 'light' 
       ? 'rgba(255, 255, 255, 0.2)'
@@ -1180,7 +1182,7 @@ const [open, setOpen] = React.useState(false);
   </Box>
 </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: { xs: 1, sm: 2 }, marginBottom: { xs: 1, sm: 2 }}}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: { xs: 0.5, sm: 1 }, marginBottom: { xs: 0.5, sm: 1 }}}>
   <SimpleBottomNavigation 
     value={value}
     onChange={handleNavigationChange}
@@ -1189,7 +1191,7 @@ const [open, setOpen] = React.useState(false);
       boxShadow: theme.shadows[1],
       width: { xs: '50%', sm: '18%' },
       margin: '0 auto',
-      position: { xs: 'relative', sm: 'fixed' },
+      position: 'relative',
       top: '80px',
       left: '50%',
       transform: 'translateX(-50%)',
@@ -1202,22 +1204,35 @@ const [open, setOpen] = React.useState(false);
             <Card
               variant="outlined"
               sx={{
-                mt: { xs: 2, sm: 3 }, // Reduced top margin on mobile from 8 to 2
-                mb: { xs: 2, sm: 3 }, // Added bottom margin
+                mt: { xs: 2, sm: 2 }, // Reduced top margin on mobile from 8 to 2
+                mb: { xs: 2, sm: 2 }, // Added bottom margin
                 width: "95% !important",
-                height: { xs: "auto", sm: "70vh" },
-                minHeight: { xs: "50vh", sm: "70vh" },
+                height: { xs: "60vh", sm: "70vh" },
+                minHeight: { xs: "60vh", sm: "70vh" },
                 maxWidth: "700px !important",
                 position: "relative",
                 padding: "20px",
-                overflow: "auto", // Ensure overflow is set to auto
-                overflowY: "scroll", // Force vertical scrolling
+                overflow: "auto !important", // Ensure overflow is set to auto
+                overflowY: "scroll !important", // Force vertical scrolling
+                WebkitOverflowScrolling: "touch", // Improve scrolling on iOS
+                msOverflowStyle: "-ms-autohiding-scrollbar", // Improve scrolling on IE/Edge
                 '& .MuiButton-root': {
                   minHeight: '80px',
                   height: '80px !important',
                   flexShrink: 0
+                },
+                // Add a scrollbar styling that's more visible
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'rgba(0,0,0,0.1)',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: 'rgba(0,0,0,0.2)',
+                  borderRadius: '4px',
                 }
-              }}
+                }}
             >
             <Typography variant="h5" sx={{ mt: 1, ml: 2, mb: 3 }}>
               Elérhető kérdőívek ({availableSurveys.length})
