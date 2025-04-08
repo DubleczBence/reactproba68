@@ -2,10 +2,11 @@ const mysql = require('mysql2');
 
 
 const db = mysql.createConnection({
-  host: 'localhost', 
-  user: 'rootee',      
-  password: 'jelszo',      
-  database: 'survey_app', 
+  host: process.env.DB_HOST || 'hopper.proxy.rlwy.net', 
+  user: process.env.DB_USER || 'root',      
+  password: process.env.DB_PASS || 'OSUsFrCYAGbtaJNcWfRWgzwyFFPvgzpM',      
+  database: process.env.DB_NAME || 'railway', 
+  port: process.env.DB_PORT || '37256',
 });
 
 db.connect((err) => {
