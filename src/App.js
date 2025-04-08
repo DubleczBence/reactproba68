@@ -51,7 +51,7 @@ function App() {
       return;
     }
 
-    const endpoint = 'http://localhost:3001/api/main/home';
+    const endpoint = 'https://optify.onrender.com/api/main/home';
 
     try {
       const response = await fetch(endpoint, {
@@ -80,8 +80,8 @@ function App() {
 
     const endpoint =
       type === 'user'
-        ? 'http://localhost:3001/api/users/sign-up'
-        : 'http://localhost:3001/api/companies/sign-up';
+        ? 'https://optify.onrender.com/api/users/sign-up'
+        : 'https://optify.onrender.com/api/companies/sign-up';
 
     try {
       const response = await fetch(endpoint, {
@@ -113,8 +113,8 @@ function App() {
 
     const endpoint =
       type === 'user'
-        ? 'http://localhost:3001/api/users/sign-in'
-        : 'http://localhost:3001/api/companies/sign-in';
+        ? 'https://optify.onrender.com/api/users/sign-in'
+        : 'https://optify.onrender.com/api/companies/sign-in';
   
     try {
       const response = await fetch(endpoint, {

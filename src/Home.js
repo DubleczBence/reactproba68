@@ -496,7 +496,7 @@ const Home = ({ onSignOut, onSendData }) => {
     try {
       if (!userId) return;
       
-      const response = await fetch(`http://localhost:3001/api/users/profile/${userId}`, {
+      const response = await fetch(`https://optify.onrender.com/api/users/profile/${userId}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -530,7 +530,7 @@ const Home = ({ onSignOut, onSendData }) => {
         return;
       }
       
-      const response = await fetch(`http://localhost:3001/api/users/profile/${userId}`, {
+      const response = await fetch(`https://optify.onrender.com/api/users/profile/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -782,7 +782,7 @@ const [open, setOpen] = React.useState(false);
       const token = localStorage.getItem('token');
       if (token) {
         setIsSignedIn(true);
-        const response = await fetch('http://localhost:3001/api/main/check-form-filled', {
+        const response = await fetch('https://optify.onrender.com/api/main/check-form-filled', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

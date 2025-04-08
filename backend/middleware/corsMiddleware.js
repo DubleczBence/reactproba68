@@ -8,7 +8,8 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:5173',
       'https://optify-frontend.vercel.app',
-      // Add other production/staging URLs as needed
+      'https://optify-survey.vercel.app',
+      'https://optify.onrender.com',
     ];
     
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {

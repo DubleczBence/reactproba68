@@ -93,7 +93,7 @@ export default function AdminDashboard({ onSignOut }) {
     if (!token) return;
 
     try {
-      const usersResponse = await fetch('http://localhost:3001/api/admin/users', {
+      const usersResponse = await fetch('https://optify.onrender.com/api/admin/users', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -103,7 +103,7 @@ export default function AdminDashboard({ onSignOut }) {
         setUsers(usersData);
       }
 
-      const companiesResponse = await fetch('http://localhost:3001/api/admin/companies', {
+      const companiesResponse = await fetch('https://optify.onrender.com/api/admin/companies', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -113,13 +113,13 @@ export default function AdminDashboard({ onSignOut }) {
         setCompanies(companiesData);
       }
 
-      const surveysResponse = await fetch('http://localhost:3001/api/admin/surveys', {
+      const surveysResponse = await fetch('https://optify.onrender.com/api/admin/surveys', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
-      const companiesListResponse = await fetch('http://localhost:3001/api/admin/companies-list', {
+      const companiesListResponse = await fetch('https://optify.onrender.com/api/admin/companies-list', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -288,7 +288,7 @@ export default function AdminDashboard({ onSignOut }) {
 
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:3001/api/admin/create-survey', {
+      const response = await fetch('https://optify.onrender.com/api/admin/create-survey', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -363,7 +363,7 @@ export default function AdminDashboard({ onSignOut }) {
 
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/surveys/${id}`, {
+      const response = await fetch(`https://optify.onrender.com/api/admin/surveys/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -397,7 +397,7 @@ export default function AdminDashboard({ onSignOut }) {
   const handleSaveUser = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/users/${currentUser.id}`, {
+      const response = await fetch(`https://optify.onrender.com/api/admin/users/${currentUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -434,7 +434,7 @@ export default function AdminDashboard({ onSignOut }) {
   const handleSaveCompany = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/companies/${currentCompany.id}`, {
+      const response = await fetch(`https://optify.onrender.com/api/admin/companies/${currentCompany.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

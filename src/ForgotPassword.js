@@ -33,8 +33,8 @@ function ForgotPassword({ open, handleClose, isCompany }) {
   const handleSendCode = async () => {
     try {
       const endpoint = isCompany 
-        ? 'http://localhost:3001/api/companies/forgot-password'
-        : 'http://localhost:3001/api/users/forgot-password';
+        ? 'https://optify.onrender.com/api/companies/forgot-password'
+        : 'https://optify.onrender.com/api/users/forgot-password';
       
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -61,8 +61,8 @@ function ForgotPassword({ open, handleClose, isCompany }) {
   const handleVerifyCode = async () => {
     try {
       const endpoint = isCompany 
-        ? 'http://localhost:3001/api/companies/verify-reset-code'
-        : 'http://localhost:3001/api/users/verify-reset-code';
+        ? 'https://optify.onrender.com/api/companies/verify-reset-code'
+        : 'https://optify.onrender.com/api/users/verify-reset-code';
       
       const requestBody = isCompany
         ? { ceg_email: email, code, newPassword }
