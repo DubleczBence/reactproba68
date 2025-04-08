@@ -56,6 +56,19 @@ class TransactionModel {
       throw error;
     }
   }
+
+  static async connectToUser(userId, transactionId) {
+    try {
+      // Create a connection in the user_connections table
+      await db.promise().query(
+        `INSERT INTO user_connections (user_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
+        [userId, transactionId]
+      );
+    } catch (error) {
+      console.error('Error connecting transaction to user:', error);
+      throw error;
+    }
+  }
   
   static async connectToSurvey(surveyId, transactionId, isCompany = false) {
     try {
