@@ -30,7 +30,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
-  marginTop: theme.spacing(2),
+  marginTop: theme.spacing(8),
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.8)'
     : 'rgba(2, 1, 14, 0.8)',

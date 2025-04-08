@@ -27,6 +27,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(4),
   gap: theme.spacing(2),
+  marginTop: theme.spacing(2),
   margin: 'auto',
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.8)'
@@ -58,8 +59,11 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
   minHeight: '100%',
   padding: theme.spacing(2),
+  paddingTop: theme.spacing(9), // Növeljük a felső padding-et
+  overflowY: 'auto', // Hozzáadva: függőleges görgetés engedélyezése
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
+    paddingTop: theme.spacing(5),
   },
   '&::before': {
     content: '""',
