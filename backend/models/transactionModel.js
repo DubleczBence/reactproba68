@@ -43,6 +43,19 @@ class TransactionModel {
     
     return result.insertId;
   }
+
+  static async connectToCompany(companyId, transactionId) {
+    try {
+      // Create a connection in the company_connections table
+      await db.promise().query(
+        `INSERT INTO company_connections (company_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
+        [companyId, transactionId]
+      );
+    } catch (error) {
+      console.error('Error connecting transaction to company:', error);
+      throw error;
+    }
+  }
   
   static async connectToSurvey(surveyId, transactionId, isCompany = false) {
     const table = isCompany ? 'credit_transactions' : 'transactions';
