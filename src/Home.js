@@ -1185,7 +1185,7 @@ const [open, setOpen] = React.useState(false);
       cursor: 'pointer',
       fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.6rem' },
       order: { xs: 2, md: 1 },
-      mt: { xs: 2, md: -1 },
+      mt: { xs: 6, md: -1 },
       position: 'relative',
       zIndex: 5,
       width: { xs: '100%', md: '25%' }, 
