@@ -631,13 +631,14 @@ const Home = ({ onSignOut, onSendData }) => {
         creditCost: selectedVoucher.creditCost
       });
       
-      if (response.success) {
+      if (response.message && response.message.includes('success')) {
         // Frissítsük a kredit egyenleget
+        setCredits(response.currentCredits || credits);
         fetchCredits();
         
         // Sikeres vásárlás után
         setPurchaseSuccess(true);
-        fetchUserVouchers(); // Frissítsük a kuponok listáját
+        fetchUserVouchers();
         
         // Zárjuk be a megerősítő dialógust
         setConfirmPurchaseOpen(false);
