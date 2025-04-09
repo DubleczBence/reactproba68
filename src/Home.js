@@ -131,7 +131,7 @@ const UserContainer = styled(Stack)(({ theme }) => ({
     content: '""',
     position: 'fixed', // Change to fixed so it doesn't affect scrolling
     inset: 0,
-    backgroundColor: theme.palette.mode === 'light' 
+    backgroundColor: theme.palette.mode === 'light'
       ? 'rgba(255, 255, 255, 0.2)'
       : 'rgba(0, 0, 0, 0.2)',
     zIndex: -1,
@@ -1283,7 +1283,7 @@ const [open, setOpen] = React.useState(false);
             sx={{
               mt: 3, 
               width: "95% !important",
-              height: { xs: "75vh !important", sm: "80vh !important" },
+              height: { xs: "85vh !important", sm: "80vh !important" },
               maxWidth: "700px !important",
               position: "relative",
               padding: "20px",
@@ -1317,8 +1317,15 @@ const [open, setOpen] = React.useState(false);
             >
               {selectedSurvey.title}
             </Typography>
-
-
+            
+          <Box sx={{ 
+            flex: 1, 
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2
+            }}>
+    
             {selectedSurvey.question && selectedSurvey.question.map((question, index) => (
               <Container
                 key={index}
@@ -1392,8 +1399,11 @@ const [open, setOpen] = React.useState(false);
                 </Box>
               </Container>
             ))}
+            </Box>
 
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, mb: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, mb: 2, pt: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider' }}>
               <Button
                 onClick={handleCloseSurvey}
                 variant="outlined"
