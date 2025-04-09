@@ -1283,7 +1283,7 @@ const [open, setOpen] = React.useState(false);
             sx={{
               mt: 3, 
               width: "95% !important",
-              height: { xs: "85vh !important", sm: "80vh !important" },
+              height: { xs: "75vh !important", sm: "80vh !important" },
               maxWidth: "700px !important",
               position: "relative",
               padding: "20px",
