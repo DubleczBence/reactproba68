@@ -23,7 +23,7 @@ class CompanyModel {
     
     const hashedPassword = await bcrypt.hash(jelszo, 10);
 
-    cconst [result] = await db.promise().query(
+    const [result] = await db.promise().query(
       'INSERT INTO companies (cegnev, telefon, ceg_email, jelszo, telepules, megye, ceges_szamla, ceges_szamlak, hitelkartya, adoszam, cegjegyzek, helyrajziszam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [cegnev, telefon, ceg_email, hashedPassword, telepules, megye, 0, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam]
     );
