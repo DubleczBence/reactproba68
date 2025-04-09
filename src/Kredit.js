@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Button, Grid, Box, useMediaQuery } from "@mui/material";
+import { Card, CardContent, Typography, Button, Grid, Box, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Slide } from "@mui/material";
 import MuiCard from '@mui/material/Card';
 import { styled, useTheme } from '@mui/material/styles';
 import { get, post } from './services/apiService';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const creditOptions = [
   { amount: 500, price: "10 000 Ft" },
@@ -44,6 +48,10 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
   const isNarrow = useMediaQuery('(max-width:1700px) and (min-width:901px)');
 
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [selectedCreditAmount, setSelectedCreditAmount] = useState(null);
+  const [purchaseType, setPurchaseType] = useState('');
+
   useEffect(() => {
     const fetchCreditHistory = async () => {
       try {
@@ -64,7 +72,13 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
     fetchCreditHistory();
   }, []);
 
-  const handlePurchase = async (amount) => {
+  const handlePurchase = async (amount, type) => {
+    setSelectedCreditAmount(amount);
+    setPurchaseType(type);
+    setConfirmDialogOpen(true);
+  };
+
+  const confirmPurchase = async () => {
     try {
       const companyId = localStorage.getItem('cegId');
       if (!companyId) {
@@ -73,33 +87,26 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
       }
   
       const data = await post('/companies/purchase-credits', { 
-        packageAmount: amount, 
+        packageAmount: selectedCreditAmount, 
         companyId: parseInt(companyId) 
       });
   
       onPurchase(data.currentCredits);
   
       const historyData = await get(`/companies/credit-history/${companyId}`);
-      console.log('Credit history data:', historyData); // Add this line to debug
-
       if (Array.isArray(historyData)) {
-      // Check for duplicate transactions
-      const uniqueTransactions = historyData.filter((transaction, index, self) =>
-        index === self.findIndex((t) => t.id === transaction.id)
-      );
-      
-      if (uniqueTransactions.length !== historyData.length) {
-        console.warn('Duplicate transactions found in credit history!');
+        setCreditHistory(historyData);
+      } else {
+        console.error('Expected array but got:', historyData);
+        setCreditHistory([]); // Üres tömböt állítunk be, ha nem tömböt kaptunk
       }
       
-      setCreditHistory(uniqueTransactions); // Use unique transactions
-    } else {
-      console.error('Expected array but got:', historyData);
-      setCreditHistory([]);
+      // Close the dialog
+      setConfirmDialogOpen(false);
+    } catch (error) {
+      console.error('Error purchasing credits:', error);
+      setConfirmDialogOpen(false);
     }
-  } catch (error) {
-    console.error('Error purchasing credits:', error);
-  }
   };
 
   return (
@@ -144,26 +151,7 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
   }}
 >
         <Typography variant="h6" sx={{ mb: 2, pl: 2 }}>Pont előzmények</Typography>
-        {creditHistory
-        .filter((transaction, index, self) => 
-          index === self.findIndex((t) => t.id === transaction.id)
-        )
-        .map((transaction) => {
-          // Dátum korrekció - ha van created_at vagy transaction_date mező
-          let formattedDate = transaction.formatted_date;
-          if (transaction.created_at) {
-            // Ha van created_at mező, akkor azt használjuk
-            const date = new Date(transaction.created_at);
-            formattedDate = date.toLocaleString('hu-HU', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            });
-          }
-
-          return (
+        {creditHistory.map((transaction) => (
           <Button
             key={transaction.id}
             sx={{
@@ -184,7 +172,7 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
                 {transaction.transaction_type === 'purchase' ? 'Kredit vásárlás' : transaction.survey_title}
               </Typography>
               <Typography variant="caption" color="textSecondary">
-                {formattedDate}
+                {transaction.formatted_date}
               </Typography>
             </Box>
             <Typography 
@@ -195,8 +183,7 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
               {transaction.transaction_type === 'purchase' ? '+' : '-'}{transaction.amount} kredit
             </Typography>
           </Button>
-        );
-        })}
+        ))}
       </Card>
 
       <Box sx={{
@@ -372,7 +359,7 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
                         <Button 
                           variant="contained" 
                           size="small" 
-                          onClick={() => handlePurchase(option.amount)} 
+                          onClick={() => handlePurchase(option.amount, category)} 
                           sx={{ mt: 'auto', fontSize: '0.75rem', padding: '4px 8px', mb: 1 }}
                         >
                           Vásárlás
@@ -386,6 +373,24 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
           ))}
         </StyledCard>
       </Box>
+      <Dialog
+        open={confirmDialogOpen}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => setConfirmDialogOpen(false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Kredit vásárlás megerősítése"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Biztosan meg szeretné vásárolni a {selectedCreditAmount} kredit csomagot ({purchaseType})?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialogOpen(false)}>Mégse</Button>
+          <Button onClick={confirmPurchase}>Vásárlás</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
