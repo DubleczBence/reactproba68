@@ -83,7 +83,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   margin: 'auto',
   marginTop: theme.spacing(2),
   marginBottom: theme.spacing(8),
-  overflow: 'auto !important',
+  overflow: 'auto',
   maxHeight: '70vh',
   backgroundColor: theme.palette.mode === 'light' 
     ? 'rgba(255, 255, 255, 0.55) !important'
@@ -117,7 +117,7 @@ const UserContainer = styled(Stack)(({ theme }) => ({
   height: '100vh',
   width: '100%',
   padding: theme.spacing(2),
-  overflowY: 'auto !important',
+  overflowY: 'auto',
   overflowX: 'hidden',
   display: 'flex',
   flexDirection: 'column',
@@ -1223,8 +1223,8 @@ const [open, setOpen] = React.useState(false);
                 maxWidth: "700px !important",
                 position: "relative",
                 padding: "20px",
-                overflow: "auto !important",
-                overflowY: "scroll !important",
+                overflow: "auto",
+                overflowY: "auto !important",
                 WebkitOverflowScrolling: "touch",
                 msOverflowStyle: "-ms-autohiding-scrollbar",
                 '& .MuiButton-root': {
@@ -1289,23 +1289,26 @@ const [open, setOpen] = React.useState(false);
           variant="outlined"
           sx={{
             mt: { xs: 2, sm: 2 },
-            mb: { xs: 2, sm: 2 },
+            mb: { xs: 8, sm: 10 },
             width: "95% !important",
             height: { xs: "60vh", sm: "70vh" },
             minHeight: { xs: "60vh", sm: "70vh" },
             maxWidth: "700px !important",
             position: "relative",
             padding: "20px",
-            overflow: "auto !important",
-            overflowY: "scroll !important",
+            overflow: "auto",
+            overflowY: "auto !important",
             WebkitOverflowScrolling: "touch",
             msOverflowStyle: "-ms-autohiding-scrollbar",
             '& .MuiButton-root': {
-              minHeight: '80px',
-              height: '80px !important',
-              flexShrink: 0
+              [theme.breakpoints.down('sm')]: {
+                minHeight: '80px',
+                height: '80px !important',
+                flexShrink: 0,
+                fontSize: '1rem',
+                padding: '0 16px'
+              }
             },
-
             '&::-webkit-scrollbar': {
               width: '8px',
             },
@@ -1415,27 +1418,41 @@ const [open, setOpen] = React.useState(false);
                 mb: 2,
                 pt: 2,
                 position: 'relative',
-                bottom: 0,
-                backgroundColor: theme => theme.palette.mode === 'light' 
-                  ? 'rgba(255, 255, 255, 0.9)' 
-                  : 'rgba(18, 18, 18, 0.9)',
                 borderTop: '1px solid',
                 borderColor: 'divider',
               }}>
               <Button
-                onClick={handleCloseSurvey}
-                variant="outlined"
-              >
+              onClick={handleCloseSurvey}
+              variant="outlined"
+              sx={{
+                [theme.breakpoints.down('sm')]: {
+                  minHeight: '60px',
+                  height: '60px !important',
+                  fontSize: '0.9rem',
+                  padding: '0 12px',
+                  flex: 1
+                }
+              }}
+            >
                 Vissza a kérdőívekhez
               </Button>
               <Button
-                onClick={handleSubmitSurvey}
-                variant="contained"
-                color="primary"
-                disabled={!isAllQuestionsAnswered() || submittingSurvey}
-              >
-                Küldés
-              </Button>
+              onClick={handleSubmitSurvey}
+              variant="contained"
+              color="primary"
+              disabled={!isAllQuestionsAnswered() || submittingSurvey}
+              sx={{
+                [theme.breakpoints.down('sm')]: {
+                  minHeight: '60px',
+                  height: '60px !important',
+                  fontSize: '0.9rem',
+                  padding: '0 12px',
+                  flex: 1
+                }
+              }}
+            >
+              Küldés
+            </Button>
             </Box>
           </Card>
         )}
