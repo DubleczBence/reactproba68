@@ -2223,6 +2223,7 @@ const handleCardDialogClose = (cardName) => {
           onSuccess={handleSurveySuccess}
           onError={handleSurveyError}
           filterData={filterData}
+          availableCredits={credits}
         />
         )}
 

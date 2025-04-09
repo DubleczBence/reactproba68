@@ -37,15 +37,28 @@ const AttekintesContainer = styled(MuiCard)(({ theme }) => ({
 }));
 
 const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount, creditCost, questionsCost, 
-  sampleCost,  onSuccess, onError, filterData }) => {
+  sampleCost,  onSuccess, onError, filterData, availableCredits }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+
+  const hasEnoughCredits = availableCredits >= creditCost;
 
   const handleSubmit = async () => {
+    if (!hasEnoughCredits) {
+      onError('Nincs elegendő kredit a kérdőív létrehozásához!');
+      return;
+    }
+
     console.log("Filter data in handleSubmit:", filterData);
 
     if (!surveyTitle || questions.some(q => !q.questionText)) {
       onError('Minden mező kitöltése kötelező!');
+      return;
+    }
+
+    if (!acceptTerms) {
+      onError('A feltételek elfogadása kötelező!');
       return;
     }
 
@@ -226,7 +239,12 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
           mb: 2
         }}>
           <FormControlLabel
-            control={<Checkbox />}
+            control={
+              <Checkbox 
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+              />
+            }
             label="Elfogadom a feltételeket"
             sx={{
               '& .MuiTypography-root': {
@@ -249,7 +267,7 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
       <Button
           onClick={handleSubmit}
           variant="outlined"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !hasEnoughCredits || !acceptTerms}
           sx={{
             alignItems: "center",
             justifyContent: "center",
@@ -267,6 +285,20 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
         >
           Megerősítés
         </Button>
+
+      {!hasEnoughCredits && (
+        <Typography 
+          variant="caption" 
+          color="error" 
+          sx={{ 
+            display: 'block', 
+            textAlign: 'center', 
+            mt: 1 
+          }}
+        >
+          Nincs elegendő kredit a kérdőív létrehozásához!
+        </Typography>
+      )}
 
     <Button
     onClick={onBack}
