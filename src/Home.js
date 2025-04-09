@@ -1317,14 +1317,6 @@ const [open, setOpen] = React.useState(false);
             >
               {selectedSurvey.title}
             </Typography>
-            
-          <Box sx={{ 
-            flex: 1, 
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2
-            }}>
     
             {selectedSurvey.question && selectedSurvey.question.map((question, index) => (
               <Container
@@ -1399,7 +1391,6 @@ const [open, setOpen] = React.useState(false);
                 </Box>
               </Container>
             ))}
-            </Box>
 
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, mb: 2, pt: 2,
             borderTop: '1px solid',
