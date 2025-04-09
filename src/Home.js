@@ -1547,6 +1547,32 @@ const [open, setOpen] = React.useState(false);
         </Snackbar>
 
         <CssBaseline enableColorScheme />
+        <style jsx global>{`
+        html, body {
+          height: 100%;
+          width: 100%;
+          overflow-x: hidden;
+        }
+        
+        /* Görgetősáv elrejtése, ha nincs rá szükség */
+        .MuiStack-root::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        .MuiStack-root::-webkit-scrollbar-track {
+          background: rgba(0,0,0,0.1);
+        }
+        
+        .MuiStack-root::-webkit-scrollbar-thumb {
+          background: rgba(0,0,0,0.2);
+          border-radius: 4px;
+        }
+        
+        /* Ha nincs szükség görgetésre, elrejtjük a görgetősávot */
+        .MuiStack-root.no-scroll {
+          overflow-y: hidden !important;
+        }
+      `}</style>
 
         <Menu
         anchorEl={anchorEl}
