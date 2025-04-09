@@ -61,8 +61,9 @@ export default function ColorModeSelect(props) {
           position: 'fixed', 
           top: '0.5rem', 
           left: '0.5rem',
-          zIndex: 5,
-          pointerEvents: 'none'
+          zIndex: 1000,
+          pointerEvents: 'none',
+          isolation: 'isolate'
         }}
       >
         <img

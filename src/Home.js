@@ -122,10 +122,10 @@ const UserContainer = styled(Stack)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
-  paddingBottom: theme.spacing(8), // Ensure proper stacking context
+  paddingBottom: theme.spacing(12), // Ensure proper stacking context
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
-    paddingBottom: theme.spacing(10), 
+    paddingBottom: theme.spacing(16), 
   },
   '&::before': {
     content: '""',
@@ -1283,11 +1283,25 @@ const [open, setOpen] = React.useState(false);
             sx={{
               mt: 3, 
               width: "95% !important",
-              height: "70vh !important",
+              height: { xs: "75vh !important", sm: "80vh !important" },
               maxWidth: "700px !important",
               position: "relative",
               padding: "20px",
-              overflow: "auto"
+              overflow: "auto",
+              display: "flex",
+              flexDirection: "column",
+              mb: { xs: 8, sm: 10 }, // Alsó margó hozzáadása
+              // Görgetősáv stílusok
+              '&::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: 'rgba(0,0,0,0.1)',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: '4px',
+              }
             }}
           >
             <Typography 
@@ -1669,7 +1683,7 @@ const [open, setOpen] = React.useState(false);
       left: { sm: '50%' },
       transform: { sm: 'translateX(-50%)' },
       width: { xs: '100%', sm: 'auto' },
-      mt: { xs: 2, sm: -1 },
+      mt: { xs: 4, sm: -1 },
       whiteSpace: 'nowrap',
       zIndex: 4
     }}
