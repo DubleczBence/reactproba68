@@ -182,10 +182,12 @@ class CompanyController {
     console.log("Received request:", { packageAmount, companyId });
     
     try {
+      // A createCreditTransaction már létrehozza a kapcsolatot, ha a companyId meg van adva
       const transactionId = await TransactionModel.createCreditTransaction(packageAmount, "purchase", companyId, true);
       
-      await TransactionModel.connectToCompany(companyId, transactionId);
-
+      // Ezt a sort töröljük, mert duplikációt okoz
+      // await TransactionModel.connectToCompany(companyId, transactionId);
+  
       await CompanyModel.updateCredits(companyId, packageAmount);
       
       const credits = await CompanyModel.getCredits(companyId);
