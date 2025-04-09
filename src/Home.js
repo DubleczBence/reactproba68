@@ -117,7 +117,7 @@ const UserContainer = styled(Stack)(({ theme }) => ({
   height: '100vh',
   width: '100%',
   padding: 0,
-  marginTop: 6,
+  marginTop: 15,
   overflow: 'hidden',
   overflowX: 'hidden',
   overflowY: 'hidden',
