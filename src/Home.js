@@ -114,22 +114,22 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 
 const UserContainer = styled(Stack)(({ theme }) => ({
-  height: '100vh', // Set to 100vh to take full viewport height
+  height: '100vh',
   width: '100%',
   padding: theme.spacing(2),
-  overflowY: 'auto !important', // Force vertical scrolling
+  overflowY: 'auto !important',
   overflowX: 'hidden',
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
-  paddingBottom: theme.spacing(12), // Ensure proper stacking context
+  paddingBottom: theme.spacing(12),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
     paddingBottom: theme.spacing(16), 
   },
   '&::before': {
     content: '""',
-    position: 'fixed', // Change to fixed so it doesn't affect scrolling
+    position: 'fixed',
     inset: 0,
     backgroundColor: theme.palette.mode === 'light'
       ? 'rgba(255, 255, 255, 0.2)'
@@ -198,7 +198,6 @@ const TextCarousel = () => {
     return () => clearInterval(interval);
   }, [messages.length]);
 
-  // Animation for text
   const [textProps, api] = useSpring(() => ({
     opacity: 1,
     transform: 'translateY(0)',
@@ -213,7 +212,6 @@ const TextCarousel = () => {
       from: { opacity: 0, transform: 'translateY(20px)' },
       reset: true
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndex]);
 
   return (
@@ -244,7 +242,6 @@ const TextCarousel = () => {
         </Typography>
       </animated.div>
 
-      {/* Indicator dots */}
       <Box sx={{ 
         display: 'flex', 
         justifyContent: 'center', 
@@ -453,7 +450,6 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
             }}
           />
           
-          {/* Kuponok megjelenítése */}
           {userVouchers && userVouchers.length > 0 && (
             <Box>
             <Typography variant="h6" sx={{ mb: 2 }}>Vásárolt kuponok</Typography>
@@ -464,10 +460,8 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
               justifyContent: 'flex-start'
             }}>
               {userVouchers.map((voucher) => {
-                // Kép kiválasztása a kupon neve alapján
                 let imageName = 'default.png';
                 
-                // Keressük meg a megfelelő képet a voucherOptions alapján
                 voucherOptions.forEach(category => {
                   category.items.forEach(item => {
                     if (item.name === voucher.name || 
@@ -584,7 +578,6 @@ const Home = ({ onSignOut, onSendData }) => {
     try {
       if (!userId) return;
       
-      // Csak naplózzuk, hogy frissítettük a kredit előzményeket
       console.log('Refreshing credit history for user:', userId);
       await get(`/users/credit-history/${userId}`);
     console.log('Credit history refreshed');
@@ -627,7 +620,6 @@ const Home = ({ onSignOut, onSendData }) => {
     if (!selectedVoucher) return;
     
     try {
-      // Kupon vásárlás API hívás
       const response = await post('/users/purchase-voucher', {
         userId: userId,
         voucherName: selectedVoucher.name,
@@ -635,23 +627,18 @@ const Home = ({ onSignOut, onSendData }) => {
       });
       
       if (response.message && response.message.includes('success')) {
-        // Frissítsük a kredit egyenleget
         setCredits(response.currentCredits || credits);
         fetchCredits();
         
-        // Sikeres vásárlás után
         setPurchaseSuccess(true);
         fetchUserVouchers();
         
-        // Zárjuk be a megerősítő dialógust
         setConfirmPurchaseOpen(false);
         
-        // 5 másodperc után rejtsük el a sikeres vásárlás üzenetet
         setTimeout(() => {
           setPurchaseSuccess(false);
         }, 5000);
         
-        // Snackbar értesítés
         setSnackbar({
           open: true,
           message: 'Sikeres kupon vásárlás! A kuponjait a profil menüben tekintheti meg.',
@@ -671,7 +658,6 @@ const Home = ({ onSignOut, onSendData }) => {
     }
   };
 
-  // Kuponok lekérése a felhasználóhoz
   const fetchUserVouchers = useCallback(async () => {
     try {
       if (!userId) return;
@@ -752,7 +738,6 @@ const Home = ({ onSignOut, onSendData }) => {
 
   const fetchCredits = useCallback(async () => {
     try {
-      // Használjuk a get függvényt a fetch helyett
       const data = await get(`/users/credits/${userId}`);
       setCredits(data.credits);
     } catch (error) {
@@ -816,30 +801,27 @@ const Home = ({ onSignOut, onSendData }) => {
 
 
   const sendData = async () => {
-    // Ellenőrizzük, hogy minden kötelező mező ki van-e töltve
     if (!vegzettseg || !korcsoport || !regio || !nem || !anyagi) {
       alert('Kérjük, töltsön ki minden mezőt!');
       return;
     }
   
-    // Alakítsuk át a korcsoport dayjs objektumot ISO string formátumra
     const formattedData = {
       vegzettseg,
-      korcsoport: korcsoport.format('YYYY-MM-DD'), // ISO formátum
+      korcsoport: korcsoport.format('YYYY-MM-DD'),
       regio,
       nem,
       anyagi,
-      userId: userId // Adjuk hozzá a felhasználó azonosítóját
+      userId: userId
     };
   
     try {
-      console.log('Sending data:', formattedData); // Debug log
+      console.log('Sending data:', formattedData);
       await post('/main/home', formattedData);
       setIsFormFilled(true);
       window.location.reload();
     } catch (error) {
       console.error('Error sending data:', error);
-      // Jelenítsünk meg egy hibaüzenetet a felhasználónak
       setSnackbar({
         open: true,
         message: 'Hiba történt az adatok küldése során. Kérjük, próbálja újra!',
@@ -906,8 +888,7 @@ const [open, setOpen] = React.useState(false);
         console.error('Selected survey is missing or invalid');
         return;
       }
-      
-      // Ellenőrizzük, hogy minden kérdésre van-e válasz
+
       if (!isAllQuestionsAnswered()) {
         setSnackbar({
           open: true,
@@ -928,7 +909,6 @@ const [open, setOpen] = React.useState(false);
 
       const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
     
-      // Használjuk a post függvényt a fetch helyett
       const postPromise = post('/main/submit-survey', {
         surveyId: surveyId,
         answers: Object.entries(answers).map(([questionId, value]) => ({
@@ -940,7 +920,6 @@ const [open, setOpen] = React.useState(false);
       await Promise.all([postPromise, delayPromise]);
     
       await fetchCredits();
-      // Frissítsük a kredit előzményeket is
       await fetchCreditHistory();
       
       setSubmittingSurvey(false);
@@ -976,7 +955,6 @@ const [open, setOpen] = React.useState(false);
 
   const fetchAvailableSurveys = async () => {
     try {
-      // Használjuk a get függvényt a fetch helyett
       const data = await get('/main/available-surveys');
       console.log('Fetched surveys:', data);
       console.log('Available survey IDs:', data.surveys ? data.surveys.map(s => s.id) : []);
@@ -1006,7 +984,6 @@ const [open, setOpen] = React.useState(false);
         return;
       }
     
-      // Használjuk a get függvényt a fetch helyett
       const surveyData = await get(`/main/survey/${surveyId}`);
       console.log('Survey data from API:', surveyData);
     
@@ -1027,11 +1004,6 @@ const [open, setOpen] = React.useState(false);
       console.error('Error opening survey:', error);
     }
   };
-
-
-  
-
-
 
 
   useEffect(() => {
@@ -1208,24 +1180,24 @@ const [open, setOpen] = React.useState(false);
             <Card
               variant="outlined"
               sx={{
-                mt: { xs: 2, sm: 2 }, // Reduced top margin on mobile from 8 to 2
-                mb: { xs: 8, sm: 10 }, // Added bottom margin
+                mt: { xs: 2, sm: 2 },
+                mb: { xs: 8, sm: 10 },
                 width: "95% !important",
                 height: { xs: "60vh", sm: "70vh" },
                 minHeight: { xs: "60vh", sm: "70vh" },
                 maxWidth: "700px !important",
                 position: "relative",
                 padding: "20px",
-                overflow: "auto !important", // Ensure overflow is set to auto
-                overflowY: "scroll !important", // Force vertical scrolling
-                WebkitOverflowScrolling: "touch", // Improve scrolling on iOS
-                msOverflowStyle: "-ms-autohiding-scrollbar", // Improve scrolling on IE/Edge
+                overflow: "auto !important",
+                overflowY: "scroll !important",
+                WebkitOverflowScrolling: "touch",
+                msOverflowStyle: "-ms-autohiding-scrollbar",
                 '& .MuiButton-root': {
                   minHeight: '80px',
                   height: '80px !important',
                   flexShrink: 0
                 },
-                // Add a scrollbar styling that's more visible
+
                 '&::-webkit-scrollbar': {
                   width: '8px',
                 },
@@ -1281,24 +1253,24 @@ const [open, setOpen] = React.useState(false);
           <Card
           variant="outlined"
           sx={{
-            mt: { xs: 2, sm: 2 }, // Reduced top margin on mobile from 8 to 2
-            mb: { xs: 2, sm: 2 }, // Added bottom margin
+            mt: { xs: 2, sm: 2 },
+            mb: { xs: 2, sm: 2 },
             width: "95% !important",
             height: { xs: "60vh", sm: "70vh" },
             minHeight: { xs: "60vh", sm: "70vh" },
             maxWidth: "700px !important",
             position: "relative",
             padding: "20px",
-            overflow: "auto !important", // Ensure overflow is set to auto
-            overflowY: "scroll !important", // Force vertical scrolling
-            WebkitOverflowScrolling: "touch", // Improve scrolling on iOS
-            msOverflowStyle: "-ms-autohiding-scrollbar", // Improve scrolling on IE/Edge
+            overflow: "auto !important",
+            overflowY: "scroll !important",
+            WebkitOverflowScrolling: "touch",
+            msOverflowStyle: "-ms-autohiding-scrollbar",
             '& .MuiButton-root': {
               minHeight: '80px',
               height: '80px !important',
               flexShrink: 0
             },
-            // Add a scrollbar styling that's more visible
+
             '&::-webkit-scrollbar': {
               width: '8px',
             },
@@ -1407,14 +1379,13 @@ const [open, setOpen] = React.useState(false);
                 mt: 4, 
                 mb: 2,
                 pt: 2,
-                position: 'sticky',
+                position: 'relative',
                 bottom: 0,
                 backgroundColor: theme => theme.palette.mode === 'light' 
                   ? 'rgba(255, 255, 255, 0.9)' 
                   : 'rgba(18, 18, 18, 0.9)',
                 borderTop: '1px solid',
                 borderColor: 'divider',
-                zIndex: 10
               }}>
               <Button
                 onClick={handleCloseSurvey}
@@ -1626,7 +1597,7 @@ const [open, setOpen] = React.useState(false);
 
             <IllustrationContainer>
               <img 
-                key={showUserCreditPage ? "userCredit" : "userSurvey"} // Egyedi kulcs az animáció újraindításához
+                key={showUserCreditPage ? "userCredit" : "userSurvey"}
                 src={showUserCreditPage ? "/kepek/illustration-kitolto_kredit.png" : "/kepek/illustration-kitolto_kerdoiv.png"} 
                 alt={showUserCreditPage ? "Kredit Illusztráció" : "Kérdőív Illusztráció"} 
                 style={{ 
@@ -1753,8 +1724,8 @@ const [open, setOpen] = React.useState(false);
               maxWidth: '600px',
               mx: 'auto',
               mt: { xs: 0, sm: 10 },
-              position: 'relative', // Hozzáadva, hogy a z-index működjön
-              zIndex: 1 // Hozzáadva, hogy a kártya az illusztráció felett legyen
+              position: 'relative',
+              zIndex: 1
             }}>
       
             <FormControl sx={{ m: 1, minWidth: 240 }}>
@@ -1809,9 +1780,9 @@ const [open, setOpen] = React.useState(false);
       textField: {
         onClick: () => setIsCalendarOpen(true),
         sx: {
-          m: 1,                   // Margin hozzáadása, mint a többi FormControl-nál
-          minWidth: 240,          // Ugyanaz a minWidth, mint a többi FormControl-nál
-          width: 'auto',          // Explicit width: auto beállítás
+          m: 1,
+          minWidth: 240,
+          width: 'auto',
           '& .MuiInputBase-root': {
             fontSize: '1.2rem',
             padding: '10px',
@@ -1822,9 +1793,9 @@ const [open, setOpen] = React.useState(false);
             fontSize: '1.2rem',
             fontWeight: 'bold',
             lineHeight: '1.5',
-            transform: 'translate(0px, -20px) scale(0.75)', // Ez a sor módosítja a label pozícióját
+            transform: 'translate(0px, -20px) scale(0.75)',
             '&.Mui-focused, &.MuiFormLabel-filled': {
-              transform: 'translate(0px, -20px) scale(0.75)' // Fókuszált és kitöltött állapotban is
+              transform: 'translate(0px, -20px) scale(0.75)'
             }
           },
           '& .MuiInputAdornment-root': {
