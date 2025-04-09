@@ -24,8 +24,8 @@ class CompanyModel {
     const hashedPassword = await bcrypt.hash(jelszo, 10);
 
     const [result] = await db.promise().query(
-      'INSERT INTO companies (cegnev, telefon, ceg_email, jelszo, telepules, megye, ceges_szamla, ceges_szamlak, hitelkartya, adoszam, cegjegyzek, helyrajziszam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [cegnev, telefon, ceg_email, hashedPassword, telepules, megye, 0, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam]
+      'INSERT INTO companies (cegnev, telefon, ceg_email, jelszo, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [cegnev, telefon, ceg_email, hashedPassword, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam]
     );
     
     return result.insertId;
@@ -72,7 +72,7 @@ class CompanyModel {
 
   static async getProfile(companyId) {
     const [company] = await db.promise().query(
-      'SELECT cegnev, telefon, ceg_email, telepules, megye, ceges_szamlak AS ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam FROM companies WHERE id = ?',
+      'SELECT id, cegnev, telefon, ceg_email, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam FROM companies WHERE id = ?',
       [companyId]
     );
     return company.length > 0 ? company[0] : null;
