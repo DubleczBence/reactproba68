@@ -625,7 +625,7 @@ const Home = ({ onSignOut, onSendData }) => {
     
     try {
       // Kupon vásárlás API hívás
-      const response = await post('/api/users/purchase-voucher', {
+      const response = await post('/users/purchase-voucher', {
         userId: userId,
         voucherName: selectedVoucher.name,
         creditCost: selectedVoucher.creditCost
