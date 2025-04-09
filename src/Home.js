@@ -136,6 +136,19 @@ const UserContainer = styled(Stack)(({ theme }) => ({
       : 'rgba(0, 0, 0, 0.2)',
     zIndex: -1,
     pointerEvents: 'none',
+  },
+  // Görgetősáv elrejtése, ha nincs rá szükség
+  '&::-webkit-scrollbar': {
+    width: '8px',
+    // Csak akkor jelenjen meg, ha szükséges
+    display: 'auto'
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'rgba(0,0,0,0.1)',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'rgba(0,0,0,0.2)',
+    borderRadius: '4px',
   }
 }));
 
@@ -657,6 +670,34 @@ const Home = ({ onSignOut, onSendData }) => {
       setConfirmPurchaseOpen(false);
     }
   };
+
+  useEffect(() => {
+    const checkScrollbar = () => {
+      const container = document.querySelector('.MuiStack-root');
+      if (container) {
+        if (container.scrollHeight <= container.clientHeight) {
+          container.style.overflowY = 'hidden';
+        } else {
+          container.style.overflowY = 'auto';
+        }
+      }
+    };
+  
+    checkScrollbar();
+  
+    window.addEventListener('resize', checkScrollbar);
+  
+    const observer = new MutationObserver(checkScrollbar);
+    const container = document.querySelector('.MuiStack-root');
+    if (container) {
+      observer.observe(container, { childList: true, subtree: true });
+    }
+
+    return () => {
+      window.removeEventListener('resize', checkScrollbar);
+      observer.disconnect();
+    };
+  }, [showSurvey, showUserCreditPage]);
 
   const fetchUserVouchers = useCallback(async () => {
     try {
