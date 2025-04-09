@@ -734,6 +734,41 @@ const Home = ({ onSignOut, onSendData }) => {
   };
 
 
+useEffect(() => {
+  const resetViewport = () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      
+      const viewportMeta = document.querySelector('meta[name="viewport"]');
+      if (viewportMeta) {
+        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        setTimeout(() => {
+          viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        }, 300);
+      }
+    }, 300);
+  };
+
+  window.addEventListener('resize', resetViewport);
+  
+  document.addEventListener('focusout', resetViewport);
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      if (window.visualViewport.height === window.innerHeight) {
+        resetViewport();
+      }
+    });
+  }
+
+  return () => {
+    window.removeEventListener('resize', resetViewport);
+    document.removeEventListener('focusout', resetViewport);
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', resetViewport);
+    }
+  };
+}, []);
 
 
   const fetchCredits = useCallback(async () => {
