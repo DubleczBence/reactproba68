@@ -24,11 +24,11 @@ class CompanyModel {
     const hashedPassword = await bcrypt.hash(jelszo, 10);
   
     // Formázott számlaszám kezelése
-    const formattedCegesSzamla = ceges_szamla.toString();
+    const shortenedCegesSzamla = ceges_szamla.slice(-9);
   
-    const [result] = await db.promise().query(
+    cconst [result] = await db.promise().query(
       'INSERT INTO companies (cegnev, telefon, ceg_email, jelszo, telepules, megye, ceges_szamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [cegnev, telefon, ceg_email, hashedPassword, telepules, megye, formattedCegesSzamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam]
+      [cegnev, telefon, ceg_email, hashedPassword, telepules, megye, shortenedCegesSzamla, hitelkartya, adoszam, cegjegyzek, helyrajziszam]
     );
     
     return result.insertId;
