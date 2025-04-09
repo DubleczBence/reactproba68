@@ -81,8 +81,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   margin: 'auto',
-  marginTop: theme.spacing(2),
-  marginBottom: theme.spacing(8),
+  marginTop: 0, 
+  marginBottom: 0, 
   overflow: 'auto',
   maxHeight: '70vh',
   backgroundColor: theme.palette.mode === 'light' 
@@ -92,8 +92,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
     width: '700px',
-    marginBottom: theme.spacing(10),
-    },
+    marginBottom: 0,
+  },
   ...theme.applyStyles('dark', {
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
@@ -116,17 +116,21 @@ const Card = styled(MuiCard)(({ theme }) => ({
 const UserContainer = styled(Stack)(({ theme }) => ({
   height: '100vh',
   width: '100%',
-  padding: theme.spacing(2),
-  overflowY: 'auto',
+  padding: 0,
+  margin: 0,
+  overflow: 'hidden',
   overflowX: 'hidden',
+  overflowY: 'hidden',
   display: 'flex',
   flexDirection: 'column',
   position: 'relative',
-  paddingBottom: theme.spacing(12),
-  [theme.breakpoints.up('sm')]: {
-    padding: theme.spacing(4),
-    paddingBottom: theme.spacing(16), 
+  
+  [theme.breakpoints.down('sm')]: {
+    overflowY: 'auto',
+    padding: theme.spacing(2),
+    paddingBottom: theme.spacing(8),
   },
+  
   '&::before': {
     content: '""',
     position: 'fixed',
@@ -137,24 +141,16 @@ const UserContainer = styled(Stack)(({ theme }) => ({
     zIndex: -1,
     pointerEvents: 'none',
   },
-  // Görgetősáv elrejtése, ha nincs rá szükség
+  
   '&::-webkit-scrollbar': {
-    width: '8px',
-    // Csak akkor jelenjen meg, ha szükséges
-    display: 'auto'
+    display: 'none',
+    width: 0,
   },
-  '&::-webkit-scrollbar-track': {
-    background: 'rgba(0,0,0,0.1)',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(0,0,0,0.2)',
-    borderRadius: '4px',
-  }
 }));
 
 
 const IllustrationContainer = styled(Box)(({ theme }) => ({
-  display: 'none', // Mobilon elrejtjük
+  display: 'none',
   [theme.breakpoints.up('md')]: {
     display: 'flex',
     alignItems: 'center',
@@ -670,6 +666,29 @@ const Home = ({ onSignOut, onSendData }) => {
       setConfirmPurchaseOpen(false);
     }
   };
+
+  useEffect(() => {
+    const handleScrolling = () => {
+      const container = document.querySelector('.MuiStack-root');
+      if (!container) return;
+      
+      if (window.innerWidth > 600) {
+        container.style.overflowY = 'hidden';
+        document.body.style.overflow = 'hidden';
+      } else {
+        container.style.overflowY = 'auto';
+        document.body.style.overflow = 'auto';
+      }
+    };
+    
+    handleScrolling();
+    
+    window.addEventListener('resize', handleScrolling);
+    
+    return () => {
+      window.removeEventListener('resize', handleScrolling);
+    };
+  }, []);
 
   useEffect(() => {
     const checkScrollbar = () => {
@@ -1548,31 +1567,27 @@ const [open, setOpen] = React.useState(false);
 
         <CssBaseline enableColorScheme />
         <style jsx global>{`
-        html, body {
-          height: 100%;
-          width: 100%;
-          overflow-x: hidden;
-        }
-        
-        /* Görgetősáv elrejtése, ha nincs rá szükség */
-        .MuiStack-root::-webkit-scrollbar {
-          width: 8px;
-        }
-        
-        .MuiStack-root::-webkit-scrollbar-track {
-          background: rgba(0,0,0,0.1);
-        }
-        
-        .MuiStack-root::-webkit-scrollbar-thumb {
-          background: rgba(0,0,0,0.2);
-          border-radius: 4px;
-        }
-        
-        /* Ha nincs szükség görgetésre, elrejtjük a görgetősávot */
-        .MuiStack-root.no-scroll {
-          overflow-y: hidden !important;
-        }
-      `}</style>
+          @media (min-width: 600px) {
+            html, body, #root, .MuiStack-root {
+              overflow: hidden !important;
+              height: 100vh !important;
+              max-height: 100vh !important;
+            }
+          }
+          
+          /* Görgetősáv teljes eltávolítása nagyobb képernyőkön */
+          @media (min-width: 600px) {
+            ::-webkit-scrollbar {
+              display: none !important;
+              width: 0 !important;
+            }
+            
+            * {
+              scrollbar-width: none !important;
+              -ms-overflow-style: none !important;
+            }
+          }
+        `}</style>
 
         <Menu
         anchorEl={anchorEl}
