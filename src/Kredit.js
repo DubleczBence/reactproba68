@@ -80,6 +80,9 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
 
   const confirmPurchase = async () => {
     try {
+
+      setConfirmDialogOpen(false);
+
       const companyId = localStorage.getItem('cegId');
       if (!companyId) {
         console.error('Company ID not found');
@@ -98,14 +101,10 @@ const CreditPurchase = ({ currentCredits, onPurchase }) => {
         setCreditHistory(historyData);
       } else {
         console.error('Expected array but got:', historyData);
-        setCreditHistory([]); // Üres tömböt állítunk be, ha nem tömböt kaptunk
+        setCreditHistory([]);
       }
-      
-      // Close the dialog
-      setConfirmDialogOpen(false);
     } catch (error) {
       console.error('Error purchasing credits:', error);
-      setConfirmDialogOpen(false);
     }
   };
 
