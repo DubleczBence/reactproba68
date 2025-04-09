@@ -1185,12 +1185,12 @@ const [open, setOpen] = React.useState(false);
       cursor: 'pointer',
       fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.6rem' },
       order: { xs: 2, md: 1 },
-      mt: { xs: 2, md: -1, sm: -4 },
+      mt: { xs: 2, sm: 0, md: -1 },
       position: 'relative',
       zIndex: 5,
       width: { xs: '100%', md: '25%' }, 
       textAlign: { xs: 'center', md: 'left' },
-      pl: { md: 20 },
+      pl: { md: 10, lg: 20 },
       color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
     }}
     onClick={() => {
@@ -1210,7 +1210,7 @@ const [open, setOpen] = React.useState(false);
       fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
       order: { xs: 1, md: 2 },
       width: { xs: '100%', md: '50%' },
-      mt: { xs: 3, md: 0 },
+      mt: { xs: 6, sm: 3, md: 0 },
       mb: { xs: 1, md: 0 },
       whiteSpace: 'nowrap',
       zIndex: 4,
