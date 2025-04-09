@@ -82,7 +82,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   gap: theme.spacing(2),
   margin: 'auto',
   marginTop: theme.spacing(2),
-  marginBottom: theme.spacing(4),
+  marginBottom: theme.spacing(8),
   overflow: 'auto !important',
   maxHeight: '70vh',
   backgroundColor: theme.palette.mode === 'light' 
@@ -92,7 +92,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
     width: '700px',
-  },
+    marginBottom: theme.spacing(10),
+    },
   ...theme.applyStyles('dark', {
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
@@ -120,9 +121,11 @@ const UserContainer = styled(Stack)(({ theme }) => ({
   overflowX: 'hidden',
   display: 'flex',
   flexDirection: 'column',
-  position: 'relative', // Ensure proper stacking context
+  position: 'relative',
+  paddingBottom: theme.spacing(8), // Ensure proper stacking context
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
+    paddingBottom: theme.spacing(10), 
   },
   '&::before': {
     content: '""',
@@ -1206,7 +1209,7 @@ const [open, setOpen] = React.useState(false);
               variant="outlined"
               sx={{
                 mt: { xs: 2, sm: 2 }, // Reduced top margin on mobile from 8 to 2
-                mb: { xs: 2, sm: 2 }, // Added bottom margin
+                mb: { xs: 8, sm: 10 }, // Added bottom margin
                 width: "95% !important",
                 height: { xs: "60vh", sm: "70vh" },
                 minHeight: { xs: "60vh", sm: "70vh" },
