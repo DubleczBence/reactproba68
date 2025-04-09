@@ -1279,31 +1279,38 @@ const [open, setOpen] = React.useState(false);
 
         {showSurvey && selectedSurvey && (
           <Card
-            variant="outlined"
-            sx={{
-              mt: 3, 
-              width: "95% !important",
-              height: { xs: "85vh !important", sm: "80vh !important" },
-              maxWidth: "700px !important",
-              position: "relative",
-              padding: "20px",
-              overflow: "auto",
-              display: "flex",
-              flexDirection: "column",
-              mb: { xs: 8, sm: 10 }, // Alsó margó hozzáadása
-              // Görgetősáv stílusok
-              '&::-webkit-scrollbar': {
-                width: '8px',
-              },
-              '&::-webkit-scrollbar-track': {
-                background: 'rgba(0,0,0,0.1)',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: 'rgba(0,0,0,0.2)',
-                borderRadius: '4px',
-              }
-            }}
-          >
+          variant="outlined"
+          sx={{
+            mt: { xs: 2, sm: 2 }, // Reduced top margin on mobile from 8 to 2
+            mb: { xs: 2, sm: 2 }, // Added bottom margin
+            width: "95% !important",
+            height: { xs: "60vh", sm: "70vh" },
+            minHeight: { xs: "60vh", sm: "70vh" },
+            maxWidth: "700px !important",
+            position: "relative",
+            padding: "20px",
+            overflow: "auto !important", // Ensure overflow is set to auto
+            overflowY: "scroll !important", // Force vertical scrolling
+            WebkitOverflowScrolling: "touch", // Improve scrolling on iOS
+            msOverflowStyle: "-ms-autohiding-scrollbar", // Improve scrolling on IE/Edge
+            '& .MuiButton-root': {
+              minHeight: '80px',
+              height: '80px !important',
+              flexShrink: 0
+            },
+            // Add a scrollbar styling that's more visible
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'rgba(0,0,0,0.1)',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: 'rgba(0,0,0,0.2)',
+              borderRadius: '4px',
+            }
+          }}
+        >
             <Typography 
               variant="h5" 
               sx={{ 
@@ -1331,7 +1338,8 @@ const [open, setOpen] = React.useState(false);
                   height: "auto",
                   width: "98%",
                   position: "relative",
-                  mt: 2
+                  mt: 2,
+                  mb: 2,
                 }}
               >
                 <Box sx={{ mb: 4, ml: 2 }}>
@@ -1392,9 +1400,22 @@ const [open, setOpen] = React.useState(false);
               </Container>
             ))}
 
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2, mb: 2, pt: 2,
-            borderTop: '1px solid',
-            borderColor: 'divider' }}>
+          <Box sx={{ 
+                display: 'flex', 
+                gap: 2, 
+                justifyContent: 'center', 
+                mt: 4, 
+                mb: 2,
+                pt: 2,
+                position: 'sticky',
+                bottom: 0,
+                backgroundColor: theme => theme.palette.mode === 'light' 
+                  ? 'rgba(255, 255, 255, 0.9)' 
+                  : 'rgba(18, 18, 18, 0.9)',
+                borderTop: '1px solid',
+                borderColor: 'divider',
+                zIndex: 10
+              }}>
               <Button
                 onClick={handleCloseSurvey}
                 variant="outlined"
