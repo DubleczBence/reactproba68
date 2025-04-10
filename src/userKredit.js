@@ -173,35 +173,35 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
   </Box>
 </Card>
 
-      <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        position: 'relative',
-        width: '100%',
-        flexGrow: 1,
-        maxHeight: '80vh',
-        overflow: 'hidden',
-      }}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      position: 'relative',
+      width: '100%',
+      flexGrow: 1,
+      maxHeight: '80vh',
+      overflow: 'hidden',
+    }}>
         <StyledCard
         variant="outlined"
         sx={{
           mt: 15,
           width: "100%",
           maxWidth: "700px",
-          height: isMobile ? "auto" : "600px",
+          height: "auto",
+          maxHeight: "calc(80vh - 120px)",
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           padding: 2,
           paddingBottom: 0,
           margin: '0 auto',
-          overflowY: 'auto',
+          overflowY: 'auto !important',
           order: isMobile ? 1 : 2,
           animation: 'fadeInUp 0.7s ease-out',
           '&::-webkit-scrollbar': {
             width: '8px',
-            display: 'block'
           },
           '&::-webkit-scrollbar-track': {
             background: 'rgba(0,0,0,0.1)',
@@ -210,7 +210,6 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
             background: 'rgba(0,0,0,0.2)',
             borderRadius: '4px',
           },
-          maxHeight: { xs: 'auto', sm: '70vh' },
           '@keyframes fadeInUp': {
             '0%': {
               opacity: 0,
