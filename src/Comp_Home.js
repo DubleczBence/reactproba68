@@ -140,23 +140,21 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 
 const CompHomeContainer = styled(Stack)(({ theme }) => ({
+  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
   minHeight: '100%',
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
   },
   '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    backgroundColor: theme.palette.mode === 'light' 
-        ? 'rgba(255, 255, 255, 0.2)'
-        : 'rgba(0, 0, 0, 0.2)',
-    zIndex: -1,
-  },
-  flexGrow: 1,
-  display: 'flex',
-  flexDirection: 'column',
+  content: '""',
+  position: 'absolute',
+  inset: 0,
+  backgroundColor: theme.palette.mode === 'light' 
+      ? 'rgba(255, 255, 255, 0.2)'
+      : 'rgba(0, 0, 0, 0.2)',
+  zIndex: -1,
+}
 }));
 
 
@@ -1209,16 +1207,6 @@ const handleCardDialogClose = (cardName) => {
       <React.Fragment>
       
         <CssBaseline enableColorScheme />
-        <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column',
-        minHeight: '100vh',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        position: 'relative'
-      }}>
-
-      </Box>
 
         <IllustrationContainer>
           <img 
@@ -1304,7 +1292,15 @@ const handleCardDialogClose = (cardName) => {
 
 
 
-    <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"}>
+        <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"}  sx={{
+        position: 'relative',
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        pt: 4, 
+      }}>
 
     
 
