@@ -12,13 +12,11 @@ const {
   validateIdParam
 } = require('../middleware/validation');
 
-// Nyilvános végpontok
 router.post('/sign-up', validateCompanyRegistration, CompanyController.register);
 router.post('/sign-in', validateCompanyLogin, CompanyController.login);
 router.post('/forgot-password', validatePasswordReset, CompanyController.forgotPassword);
 router.post('/verify-reset-code', validateResetCode, CompanyController.verifyResetCode);
 
-// Védett végpontok (bejelentkezés szükséges)
 router.post('/create-survey', authenticateCompany, validateSurveyCreation, CompanyController.createSurvey);
 router.get('/credits/:companyId', authenticateCompany, CompanyController.getCredits);
 router.post('/purchase-credits', authenticateCompany, validateCreditPurchase, CompanyController.purchaseCredits);

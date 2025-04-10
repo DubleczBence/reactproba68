@@ -9,7 +9,6 @@ const {
   validateIdParam
 } = require('../middleware/validation');
 
-// Védett végpontok (bejelentkezés szükséges)
 router.post('/home', authenticateUser, validateDemographics, HomeController.submitDemographics);
 router.get('/check-form-filled', authenticateUser, HomeController.checkFormFilled);
 router.get('/available-surveys', authenticateUser, SurveyController.getAvailableSurveys);

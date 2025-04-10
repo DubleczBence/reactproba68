@@ -69,7 +69,6 @@ class SurveyController {
     const userId = req.user.id;
   
     try {
-      // Kezdjük a tranzakciót az adatbázisban
       await db.promise().query('START TRANSACTION');
   
       const [survey] = await SurveyModel.getSurveyById(surveyId);
@@ -81,19 +80,14 @@ class SurveyController {
         await AnswerModel.connectToSurvey(surveyId, answerId);
       }
   
-      // Kredit frissítése
       await UserModel.updateCredits(userId, userCreditReward);
       
-      // Tranzakció létrehozása
       const transactionId = await TransactionModel.createCreditTransaction(userCreditReward, "survey", userId, false);
       
-      // Kapcsolat létrehozása a felhasználó és a tranzakció között
       await TransactionModel.connectToUser(userId, transactionId);
       
-      // Kapcsolat létrehozása a kérdőív és a tranzakció között
       await TransactionModel.connectToSurvey(surveyId, transactionId);
   
-      // Commit a tranzakciót
       await db.promise().query('COMMIT');
   
       res.status(200).json({ 
@@ -102,8 +96,7 @@ class SurveyController {
       });
     } catch (error) {
       console.error('Error submitting survey:', error);
-      
-      // Rollback a tranzakciót hiba esetén
+
       try {
         await db.promise().query('ROLLBACK');
       } catch (rollbackError) {

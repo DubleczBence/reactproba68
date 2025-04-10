@@ -8,7 +8,6 @@ jest.setTimeout(60000);
 describe('Survey Completion Tests', () => {
   let driver;
 
-  // Helper function to take screenshots
   async function takeScreenshot(name) {
     if (!fs.existsSync('./screenshots')) {
       fs.mkdirSync('./screenshots');
@@ -25,7 +24,7 @@ describe('Survey Completion Tests', () => {
       .build();
       
     await driver.get('http://localhost:3000');
-    await driver.sleep(2000); // Wait for page to fully load
+    await driver.sleep(2000);
     await takeScreenshot('initial-page');
   });
 
@@ -35,30 +34,24 @@ describe('Survey Completion Tests', () => {
 
   test('User can complete a survey', async () => {
     try {
-      // Click on the "Felhasználó Bejelentkezés" (User Login) button
       await driver.findElement(By.xpath("//button[contains(text(), 'Felhasználó Bejelentkezés')]")).click();
       await driver.sleep(1000);
       await takeScreenshot('after-login-click');
       
-      // Fill in the email field
       const emailInput = await driver.findElement(By.css("input[type='email']"));
       await emailInput.clear();
       await emailInput.sendKeys('test@example.com');
       
-      // Fill in the password field
       const passwordInput = await driver.findElement(By.css("input[type='password']"));
       await passwordInput.clear();
       await passwordInput.sendKeys('password123');
       
       await takeScreenshot('credentials-entered');
       
-      // Click the submit button
       await driver.findElement(By.css("button[type='submit']")).click();
       await driver.sleep(3000);
       await takeScreenshot('after-login');
       
-      // Now let's try to find and navigate to the surveys page
-      // First, let's print all links and buttons after login to see what's available
       console.log("Listing all links after login:");
       const allLinksAfterLogin = await driver.findElements(By.css('a'));
       for (const link of allLinksAfterLogin) {
@@ -67,7 +60,6 @@ describe('Survey Completion Tests', () => {
           const href = await link.getAttribute('href');
           console.log(`Link text: "${text}", href: "${href}"`);
         } catch (e) {
-          // Ignore errors for links that might be stale
         }
       }
       
@@ -78,12 +70,9 @@ describe('Survey Completion Tests', () => {
           const text = await button.getText();
           console.log(`Button text: "${text}"`);
         } catch (e) {
-          // Ignore errors
         }
       }
       
-      // Try to find a link or button related to surveys
-      // Common Hungarian terms for surveys: "Kérdőívek", "Felmérések", "Kitölthető kérdőívek"
       const surveySelectors = [
         By.linkText("Kérdőívek"),
         By.linkText("Felmérések"),
@@ -106,7 +95,6 @@ describe('Survey Completion Tests', () => {
             break;
           }
         } catch (e) {
-          // Continue to next selector
         }
       }
       
@@ -117,7 +105,6 @@ describe('Survey Completion Tests', () => {
       } else {
         console.log("Couldn't find surveys link. Looking for navigation menu items...");
         
-        // Try to find and click on a navigation menu or hamburger icon
         try {
           const menuSelectors = [
             By.css(".navbar-toggler, .menu-toggle, .hamburger-menu"),
@@ -134,7 +121,6 @@ describe('Survey Completion Tests', () => {
             }
           }
           
-          // After clicking menu, try again to find survey link
           for (const selector of surveySelectors) {
             try {
               const elements = await driver.findElements(selector);
@@ -147,22 +133,19 @@ describe('Survey Completion Tests', () => {
                 break;
               }
             } catch (e) {
-              // Continue to next selector
             }
           }
         } catch (e) {
           console.log("Couldn't find or interact with navigation menu");
         }
       }
-      
-      // If we still couldn't find the surveys, try to navigate directly to a likely URL
+
       if (!surveyLink) {
         console.log("Trying direct navigation to surveys page");
         await driver.get('http://localhost:3000/surveys');
         await driver.sleep(2000);
         await takeScreenshot('direct-to-surveys');
         
-        // Also try alternative URLs
         const surveyUrls = [
           'http://localhost:3000/available-surveys',
           'http://localhost:3000/kerdoivek',
@@ -174,7 +157,6 @@ describe('Survey Completion Tests', () => {
           await driver.sleep(2000);
           await takeScreenshot(`direct-to-${url.split('/').pop()}`);
           
-          // Check if we found any survey-like elements
           const surveyElements = await driver.findElements(By.css(".survey-item, .survey-card, .survey-list"));
           if (surveyElements.length > 0) {
             console.log(`Found survey elements at URL: ${url}`);
@@ -183,8 +165,6 @@ describe('Survey Completion Tests', () => {
         }
       }
       
-      // At this point, we should be on a page with surveys
-      // Try to find and click on the first available survey
       try {
         const surveyItemSelectors = [
           By.css(".survey-item, .survey-card, .survey-title"),
@@ -206,8 +186,6 @@ describe('Survey Completion Tests', () => {
           await driver.sleep(2000);
           await takeScreenshot('survey-details');
           
-          // Now we should be on the survey page or survey details page
-          // Try to find and click a start button if we're on a details page
           try {
             const startButtonSelectors = [
               By.xpath("//button[contains(text(), 'Start') or contains(text(), 'Begin') or contains(text(), 'Kitöltés') or contains(text(), 'Kezdés')]"),
@@ -228,19 +206,14 @@ describe('Survey Completion Tests', () => {
             console.log("Couldn't find start button, might already be on the survey questions");
           }
           
-          // Now we should be on the actual survey questions
-          // Try to answer questions
           const questions = await driver.findElements(By.css(".question, .survey-question, form > div"));
           console.log(`Found ${questions.length} potential question elements`);
           
           if (questions.length > 0) {
-            // For each question, try to select an answer
             for (let i = 0; i < questions.length; i++) {
               await takeScreenshot(`question-${i+1}`);
-              
-              // Try to find radio buttons, checkboxes, or select dropdowns
+
               try {
-                // Try radio buttons first
                 const radioButtons = await driver.findElements(By.css(`input[type="radio"]`));
                 if (radioButtons.length > 0) {
                   await radioButtons[0].click();
@@ -248,7 +221,6 @@ describe('Survey Completion Tests', () => {
                   continue;
                 }
                 
-                // Try checkboxes
                 const checkboxes = await driver.findElements(By.css(`input[type="checkbox"]`));
                 if (checkboxes.length > 0) {
                   await checkboxes[0].click();
@@ -256,18 +228,16 @@ describe('Survey Completion Tests', () => {
                   continue;
                 }
                 
-                // Try select dropdowns
                 const selects = await driver.findElements(By.css(`select`));
                 if (selects.length > 0) {
                   const options = await selects[0].findElements(By.css('option'));
                   if (options.length > 1) {
-                    await options[1].click(); // Select the second option (first is often a placeholder)
+                    await options[1].click();
                     console.log(`Selected dropdown option for question ${i+1}`);
                   }
                   continue;
                 }
                 
-                // Try text inputs
                 const textInputs = await driver.findElements(By.css(`input[type="text"], textarea`));
                 if (textInputs.length > 0) {
                   await textInputs[0].sendKeys('Test answer');
@@ -280,7 +250,6 @@ describe('Survey Completion Tests', () => {
                 console.log(`Error interacting with question ${i+1}: ${e.message}`);
               }
               
-              // Try to find and click next button if not the last question
               if (i < questions.length - 1) {
                 try {
                   const nextButtonSelectors = [
@@ -308,7 +277,6 @@ describe('Survey Completion Tests', () => {
               }
             }
             
-            // After answering all questions, try to submit the survey
             try {
               const submitButtonSelectors = [
                 By.xpath("//button[contains(text(), 'Submit') or contains(text(), 'Finish') or contains(text(), 'Complete') or contains(text(), 'Beküldés') or contains(text(), 'Befejezés') or contains(text(), 'Kész')]"),
@@ -330,7 +298,6 @@ describe('Survey Completion Tests', () => {
                 await driver.sleep(2000);
                 await takeScreenshot('survey-submitted');
                 
-                // Check for success message
                 try {
                   const successSelectors = [
                     By.xpath("//div[contains(text(), 'Thank you') or contains(text(), 'Success') or contains(text(), 'Köszönjük') or contains(text(), 'Sikeres')]"),
@@ -373,8 +340,6 @@ describe('Survey Completion Tests', () => {
         await takeScreenshot('error-finding-survey');
       }
       
-      // For now, let's just assert that we're on the page
-      // The test will generate screenshots that you can review to see how far it got
       expect(true).toBe(true);
     } catch (error) {
       await takeScreenshot('error-state');

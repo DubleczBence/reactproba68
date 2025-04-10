@@ -159,7 +159,7 @@ const CompHomeContainer = styled(Stack)(({ theme }) => ({
 
 
 const IllustrationContainer = styled(Box)(({ theme }) => ({
-  display: 'none', // Mobilon elrejtjük
+  display: 'none',
   [theme.breakpoints.up('md')]: {
     display: 'flex',
     alignItems: 'center',
@@ -519,7 +519,6 @@ const CompHome = ({ onSignOut }) => {
   const [selectedParticipants, setSelectedParticipants] = useState(50);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   const [companyProfileData, setCompanyProfileData] = useState(null);
-  // eslint-disable-next-line no-unused-vars
   const [notifications, setNotifications] = useState([]);
   const [notificationCount, setNotificationCount] = useState(0);
   const [openNotifications, setOpenNotifications] = useState([]);
@@ -548,8 +547,7 @@ const CompHome = ({ onSignOut }) => {
       const data = await get(endpoint);
       
       console.log('Notifications data:', data);
-      
-      // Calculate total new responses across all surveys
+
       const notifications = Array.isArray(data) ? data : [];
       const totalNewResponses = notifications.reduce((total, notification) => total + notification.new_responses, 0);
       
@@ -564,19 +562,15 @@ const CompHome = ({ onSignOut }) => {
 
   useEffect(() => {
     fetchNotifications(false);
-    
-    // Set up a polling interval to check for new notifications
+
     const intervalId = setInterval(() => {
       fetchNotifications(false);
-    }, 60000); // Check every minute
+    }, 60000);
     
     return () => clearInterval(intervalId);
   }, [fetchNotifications]);
 
-  
-  // Make sure this function is correctly implemented
   const handleNotificationClick = () => {
-    // Create snackbars for current notifications before fetching new ones
     const currentNotifications = notificationsRef.current;
     
     if (currentNotifications.length > 0) {
@@ -596,26 +590,22 @@ const CompHome = ({ onSignOut }) => {
         autoHideDuration: 3000
       }]);
     }
-    
-    // Then update the login time and reset notifications
+
     fetchNotifications(true).then(() => {
       setNotificationCount(0);
     });
   };
-  
-  // Comp_Home.js - useEffect a komponens betöltésekor
+
   useEffect(() => {
     fetchNotifications(false);
     
-    // Set up a polling interval to check for new notifications
     const intervalId = setInterval(() => {
       fetchNotifications(false);
-    }, 60000); // Check every minute
+    }, 60000);
     
     return () => clearInterval(intervalId);
   }, [fetchNotifications]);
-  
-  // Hozzunk létre egy függvényt a snackbar bezárásához
+
   const handleCloseNotification = (id) => {
     setOpenNotifications(prev => prev.map(notif => 
       notif.id === id ? { ...notif, open: false } : notif
@@ -797,20 +787,18 @@ const displayedSurveys = Array.isArray(isFilterActive ? filteredSurveys : compan
 useEffect(() => {
   const fetchCredits = async () => {
     try {
-      // Használj try-catch blokkot a hibák kezelésére
       const data = await get(`/companies/credits/${location.state?.cegId || localStorage.getItem('cegId')}`);
-      console.log("Credits data:", data); // Debug log
+      console.log("Credits data:", data);
       
-      // Ellenőrizd, hogy a válasz tartalmazza-e a credits mezőt
       if (data && typeof data.credits === 'number') {
         setCredits(data.credits);
       } else {
         console.error("Invalid credits data format:", data);
-        setCredits(0); // Alapértelmezett érték
+        setCredits(0);
       }
     } catch (error) {
       console.error('Error fetching credits:', error);
-      setCredits(0); // Hiba esetén alapértelmezett érték
+      setCredits(0);
     }
   };
   
@@ -825,7 +813,6 @@ useEffect(() => {
   useEffect(() => {
     const fetchCompanySurveys = async () => {
       try {
-        // Ellenőrizd, hogy van-e cegId
         const companyId = location.state?.cegId || localStorage.getItem('cegId');
         if (!companyId) {
           console.error("No company ID available");
@@ -834,18 +821,17 @@ useEffect(() => {
         
         const data = await get(`/main/company-surveys/${companyId}`);
         
-        // Ellenőrizd a válasz formátumát
         if (Array.isArray(data)) {
           setCompanySurveys(data);
         } else if (data && Array.isArray(data.surveys)) {
           setCompanySurveys(data.surveys);
         } else {
           console.error("Invalid surveys data format:", data);
-          setCompanySurveys([]); // Üres tömb alapértelmezettként
+          setCompanySurveys([]);
         }
       } catch (error) {
         console.error('Error fetching company surveys:', error);
-        setCompanySurveys([]); // Hiba esetén üres tömb
+        setCompanySurveys([]);
       }
     };
     
@@ -1349,7 +1335,7 @@ const handleCardDialogClose = (cardName) => {
     onClick={() => {
       setShowCreditPage(true);
       setValue(1);
-      setShowStatisztika(false);  // Adj hozzá ezt a sort
+      setShowStatisztika(false);
     }}
   >
     {credits} Kredit
@@ -1524,17 +1510,17 @@ const handleCardDialogClose = (cardName) => {
           mb: 2,
           whiteSpace: "normal",
           bgcolor: (theme) => theme.palette.mode === 'light' 
-              ? 'rgba(25, 118, 210, 0.08)' // Halvány kék háttér világos módban
-              : 'rgba(25, 118, 210, 0.15) !important', // Kicsit erősebb kék háttér sötét módban, !important-tal
+              ? 'rgba(25, 118, 210, 0.08)'
+              : 'rgba(25, 118, 210, 0.15) !important',
           color: (theme) => theme.palette.mode === 'light'
               ? 'rgba(25, 118, 210, 1)'
               : '#ffffff',
-          border: '2px solid rgba(25, 118, 210, 0.87) !important', // Halvány kék keret
+          border: '2px solid rgba(25, 118, 210, 0.87) !important',
           '&:hover': {
             bgcolor: (theme) => theme.palette.mode === 'light'
-              ? 'rgba(25, 118, 210, 0.12)' // Kicsit erősebb kék hover állapotban világos módban
-              : 'rgba(25, 118, 210, 0.25) !important', // Erősebb kék hover állapotban sötét módban, !important-tal
-            border: '2px solid rgba(25, 118, 210, 0.7)', // Erősebb kék keret hover állapotban
+              ? 'rgba(25, 118, 210, 0.12)'
+              : 'rgba(25, 118, 210, 0.25) !important',
+            border: '2px solid rgba(25, 118, 210, 0.7)',
           },
         }}
         variant="outlined"
@@ -2219,7 +2205,7 @@ const handleCardDialogClose = (cardName) => {
           participantCount={selectedParticipants}
           creditCost={surveyTotalCost}
           questionsCost={questionsCost}
-          sampleCost={sampleCost}  // Itt adjuk át a mintavétel költségét
+          sampleCost={sampleCost}
           onSuccess={handleSurveySuccess}
           onError={handleSurveyError}
           filterData={filterData}
@@ -2249,9 +2235,9 @@ const handleCardDialogClose = (cardName) => {
   <Box sx={{ 
     position: 'absolute', 
     top: {
-      xs: '310px', // Kisebb képernyőn (mobilon) sokkal lejjebb kezdődik
-      sm: '270px', // Tablet méretben lejjebb
-      md: '180px'  // Asztali méretben az eredeti pozíció
+      xs: '310px',
+      sm: '270px',
+      md: '180px'
     },
     left: 0,
     right: 0,
@@ -2259,9 +2245,9 @@ const handleCardDialogClose = (cardName) => {
     flexDirection: 'column',
     alignItems: 'center',
     maxHeight: {
-      xs: 'calc(100vh - 350px)', // Kisebb képernyőn kisebb maximális magasság
-      sm: 'calc(100vh - 300px)', // Tablet méretben kicsit nagyobb
-      md: '70vh'                 // Asztali méretben az eredeti
+      xs: 'calc(100vh - 350px)',
+      sm: 'calc(100vh - 300px)',
+      md: '70vh'                 
     },
     zIndex: 1,
     overflow: 'visible'

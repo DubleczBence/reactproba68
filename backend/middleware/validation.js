@@ -1,6 +1,5 @@
 const { body, param, validationResult } = require('express-validator');
 
-// Validációs eredmények ellenőrzése és hibaüzenetek küldése
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -9,7 +8,6 @@ const validateRequest = (req, res, next) => {
   next();
 };
 
-// Felhasználó regisztráció validáció
 const validateUserRegistration = [
   body('name').notEmpty().withMessage('A név megadása kötelező'),
   body('email').isEmail().withMessage('Érvényes email cím megadása kötelező'),
@@ -17,14 +15,12 @@ const validateUserRegistration = [
   validateRequest
 ];
 
-// Felhasználó bejelentkezés validáció
 const validateUserLogin = [
   body('email').isEmail().withMessage('Érvényes email cím megadása kötelező'),
   body('password').notEmpty().withMessage('A jelszó megadása kötelező'),
   validateRequest
 ];
 
-// Cég regisztráció validáció
 const validateCompanyRegistration = [
   body('cegnev').notEmpty().withMessage('A cégnév megadása kötelező'),
   body('telefon').notEmpty().withMessage('A telefonszám megadása kötelező'),
@@ -40,14 +36,12 @@ const validateCompanyRegistration = [
   validateRequest
 ];
 
-// Cég bejelentkezés validáció
 const validateCompanyLogin = [
   body('ceg_email').isEmail().withMessage('Érvényes email cím megadása kötelező'),
   body('jelszo').notEmpty().withMessage('A jelszó megadása kötelező'),
   validateRequest
 ];
 
-// Kérdőív létrehozás validáció
 const validateSurveyCreation = [
   body('title').notEmpty().withMessage('A kérdőív címének megadása kötelező'),
   body('questions').isArray({ min: 1 }).withMessage('Legalább egy kérdés megadása kötelező'),
@@ -58,7 +52,6 @@ const validateSurveyCreation = [
   validateRequest
 ];
 
-// Demográfiai adatok validáció
 const validateDemographics = [
   body('vegzettseg').notEmpty().withMessage('A végzettség megadása kötelező'),
   body('korcsoport').isDate().withMessage('Érvényes dátum formátum szükséges a korcsoporthoz'),
@@ -68,13 +61,11 @@ const validateDemographics = [
   validateRequest
 ];
 
-// Jelszó visszaállítás validáció
 const validatePasswordReset = [
   body('email').isEmail().withMessage('Érvényes email cím megadása kötelező'),
   validateRequest
 ];
 
-// Jelszó visszaállítás kód ellenőrzés validáció
 const validateResetCode = [
   body('email').isEmail().withMessage('Érvényes email cím megadása kötelező'),
   body('code').notEmpty().withMessage('A biztonsági kód megadása kötelező'),
@@ -82,14 +73,12 @@ const validateResetCode = [
   validateRequest
 ];
 
-// Kredit vásárlás validáció
 const validateCreditPurchase = [
   body('packageAmount').isInt({ min: 1 }).withMessage('A kredit csomag értékének pozitív egész számnak kell lennie'),
   body('companyId').isInt({ min: 1 }).withMessage('Érvényes cég azonosító szükséges'),
   validateRequest
 ];
 
-// Kupon vásárlás validáció
 const validateVoucherPurchase = [
   body('userId').isInt({ min: 1 }).withMessage('Érvényes felhasználó azonosító szükséges'),
   body('voucherName').notEmpty().withMessage('A kupon nevének megadása kötelező'),
@@ -97,7 +86,6 @@ const validateVoucherPurchase = [
   validateRequest
 ];
 
-// Kérdőív kitöltés validáció
 const validateSurveySubmission = [
   body('surveyId').isInt({ min: 1 }).withMessage('Érvényes kérdőív azonosító szükséges'),
   body('answers').isArray({ min: 1 }).withMessage('Legalább egy válasz megadása kötelező'),
@@ -106,7 +94,6 @@ const validateSurveySubmission = [
   validateRequest
 ];
 
-// ID paraméter validáció
 const validateIdParam = [
   param('id').isInt({ min: 1 }).withMessage('Érvényes azonosító szükséges'),
   validateRequest

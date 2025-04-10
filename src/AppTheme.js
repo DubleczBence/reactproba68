@@ -10,7 +10,6 @@ import { colorSchemes, typography, shadows, shape } from './themePrimitives';
 import { useBackground } from './BackgroundContext';
 
 function AppTheme({ children, disableCustomTheme, themeComponents }) {
-  // eslint-disable-next-line no-unused-vars
   const { mode } = useColorScheme();
   const { backgroundImage } = useBackground();
 

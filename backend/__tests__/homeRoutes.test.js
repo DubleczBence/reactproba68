@@ -6,7 +6,6 @@ const HomeController = require('../controllers/homeController');
 const SurveyController = require('../controllers/surveyController');
 const { authenticateUser } = require('../middleware/auth');
 
-// Mock the auth middleware
 jest.mock('../middleware/auth', () => ({
   authenticateUser: jest.fn((req, res, next) => next())
 }));
@@ -18,7 +17,6 @@ jest.mock('../config/db', () => ({
   })
 }));
 
-// Mock the controllers
 jest.mock('../controllers/homeController', () => ({
   submitDemographics: jest.fn().mockImplementation((req, res) => {
     if (!req.body.vegzettseg || !req.body.korcsoport || !req.body.regio || !req.body.nem || !req.body.anyagi) {
@@ -92,7 +90,6 @@ describe('Home Routes', () => {
     next = jest.fn();
     jwt.verify = jest.fn().mockReturnValue({ id: 1 });
     
-    // Reset all mocks
     jest.clearAllMocks();
   });
 
@@ -128,7 +125,6 @@ describe('Home Routes', () => {
   });
 
   test('/home should validate required fields', async () => {
-    // Call controller method directly
     await HomeController.submitDemographics(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ error: 'Minden mező kitöltése kötelező!' });
@@ -144,7 +140,6 @@ describe('Home Routes', () => {
   });
 
   test('/check-form-filled should return form status', async () => {
-    // Call controller method directly
     await HomeController.checkFormFilled(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ isFormFilled: false });
@@ -156,7 +151,6 @@ describe('Home Routes', () => {
   });
 
   test('/available-surveys should return surveys', async () => {
-    // Call controller method directly
     await SurveyController.getAvailableSurveys(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ surveys: [] });
@@ -168,14 +162,12 @@ describe('Home Routes', () => {
   });
 
   test('/survey/:id should return survey details', async () => {
-    // Call controller method directly
     req.params.id = '1';
     await SurveyController.getSurveyById(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, title: 'Test Survey' }]);
   });
 
   test('/submit-survey should process survey submission', async () => {
-    // Call controller method directly
     req.body = { 
       surveyId: 1, 
       answers: [{ questionId: 1, value: 'Test Answer' }] 
@@ -190,7 +182,6 @@ describe('Home Routes', () => {
   });
 
   test('/survey-status/:surveyId should return survey status', async () => {
-    // Call controller method directly
     req.params.surveyId = '1';
     await SurveyController.getSurveyStatus(req, res);
     expect(res.json).toHaveBeenCalledWith({
@@ -205,14 +196,12 @@ describe('Home Routes', () => {
   });
 
   test('/company-surveys/:companyId should return company surveys', async () => {
-    // Call controller method directly
     req.params.companyId = '1';
     await SurveyController.getCompanySurveys(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, title: 'Test Survey' }]);
   });
 
   test('/survey-answers/:surveyId should return survey answers', async () => {
-    // Call controller method directly
     req.params.surveyId = '1';
     await SurveyController.getSurveyAnswers(req, res);
     expect(res.json).toHaveBeenCalled();

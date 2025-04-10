@@ -32,7 +32,6 @@ class UserController {
     try {
       const userId = req.params.userId;
       
-      // Check if the user is authorized to access these vouchers
       if (req.user.id != userId && req.user.role !== 'admin') {
         return res.status(403).json({ error: 'Unauthorized access to user vouchers' });
       }
@@ -206,38 +205,31 @@ class UserController {
     console.log('Received transaction data:', req.body);
   
     try {
-      // Kezdjük a tranzakciót
       await db.promise().query('START TRANSACTION');
-  
-      // Tranzakció létrehozása - adjuk hozzá a user_id mezőt is
+
       const [transactionResult] = await db.promise().query(
         'INSERT INTO transactions (user_id, amount, transaction_type, transaction_date) VALUES (?, ?, ?, NOW())',
         [userId, amount, 'survey']
       );
       const transactionId = transactionResult.insertId;
-  
-      // Kapcsolat létrehozása a felhasználó és a tranzakció között
+
       await db.promise().query(
         'INSERT INTO user_connections (user_id, connection_type, connection_id, created_at) VALUES (?, ?, ?, NOW())',
         [userId, 'transaction', transactionId]
       );
-  
-      // Kapcsolat létrehozása a kérdőív és a tranzakció között
+
       await db.promise().query(
         'INSERT INTO survey_connections (survey_id, connection_type, connection_id, created_at) VALUES (?, ?, ?, NOW())',
         [surveyId, 'transaction', transactionId]
       );
   
-      // Felhasználó kreditjeinek frissítése
       await db.promise().query(
         'UPDATE users SET credits = credits + ? WHERE id = ?',
         [amount, userId]
       );
   
-      // Commit a tranzakciót
       await db.promise().query('COMMIT');
   
-      // Lekérjük a frissített kredit egyenleget
       const [userResult] = await db.promise().query(
         'SELECT credits FROM users WHERE id = ?',
         [userId]
@@ -251,11 +243,9 @@ class UserController {
       console.error('Error adding survey transaction:', error);
   
       try {
-        // Próbáljuk meg végrehajtani a ROLLBACK utasítást
         await db.promise().query('ROLLBACK');
       } catch (rollbackError) {
         console.error('Error during rollback:', rollbackError);
-        // Nem dobunk újabb hibát, csak naplózzuk
       }
       
       res.status(500).json({ error: 'Failed to add transaction' });

@@ -1,6 +1,5 @@
 const { verifyToken, SECRET_KEY } = require('../utils/tokenService');
 
-// Felhasználói autentikáció
 const authenticateUser = (req, res, next) => {
   try {
     if (!req.headers.authorization) {
@@ -20,7 +19,6 @@ const authenticateUser = (req, res, next) => {
   }
 };
 
-// Céges autentikáció
 const authenticateCompany = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -45,10 +43,8 @@ const authenticateCompany = (req, res, next) => {
   }
 };
 
-// Admin autentikáció
 const authenticateAdmin = (req, res, next) => {
   try {
-    // Tesztkörnyezetben átugorjuk a JWT ellenőrzést
     if (process.env.NODE_ENV === 'test' && req.headers['x-test-admin'] === 'true') {
       req.user = { id: 1, email: 'admin@test.com', role: 'admin' };
       return next();

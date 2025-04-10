@@ -59,8 +59,8 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
   height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
   minHeight: '100%',
   padding: theme.spacing(2),
-  paddingTop: theme.spacing(9), // Növeljük a felső padding-et
-  overflowY: 'auto', // Hozzáadva: függőleges görgetés engedélyezése
+  paddingTop: theme.spacing(9),
+  overflowY: 'auto',
   [theme.breakpoints.up('sm')]: {
     padding: theme.spacing(4),
     paddingTop: theme.spacing(5),
@@ -79,7 +79,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 
 const IllustrationContainer = styled(Box)(({ theme }) => ({
-  display: 'none', // Mobilon elrejtjük
+  display: 'none',
   [theme.breakpoints.up('md')]: {
     display: 'flex',
     alignItems: 'center',
@@ -273,7 +273,7 @@ export default function SignIn(props) {
 
         <IllustrationContainer>
           <img 
-            key="signin-illustration" // Egyedi kulcs
+            key="signin-illustration"
             src="/kepek/illustration-login.png" 
             alt="Login Illustration" 
             style={{ 

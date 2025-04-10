@@ -20,7 +20,6 @@ jest.mock('nodemailer', () => ({
   })
 }));
 
-// Mock the UserController to return predictable responses
 jest.mock('../controllers/userController', () => {
   return {
     register: jest.fn().mockImplementation((req, res) => {
@@ -47,7 +46,7 @@ jest.mock('../controllers/userController', () => {
       });
     }),
     checkAdmin: jest.fn().mockImplementation((req, res) => {
-      // Instead of using jwt directly, we'll use the mock behavior
+
       if (req.mockRole === 'admin') {
         return res.status(200).json({ isAdmin: true });
       }
@@ -103,7 +102,7 @@ describe('User Routes', () => {
       body: {},
       headers: { authorization: 'Bearer test-token' },
       params: {},
-      mockRole: 'user' // Add this for the checkAdmin test
+      mockRole: 'user' 
     };
     res = {
       status: jest.fn().mockReturnThis(),
@@ -114,7 +113,7 @@ describe('User Routes', () => {
     bcrypt.hash = jest.fn().mockResolvedValue('hashed-password');
     bcrypt.compare = jest.fn().mockResolvedValue(true);
     
-    // Reset all mocks
+   
     jest.clearAllMocks();
   });
 
@@ -153,7 +152,6 @@ describe('User Routes', () => {
   });
 
   test('/sign-up should validate required fields', async () => {
-    // Call controller method directly
     await UserController.register(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     
@@ -167,7 +165,6 @@ describe('User Routes', () => {
   });
 
   test('/sign-in should authenticate users', async () => {
-    // Call controller method directly
     await UserController.login(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     
@@ -185,13 +182,11 @@ describe('User Routes', () => {
   });
 
   test('/check-admin should verify admin status', async () => {
-    // Call controller method directly with admin role
     req.mockRole = 'admin';
     await UserController.checkAdmin(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ isAdmin: true });
 
-    // Call controller method directly with user role
     req.mockRole = 'user';
     await UserController.checkAdmin(req, res);
     expect(res.status).toHaveBeenCalledWith(403);
@@ -199,7 +194,6 @@ describe('User Routes', () => {
   });
 
   test('/forgot-password should send reset code', async () => {
-    // Call controller method directly
     req.body = { email: 'test@example.com', userNotFound: true };
     await UserController.forgotPassword(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
@@ -210,7 +204,6 @@ describe('User Routes', () => {
   });
 
   test('/verify-reset-code should reset password', async () => {
-    // Call controller method directly
     req.body = { email: 'test@example.com', code: '12345', newPassword: 'newpassword', invalidCode: true };
     await UserController.verifyResetCode(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
@@ -221,21 +214,18 @@ describe('User Routes', () => {
   });
 
   test('/credits/:userId should return user credits', async () => {
-    // Call controller method directly
     req.params.userId = '1';
     await UserController.getCredits(req, res);
     expect(res.json).toHaveBeenCalledWith({ credits: 100 });
   });
 
   test('/credit-history/:userId should return transaction history', async () => {
-    // Call controller method directly
     req.params.userId = '1';
     await UserController.getCreditHistory(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, amount: 100 }]);
   });
 
   test('/purchase-voucher should process voucher purchase', async () => {
-    // Call controller method directly
     req.body = { userId: 1, voucherName: 'Test Voucher', creditCost: 50 };
     await UserController.purchaseVoucher(req, res);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
@@ -244,7 +234,6 @@ describe('User Routes', () => {
   });
 
   test('/add-survey-transaction should record survey completion', async () => {
-    // Call controller method directly
     req.body = { userId: 1, amount: 0, title: 'Test Survey' };
     await UserController.addSurveyTransaction(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
@@ -255,8 +244,7 @@ describe('User Routes', () => {
   });
 
   test('/profile/:userId should return user profile', async () => {
-    // Call controller method directly
-    req.params.userId = '2'; // Non-existent user
+    req.params.userId = '2';
     await UserController.getProfile(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
     
@@ -266,7 +254,6 @@ describe('User Routes', () => {
   });
 
   test('/profile/:userId PUT should update user profile', async () => {
-    // Call controller method directly
     req.params.userId = '1';
     req.body = { name: 'Updated Name', regio: '2', anyagi: '3' };
     await UserController.updateProfile(req, res);

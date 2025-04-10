@@ -7,22 +7,18 @@ const TextCarousel = ({ messages }) => {
   const prevMessagesRef = useRef(messages);
   const [isChangingSet, setIsChangingSet] = useState(false);
 
-  // Ellenőrizzük, hogy változott-e a messages prop
   useEffect(() => {
-    // Ha a messages tömb változott (más üzenetkészlet)
     if (JSON.stringify(prevMessagesRef.current) !== JSON.stringify(messages)) {
       setIsChangingSet(true);
-      // Animáció után frissítjük a referenciát
       setTimeout(() => {
         prevMessagesRef.current = messages;
         setIsChangingSet(false);
-        setActiveIndex(0); // Új üzenetkészletnél az első üzenetet mutatjuk
-      }, 600); // Ez az idő egyezzen meg az animáció időtartamával
+        setActiveIndex(0);
+      }, 600);
     }
   }, [messages]);
 
   useEffect(() => {
-    // Csak akkor indítjuk el az automatikus váltást, ha nem váltunk éppen üzenetkészletet
     if (!isChangingSet) {
       const interval = setInterval(() => {
         setActiveIndex((prevIndex) => (prevIndex + 1) % messages.length);
@@ -32,14 +28,12 @@ const TextCarousel = ({ messages }) => {
     }
   }, [messages.length, isChangingSet]);
 
-  // Animáció az egész carousel-re, amikor üzenetkészletet váltunk
   const carouselTransition = useSpring({
     opacity: isChangingSet ? 0 : 1,
     transform: isChangingSet ? 'translateY(30px)' : 'translateY(0)',
     config: { duration: 600 }
   });
 
-  // Animáció az egyes szövegekre
   const [textProps, api] = useSpring(() => ({
     opacity: 1,
     transform: 'translateY(0)',
@@ -48,7 +42,6 @@ const TextCarousel = ({ messages }) => {
   }));
 
   useEffect(() => {
-    // Csak akkor animáljuk az egyes szövegeket, ha nem váltunk éppen üzenetkészletet
     if (!isChangingSet) {
       api.start({
         opacity: 1,
@@ -57,25 +50,19 @@ const TextCarousel = ({ messages }) => {
         reset: true
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndex, isChangingSet]);
 
-  // Calculate the appropriate top position based on text length
-  // This is a simple heuristic - adjust the thresholds as needed
   const getTextPosition = (index) => {
     if (!messages[index]) return { md: '40px', lg: '50px', xl: '60px' };
     
     const totalLength = messages[index].title.length + messages[index].subtitle.length;
     
-    // For shorter texts, position them lower (closer to the slider)
     if (totalLength < 100) {
       return { md: '40px', lg: '50px', xl: '60px' };
     } 
-    // For medium texts, position them a bit lower
     else if (totalLength < 150) {
       return { md: '20px', lg: '25px', xl: '30px' };
     } 
-    // For longer texts, position them at the top
     else {
       return { md: '0px', lg: '0px', xl: '0px' };
     }
@@ -87,7 +74,6 @@ const TextCarousel = ({ messages }) => {
         position: 'relative', 
         height: { md: '280px', lg: '300px', xl: '320px' }
       }}>
-        {/* Text container with dynamic positioning */}
         <Box sx={{ 
           position: 'absolute',
           top: getTextPosition(activeIndex),
@@ -123,7 +109,6 @@ const TextCarousel = ({ messages }) => {
           </animated.div>
         </Box>
 
-        {/* Indicator dots in fixed position at bottom */}
         <Box sx={{ 
           display: 'flex', 
           justifyContent: 'center', 

@@ -68,7 +68,7 @@ class AdminController {
     try {
       const surveyId = await SurveyModel.create({
         title, 
-        description: "Default survey description", // Alapértelmezett érték
+        description: "Default survey description",
         participantCount, 
         filterCriteria, 
         creditCost
@@ -76,10 +76,8 @@ class AdminController {
       
       await SurveyModel.connectToCompany(surveyId, companyId);
   
-      // Kérdések létrehozása sorrendben
       for (let i = 0; i < questions.length; i++) {
         const question = questions[i];
-        // Adjuk hozzá az order_by mezőt a kérdéshez
         question.order_by = i;
         await SurveyModel.addQuestion(surveyId, question);
       }

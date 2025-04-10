@@ -8,7 +8,6 @@ jest.setTimeout(60000);
 describe('Survey Completion Tests', () => {
   let driver;
 
-  // Helper function to take screenshots
   async function takeScreenshot(name) {
     if (!fs.existsSync('./screenshots')) {
       fs.mkdirSync('./screenshots');
@@ -34,9 +33,7 @@ describe('Survey Completion Tests', () => {
 
   test('User can complete a survey', async () => {
     try {
-      // Try to find and click the login button using various selectors
       try {
-        // Look for login button or link with flexible selectors
         const loginSelectors = [
           "//a[contains(text(), 'Sign In') or contains(text(), 'Login') or contains(text(), 'Bejelentkezés')]",
           "//button[contains(text(), 'Sign In') or contains(text(), 'Login') or contains(text(), 'Bejelentkezés')]",
@@ -53,7 +50,6 @@ describe('Survey Completion Tests', () => {
             }
             if (loginElement) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -69,7 +65,6 @@ describe('Survey Completion Tests', () => {
       
       await takeScreenshot('login-page');
       
-      // Find and fill email/username field
       try {
         const emailSelectors = [
           "input[type='email']", 
@@ -86,7 +81,6 @@ describe('Survey Completion Tests', () => {
             emailInput = await driver.findElement(By.css(selector));
             if (emailInput) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -100,7 +94,6 @@ describe('Survey Completion Tests', () => {
         console.log("Error finding email field:", e.message);
       }
       
-      // Find and fill password field
       try {
         const passwordInput = await driver.findElement(By.css("input[type='password']"));
         await passwordInput.clear();
@@ -111,7 +104,6 @@ describe('Survey Completion Tests', () => {
       
       await takeScreenshot('credentials-entered');
       
-      // Find and click submit button
       try {
         const submitSelectors = [
           "button[type='submit']", 
@@ -131,7 +123,6 @@ describe('Survey Completion Tests', () => {
             }
             if (submitButton) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -147,7 +138,6 @@ describe('Survey Completion Tests', () => {
       
       await takeScreenshot('after-login');
       
-      // Now try to navigate to available surveys
       try {
         const surveyLinkSelectors = [
           "//a[contains(text(), 'Available Surveys') or contains(text(), 'Surveys') or contains(text(), 'Kérdőívek')]",
@@ -164,7 +154,6 @@ describe('Survey Completion Tests', () => {
             }
             if (surveyLink) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -175,14 +164,12 @@ describe('Survey Completion Tests', () => {
           console.log("Couldn't find surveys link, taking screenshot to debug");
           await takeScreenshot('no-surveys-link');
           
-          // Get all links on the page for debugging
           const allLinks = await driver.findElements(By.css('a'));
           console.log("Available links on page:");
           for (const link of allLinks) {
             try {
               console.log(await link.getText());
             } catch (e) {
-              // Ignore errors for links that might be stale
             }
           }
         }
@@ -192,8 +179,6 @@ describe('Survey Completion Tests', () => {
       
       await takeScreenshot('surveys-page');
       
-      // For now, let's just assert that we're logged in
-      // We'll expand this test once we can see the structure of your survey pages
       expect(true).toBe(true);
     } catch (error) {
       await takeScreenshot('error-state');

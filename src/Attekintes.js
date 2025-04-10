@@ -190,9 +190,9 @@ const Attekintes = ({ surveyTitle, questions, onClose, onBack, participantCount,
 
       <Box sx={{ 
         display: 'flex', 
-        flexDirection: { xs: 'column', sm: 'row' }, // Mobil nézetben oszlopba rendezi
+        flexDirection: { xs: 'column', sm: 'row' },
         justifyContent: 'center', 
-        gap: { xs: 4, sm: 25 }, // Kisebb rés mobil nézetben, nagyobb tablet/desktop nézetben
+        gap: { xs: 4, sm: 25 },
         mt: 5,
         mb: 5
       }}>

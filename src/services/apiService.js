@@ -4,7 +4,6 @@ const API_BASE_URL = 'https://optify.onrender.com/api';
 
 const getToken = () => localStorage.getItem('token');
 
-// GET kérés
 export const get = async (endpoint) => {
   const token = getToken();
   
@@ -24,7 +23,6 @@ export const get = async (endpoint) => {
   return response.json();
 };
 
-// POST kérés
 export const post = async (endpoint, data) => {
   const token = getToken();
   
@@ -45,7 +43,6 @@ export const post = async (endpoint, data) => {
   return response.json();
 };
 
-// PUT kérés
 export const put = async (endpoint, data) => {
   const token = getAuthToken();
   
@@ -66,7 +63,6 @@ export const put = async (endpoint, data) => {
   return response.json();
 };
 
-// DELETE kérés
 export const del = async (endpoint) => {
   const token = getAuthToken();
   

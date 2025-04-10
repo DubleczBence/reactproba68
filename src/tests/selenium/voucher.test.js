@@ -8,7 +8,6 @@ jest.setTimeout(60000);
 describe('Voucher Purchase Tests', () => {
   let driver;
 
-  // Helper function to take screenshots
   async function takeScreenshot(name) {
     if (!fs.existsSync('./screenshots')) {
       fs.mkdirSync('./screenshots');
@@ -34,9 +33,7 @@ describe('Voucher Purchase Tests', () => {
 
   test('User can purchase a voucher', async () => {
     try {
-      // Try to find and click the login button using various selectors
       try {
-        // Look for login button or link with flexible selectors
         const loginSelectors = [
           "//a[contains(text(), 'Sign In') or contains(text(), 'Login') or contains(text(), 'Bejelentkezés')]",
           "//button[contains(text(), 'Sign In') or contains(text(), 'Login') or contains(text(), 'Bejelentkezés')]",
@@ -53,7 +50,6 @@ describe('Voucher Purchase Tests', () => {
             }
             if (loginElement) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -69,7 +65,6 @@ describe('Voucher Purchase Tests', () => {
       
       await takeScreenshot('login-page');
       
-      // Find and fill email/username field
       try {
         const emailSelectors = [
           "input[type='email']", 
@@ -86,7 +81,6 @@ describe('Voucher Purchase Tests', () => {
             emailInput = await driver.findElement(By.css(selector));
             if (emailInput) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -100,7 +94,6 @@ describe('Voucher Purchase Tests', () => {
         console.log("Error finding email field:", e.message);
       }
       
-      // Find and fill password field
       try {
         const passwordInput = await driver.findElement(By.css("input[type='password']"));
         await passwordInput.clear();
@@ -111,7 +104,6 @@ describe('Voucher Purchase Tests', () => {
       
       await takeScreenshot('credentials-entered');
       
-      // Find and click submit button
       try {
         const submitSelectors = [
           "button[type='submit']", 
@@ -131,7 +123,6 @@ describe('Voucher Purchase Tests', () => {
             }
             if (submitButton) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -147,7 +138,6 @@ describe('Voucher Purchase Tests', () => {
       
       await takeScreenshot('after-login');
       
-      // Now try to navigate to vouchers page
       try {
         const voucherLinkSelectors = [
           "//a[contains(text(), 'Vouchers') or contains(text(), 'Rewards') or contains(text(), 'Kuponok')]",
@@ -164,7 +154,6 @@ describe('Voucher Purchase Tests', () => {
             }
             if (voucherLink) break;
           } catch (e) {
-            // Continue to next selector
           }
         }
         
@@ -175,14 +164,12 @@ describe('Voucher Purchase Tests', () => {
           console.log("Couldn't find vouchers link, taking screenshot to debug");
           await takeScreenshot('no-vouchers-link');
           
-          // Get all links on the page for debugging
           const allLinks = await driver.findElements(By.css('a'));
           console.log("Available links on page:");
           for (const link of allLinks) {
             try {
               console.log(await link.getText());
             } catch (e) {
-              // Ignore errors for links that might be stale
             }
           }
         }
@@ -192,8 +179,6 @@ describe('Voucher Purchase Tests', () => {
       
       await takeScreenshot('vouchers-page');
       
-      // For now, let's just assert that we're logged in
-      // We'll expand this test once we can see the structure of your voucher pages
       expect(true).toBe(true);
     } catch (error) {
       await takeScreenshot('error-state');

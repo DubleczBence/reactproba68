@@ -7,7 +7,6 @@ const {
   validateIdParam
 } = require('../middleware/validation');
 
-// Minden végpont admin jogosultságot igényel
 router.get('/users', authenticateAdmin, AdminController.getUsers);
 router.get('/companies', authenticateAdmin, AdminController.getCompanies);
 router.get('/surveys', authenticateAdmin, AdminController.getSurveys);

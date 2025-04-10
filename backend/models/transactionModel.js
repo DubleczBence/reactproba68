@@ -2,7 +2,6 @@ const db = require('../config/db');
 
 class TransactionModel {
   static async createCreditTransaction(amount, type, entityId = null, isCompany = false) {
-    // Különböző validálás a felhasználók és cégek számára
     const validTypes = isCompany ? ['spend', 'purchase'] : ['survey', 'purchase'];
     
     if (!validTypes.includes(type)) {
@@ -12,13 +11,11 @@ class TransactionModel {
     let result;
     
     if (isCompany) {
-      // Céges tranzakció létrehozása a credit_transactions táblában
       [result] = await db.promise().query(
         `INSERT INTO credit_transactions (amount, transaction_type, created_at) VALUES (?, ?, NOW())`,
         [amount, type]
       );
       
-      // Kapcsolat létrehozása a company_connections táblában
       if (entityId) {
         await db.promise().query(
           `INSERT INTO company_connections (company_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
@@ -26,13 +23,11 @@ class TransactionModel {
         );
       }
     } else {
-      // Felhasználói tranzakció létrehozása a transactions táblában
       [result] = await db.promise().query(
         `INSERT INTO transactions (user_id, amount, transaction_type, transaction_date) VALUES (?, ?, ?, NOW())`,
         [entityId, amount, type]
       );
-      
-      // Kapcsolat létrehozása a user_connections táblában
+
       if (entityId) {
         await db.promise().query(
           `INSERT INTO user_connections (user_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
@@ -46,7 +41,6 @@ class TransactionModel {
 
   static async connectToCompany(companyId, transactionId) {
     try {
-      // Create a connection in the company_connections table
       await db.promise().query(
         `INSERT INTO company_connections (company_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
         [companyId, transactionId]
@@ -59,7 +53,6 @@ class TransactionModel {
 
   static async connectToUser(userId, transactionId) {
     try {
-      // Create a connection in the user_connections table
       await db.promise().query(
         `INSERT INTO user_connections (user_id, connection_type, connection_id, created_at) VALUES (?, 'transaction', ?, NOW())`,
         [userId, transactionId]
@@ -73,14 +66,12 @@ class TransactionModel {
   static async connectToSurvey(surveyId, transactionId, isCompany = false) {
     try {
       if (isCompany) {
-        // Céges tranzakciók esetén a survey_connections táblát használjuk
         await db.promise().query(
           `INSERT INTO survey_connections (survey_id, connection_type, connection_id, created_at) 
            VALUES (?, 'transaction', ?, NOW())`,
           [surveyId, transactionId]
         );
       } else {
-        // Felhasználói tranzakciók esetén a transactions táblában frissítjük a survey_id mezőt
         await db.promise().query(
           `UPDATE transactions SET survey_id = ? WHERE id = ?`,
           [surveyId, transactionId]

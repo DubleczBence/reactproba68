@@ -54,7 +54,6 @@ describe('Admin Routes', () => {
     next = jest.fn();
     jwt.verify = jest.fn().mockReturnValue({ id: 1, role: 'admin' });
     
-    // Reset the mocks for each test
     jest.clearAllMocks();
   });
 
@@ -115,19 +114,16 @@ describe('Admin Routes', () => {
   });
 
   test('/users should return all users', async () => {
-    // Call the controller method directly
     await AdminController.getUsers(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, name: 'Test User' }]);
   });
 
   test('/companies should return all companies', async () => {
-    // Call the controller method directly
     await AdminController.getCompanies(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, cegnev: 'Test Company' }]);
   });
 
   test('/surveys should return all surveys', async () => {
-    // Call the controller method directly
     await AdminController.getSurveys(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, title: 'Test Survey' }]);
   });
@@ -136,7 +132,6 @@ describe('Admin Routes', () => {
     req.params.id = '1';
     req.body = { name: 'Updated User', email: 'updated@example.com', credits: 200, role: 'user' };
     
-    // Call the controller method directly
     await AdminController.updateUser(req, res);
     expect(res.json).toHaveBeenCalledWith({ message: 'Felhasználó sikeresen frissítve' });
   });
@@ -145,7 +140,6 @@ describe('Admin Routes', () => {
     req.params.id = '1';
     req.body = { cegnev: 'Updated Company', ceg_email: 'updated@company.com', credits: 500 };
     
-    // Call the controller method directly
     await AdminController.updateCompany(req, res);
     expect(res.json).toHaveBeenCalledWith({ message: 'Cég sikeresen frissítve' });
   });
@@ -153,7 +147,6 @@ describe('Admin Routes', () => {
   test('/surveys/:id should delete survey', async () => {
     req.params.id = '1';
     
-    // Call the controller method directly
     await AdminController.deleteSurvey(req, res);
     expect(res.json).toHaveBeenCalledWith({ message: 'Kérdőív sikeresen törölve' });
   });
@@ -168,7 +161,6 @@ describe('Admin Routes', () => {
       companyId: 1
     };
     
-    // Call the controller method directly
     await AdminController.createSurvey(req, res);
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith({ 
@@ -178,7 +170,6 @@ describe('Admin Routes', () => {
   });
 
   test('/companies-list should return companies list', async () => {
-    // Call the controller method directly
     await AdminController.getCompaniesList(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, cegnev: 'Test Company' }]);
   });

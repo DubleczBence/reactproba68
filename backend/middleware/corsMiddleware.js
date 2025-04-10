@@ -1,9 +1,7 @@
 const cors = require('cors');
 
-// Basic CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests from these origins
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:5173',
@@ -20,9 +18,8 @@ const corsOptions = {
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // Allow cookies to be sent with requests
-  optionsSuccessStatus: 200 // For legacy browser support
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 
-// Export the configured CORS middleware
 module.exports = cors(corsOptions);

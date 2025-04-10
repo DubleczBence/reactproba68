@@ -20,7 +20,6 @@ jest.mock('nodemailer', () => ({
   })
 }));
 
-// Mock the CompanyController to return predictable responses
 jest.mock('../controllers/companyController', () => {
   return {
     register: jest.fn().mockImplementation((req, res) => {
@@ -96,7 +95,6 @@ jest.mock('../controllers/companyController', () => {
         updatedData: req.body
       });
     }),
-    // Add the missing methods
     getSurveyDemographics: jest.fn().mockImplementation((req, res) => {
       res.json({ demographics: [] });
     }),
@@ -124,7 +122,6 @@ describe('Company Routes', () => {
     bcrypt.hash = jest.fn().mockResolvedValue('hashed-password');
     bcrypt.compare = jest.fn().mockResolvedValue(true);
     
-    // Reset all mocks
     jest.clearAllMocks();
   });
 
@@ -166,7 +163,6 @@ describe('Company Routes', () => {
   });
 
   test('/sign-up should validate required fields', async () => {
-    // Call controller method directly
     await CompanyController.register(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     
@@ -193,7 +189,6 @@ describe('Company Routes', () => {
   });
 
   test('/sign-in should authenticate companies', async () => {
-    // Call controller method directly
     await CompanyController.login(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     
@@ -211,7 +206,6 @@ describe('Company Routes', () => {
   });
 
   test('/create-survey should create a new survey', async () => {
-    // Call controller method directly
     req.body = {
       title: 'Test Survey',
       questions: [{ questionText: 'Test Question', options: [], selectedButton: 'text' }],
@@ -226,7 +220,6 @@ describe('Company Routes', () => {
   });
 
   test('/forgot-password should send reset code', async () => {
-    // Call controller method directly
     req.body = { email: 'test@company.com', companyNotFound: true };
     await CompanyController.forgotPassword(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
@@ -237,7 +230,6 @@ describe('Company Routes', () => {
   });
 
   test('/verify-reset-code should reset password', async () => {
-    // Call controller method directly
     req.body = { ceg_email: 'test@company.com', code: '12345', newPassword: 'newpassword', invalidCode: true };
     await CompanyController.verifyResetCode(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
@@ -248,14 +240,12 @@ describe('Company Routes', () => {
   });
 
   test('/credits/:companyId should return company credits', async () => {
-    // Call controller method directly
     req.params.companyId = '1';
     await CompanyController.getCredits(req, res);
     expect(res.json).toHaveBeenCalledWith({ credits: 500 });
   });
 
   test('/purchase-credits should add credits to company', async () => {
-    // Call controller method directly
     req.body = { packageAmount: 1000, companyId: 1 };
     await CompanyController.purchaseCredits(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
@@ -266,21 +256,18 @@ describe('Company Routes', () => {
   });
 
   test('/credit-history/:companyId should return transaction history', async () => {
-    // Call controller method directly
     req.params.companyId = '1';
     await CompanyController.getCreditHistory(req, res);
     expect(res.json).toHaveBeenCalledWith([{ id: 1, amount: 1000, transaction_type: 'purchase' }]);
   });
 
   test('/survey-answers/:surveyId should return survey answers', async () => {
-    // Call controller method directly
     req.params.surveyId = '1';
     await CompanyController.getSurveyAnswers(req, res);
     expect(res.json).toHaveBeenCalled();
   });
 
   test('/close-survey/:surveyId should close a survey', async () => {
-    // Call controller method directly
     req.params.surveyId = '1';
     req.body.notOwner = true;
     await CompanyController.closeSurvey(req, res);
@@ -293,8 +280,7 @@ describe('Company Routes', () => {
   });
 
   test('/profile/:companyId should return company profile', async () => {
-    // Call controller method directly
-    req.params.companyId = '2'; // Non-existent company
+    req.params.companyId = '2';
     await CompanyController.getProfile(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
     
@@ -304,8 +290,7 @@ describe('Company Routes', () => {
   });
 
   test('/profile/:companyId PUT should update company profile', async () => {
-    // Call controller method directly
-    req.params.companyId = '2'; // Non-existent company
+    req.params.companyId = '2';
     req.body = { cegnev: 'Updated Company', telefon: '987654321' };
     await CompanyController.updateProfile(req, res);
     expect(res.status).toHaveBeenCalledWith(404);
@@ -322,14 +307,12 @@ describe('Company Routes', () => {
   });
 
   test('/survey-demographics/:surveyId should return survey demographics', async () => {
-    // Call controller method directly
     req.params.surveyId = '1';
     await CompanyController.getSurveyDemographics(req, res);
     expect(res.json).toHaveBeenCalledWith({ demographics: [] });
   });
 
   test('/notifications/:companyId should return notifications', async () => {
-    // Call controller method directly
     req.params.companyId = '1';
     await CompanyController.getNotifications(req, res);
     expect(res.json).toHaveBeenCalledWith({ notifications: [] });

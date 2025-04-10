@@ -38,7 +38,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   maxWidth: '700px',
   height: 'auto',
   minHeight: '300px',
-  maxHeight: 'calc(100vh - 250px)',  // Egységes maxHeight
+  maxHeight: 'calc(100vh - 250px)',
   [theme.breakpoints.down('sm')]: {
     maxHeight: 'calc(100vh - 300px)',
   },
@@ -110,14 +110,12 @@ const Statisztika = ({ onClose }) => {
 
   const applyFilters = () => {
     const filtered = companySurveys.filter(survey => {
-      // Kitöltöttség szűrése
       const completionPercentage = Math.round(survey.completion_percentage);
       if (completionPercentage < filters.minCompletionPercentage || 
           completionPercentage > filters.maxCompletionPercentage) {
         return false;
       }
-      
-      // Dátum szűrése
+
       if (filters.dateFrom || filters.dateTo) {
         const surveyDate = new Date(survey.created_date);
         
@@ -128,7 +126,6 @@ const Statisztika = ({ onClose }) => {
         
         if (filters.dateTo) {
           const toDate = new Date(filters.dateTo);
-          // Beállítjuk a nap végére, hogy a teljes napot tartalmazza
           toDate.setHours(23, 59, 59, 999);
           if (surveyDate > toDate) return false;
         }
@@ -141,13 +138,11 @@ const Statisztika = ({ onClose }) => {
     setFilterDialogOpen(false);
   };
 
-  // Ellenőrizzük, hogy van-e aktív szűrő
   const hasActiveFilters = filters.minCompletionPercentage > 0 || 
                            filters.maxCompletionPercentage < 100 ||
                            filters.dateFrom || 
                            filters.dateTo;
 
-  // A megjelenítendő kérdőívek listája
   const surveysToDisplay = hasActiveFilters ? filteredSurveys : companySurveys;
 
   const handleTabChange = (event, newValue) => {
@@ -157,7 +152,6 @@ const Statisztika = ({ onClose }) => {
   const toggleCompareMode = () => {
     setCompareMode(!compareMode);
     if (!compareMode) {
-      // Ha bekapcsoljuk az összehasonlítást, az aktuális kérdőívet hozzáadjuk
       if (selectedSurvey) {
         setSelectedSurveysForComparison([selectedSurvey.id]);
       }
@@ -207,7 +201,6 @@ const Statisztika = ({ onClose }) => {
           if (Array.isArray(data)) {
             setSurveyAnswers(data);
             
-            // Az első nem szöveges kérdést választjuk ki a diagramhoz
             const firstNonTextQuestion = data.find(q => q.type !== 'text');
             if (firstNonTextQuestion) {
               setSelectedQuestionForChart(firstNonTextQuestion);
@@ -271,14 +264,12 @@ const Statisztika = ({ onClose }) => {
     setOpenDialog(true);
   };
 
-  // Pie chart adatok előkészítése
   const getPieChartData = (question) => {
     if (!question) return null;
     
     const labels = question.answers.map(a => a.option);
     const data = question.answers.map(a => a.count);
-    
-    // Véletlenszerű színek generálása, átlátszóság nélkül
+
     const backgroundColors = question.answers.map(() => 
       `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
     );
@@ -295,15 +286,13 @@ const Statisztika = ({ onClose }) => {
     };
   };
 
- // Demográfiai adatok előkészítése
 const getDemographicChartData = () => {
   if (!demographicData || !demographicData[selectedDemographic]) return null;
   
   const rawData = demographicData[selectedDemographic];
   let labels = Object.keys(rawData);
   const data = Object.values(rawData);
-  
-  // Adatbázis értékek átalakítása olvasható formátumra a Home.js alapján
+
   if (selectedDemographic === 'nem') {
     labels = labels.map(value => {
       if (value === '20') return 'Férfi';
@@ -313,7 +302,6 @@ const getDemographicChartData = () => {
     });
   } else if (selectedDemographic === 'vegzettseg') {
     labels = labels.map(value => {
-      // Rövidebb címkék, hogy elférjenek a diagramon
       if (value === '1') return 'Egyetem/főiskola';
       if (value === '2') return 'Középfok érettségi nélkül';
       if (value === '3') return 'Középfok érettségivel';
@@ -330,7 +318,7 @@ const getDemographicChartData = () => {
       if (value === '17') return 'Észak-Magyarország';
       if (value === '18') return 'Észak-Alföld';
       if (value === '19') return 'Dél-Alföld';
-      if (value === '20') return 'Ismeretlen régió (20)'; // Kezeld az ismeretlen értéket
+      if (value === '20') return 'Ismeretlen régió (20)';
       return `Ismeretlen régió (${value})`;
     });
   } else if (selectedDemographic === 'anyagi') {
@@ -344,7 +332,6 @@ const getDemographicChartData = () => {
       return value;
     });
   }
-  // A korcsoport már megfelelő formátumban van a backend-től
   
   const backgroundColors = labels.map(() => 
     `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`
@@ -362,20 +349,16 @@ const getDemographicChartData = () => {
   };
 };
 
-  // Összehasonlító adatok előkészítése
   const getComparisonChartData = () => {
     if (!comparisonData || Object.keys(comparisonData).length === 0) return null;
-    
-    // Egyszerű példa: az első kérdés válaszainak összehasonlítása
+
     const datasets = [];
     const labels = [];
-    
-    // Minden kérdőívhez egy dataset
+
     Object.entries(comparisonData).forEach(([surveyId, surveyData], index) => {
       const firstQuestion = surveyData.data.find(q => q.type !== 'text');
       if (!firstQuestion) return;
       
-      // Az első kérdőív válaszait használjuk címkeként
       if (index === 0) {
         labels.push(...firstQuestion.answers.map(a => a.option));
       }
@@ -419,7 +402,6 @@ const getDemographicChartData = () => {
           font: {
             size: 11
           },
-          // Címkék tördelése, ha túl hosszúak
           generateLabels: (chart) => {
             const original = ChartJS.overrides.pie.plugins.legend.labels.generateLabels(chart);
             original.forEach(label => {
@@ -443,7 +425,6 @@ const getDemographicChartData = () => {
       },
       tooltip: {
         callbacks: {
-          // Tooltipben megjelenítjük a teljes szöveget
           label: function(context) {
             const label = context.label || '';
             const value = context.raw || 0;
@@ -474,7 +455,6 @@ const getDemographicChartData = () => {
     }
   };
 
-  // Diagram exportálása képként
   const exportChart = () => {
     if (chartRef.current) {
       html2canvas(chartRef.current).then(canvas => {
@@ -485,16 +465,13 @@ const getDemographicChartData = () => {
     }
   };
 
-  // Adatok exportálása CSV-ként
   const exportDataAsCSV = () => {
     if (!selectedSurvey || !surveyAnswers.length) return;
     
     let csvContent = "data:text/csv;charset=utf-8,";
     
-    // Fejléc
     csvContent += "Kérdés,Válasz,Darabszám,Százalék\n";
-    
-    // Adatok
+
     surveyAnswers.forEach(question => {
       if (question.type === 'text') {
         question.answers.forEach(answer => {
@@ -522,17 +499,17 @@ const getDemographicChartData = () => {
       flexDirection: 'column', 
       alignItems: 'center',
       width: '100%',
-      height: 'auto', // Változtassuk 'auto'-ra a fix magasság helyett
+      height: 'auto',
       maxHeight: {
-        xs: 'calc(100vh - 200px)', // Kisebb képernyőn kisebb maximális magasság
-        sm: 'calc(100vh - 200px)', // Tablet méretben kicsit nagyobb
-        md: 'calc(100vh - 100px)'  // Asztali méretben az eredeti
+        xs: 'calc(100vh - 200px)',
+        sm: 'calc(100vh - 200px)',
+        md: 'calc(100vh - 100px)'
       },
       overflow: 'visible',
       pb: {
-        xs: 10, // Kisebb képernyőn nagyobb padding alul
-        sm: 8,  // Tablet méretben kicsit kisebb
-        md: 7   // Asztali méretben az eredeti
+        xs: 10,
+        sm: 8,
+        md: 7
       }
     }}>
       <Box sx={{ 
@@ -556,7 +533,6 @@ const getDemographicChartData = () => {
         
          {/* Eszköztár gombok */}
          {selectedSurvey ? (
-          // Ha egy konkrét kérdőívet nézünk, akkor ezek a gombok jelennek meg
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Tooltip title="Exportálás képként">
               <IconButton onClick={exportChart}>
@@ -575,7 +551,6 @@ const getDemographicChartData = () => {
             </Tooltip>
           </Box>
         ) : (
-          // Ha a kérdőívek listáját nézzük, akkor csak a szűrés gomb jelenik meg
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Tooltip title="Szűrés">
               <IconButton onClick={() => setFilterDialogOpen(true)}>
@@ -707,7 +682,6 @@ const getDemographicChartData = () => {
             )}
           </>
         ) : compareMode ? (
-          // Összehasonlító nézet
           <Box>
             <Typography variant="h6" sx={{ mb: 2 }}>
               Kérdőívek összehasonlítása
@@ -755,7 +729,6 @@ const getDemographicChartData = () => {
             </Button>
           </Box>
         ) : (
-          // Részletes nézet
           <Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
               <Typography variant="h5">
@@ -773,7 +746,6 @@ const getDemographicChartData = () => {
             </Tabs>
             
             {tabValue === 0 && (
-              // Válaszok tab
               <>
                 {selectedQuestionForChart && selectedQuestionForChart.type !== 'text' && (
                   <Box sx={{ mb: 5 }} ref={chartRef}>
@@ -781,12 +753,10 @@ const getDemographicChartData = () => {
                       Válaszok megoszlása
                     </Typography>
                     
-                    {/* Kördiagram magassága fix, hogy ne nyúljon bele a kérdésválasztóba */}
                     <Box sx={{ height: 300 }}>
                       <Pie data={getPieChartData(selectedQuestionForChart)} options={pieChartOptions} />
                     </Box>
                     
-                    {/* Kérdésválasztó elkülönítve, jól látható határral */}
                     <Box sx={{ 
                       mt: 3, 
                       pt: 2, 
@@ -870,7 +840,6 @@ const getDemographicChartData = () => {
             )}
             
             {tabValue === 1 && (
-              // Demográfia tab
               <>
                 {demographicData ? (
                   <Box>
@@ -901,14 +870,13 @@ const getDemographicChartData = () => {
                       </Select>
                     </FormControl>
                     
-                    {/* Módosított kördiagram konténer */}
                     <Box 
                       sx={{ 
                         height: 350, 
                         width: '100%', 
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'center',  // Függőleges középre igazítás
+                        alignItems: 'center',
                         position: 'relative'
                       }} 
                       ref={chartRef}
@@ -918,9 +886,9 @@ const getDemographicChartData = () => {
                         height: '100%',
                         maxWidth: 400,
                         margin: '0 auto',
-                        display: 'flex',       // Flexbox használata
-                        justifyContent: 'center', // Vízszintes középre igazítás
-                        alignItems: 'center'   // Függőleges középre igazítás
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
                       }}>
                         <Pie 
                           data={getDemographicChartData()} 
@@ -957,7 +925,6 @@ const getDemographicChartData = () => {
             )}
             
             {tabValue === 2 && (
-              // Időbeli adatok tab
               <Typography sx={{ textAlign: 'center', mt: 4 }}>
                 Az időbeli adatok megjelenítése fejlesztés alatt áll.
               </Typography>

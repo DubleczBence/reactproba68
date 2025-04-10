@@ -1,8 +1,6 @@
-// Központi hibakezelő middleware
 const errorHandler = (err, req, res, next) => {
     console.error('Error:', err.message, err.stack);
     
-    // Különböző hibatípusok kezelése
     if (err.name === 'ValidationError') {
       return res.status(400).json({ error: err.message });
     }
@@ -15,7 +13,6 @@ const errorHandler = (err, req, res, next) => {
       return res.status(403).json({ error: 'Nincs megfelelő jogosultság' });
     }
     
-    // Alapértelmezett hibaüzenet
     res.status(500).json({ 
       error: 'Szerver hiba történt',
       details: process.env.NODE_ENV === 'development' ? err.message : undefined

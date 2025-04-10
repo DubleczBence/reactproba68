@@ -86,25 +86,23 @@ class CompanyController {
   
       await CompanyModel.updateCredits(companyId, -creditCost);
   
-      // Adjunk hozzá egy alapértelmezett description értéket
       const surveyId = await SurveyModel.create({
         title, 
-        description: "Default survey description", // Alapértelmezett érték
+        description: "Default survey description",
         participantCount, 
         filterCriteria, 
         creditCost
       });
       
       await SurveyModel.connectToCompany(surveyId, companyId);
-  
-      // Kérdések létrehozása sorrendben
+
       for (let i = 0; i < questions.length; i++) {
         const question = questions[i];
         const questionId = await QuestionModel.create({
           questionText: question.questionText, 
           options: question.options, 
           selectedButton: question.selectedButton,
-          order_by: i // Sorrend index alapján
+          order_by: i
         });
         
         await SurveyModel.addQuestion(surveyId, {
@@ -182,12 +180,8 @@ class CompanyController {
     console.log("Received request:", { packageAmount, companyId });
     
     try {
-      // A createCreditTransaction már létrehozza a kapcsolatot, ha a companyId meg van adva
       const transactionId = await TransactionModel.createCreditTransaction(packageAmount, "purchase", companyId, true);
-      
-      // Ezt a sort töröljük, mert duplikációt okoz
-      // await TransactionModel.connectToCompany(companyId, transactionId);
-  
+
       await CompanyModel.updateCredits(companyId, packageAmount);
       
       const credits = await CompanyModel.getCredits(companyId);
@@ -270,8 +264,7 @@ class CompanyController {
       if (!isOwner) {
         return res.status(403).json({ error: 'Nincs jogosultsága a kérdőív lezárásához' });
       }
-  
-      // Aktuális dátum az end_date-hez
+
       const currentDate = new Date();
       
       await SurveyModel.closeSurvey(surveyId, currentDate);
@@ -330,7 +323,6 @@ class CompanyController {
 
       const demographics = await SurveyModel.getSurveyDemographics(surveyId);
 
-      // Csoportosítjuk az adatokat kategóriák szerint
       const result = {
         vegzettseg: {},
         nem: {},
@@ -345,25 +337,19 @@ class CompanyController {
         }
       };
 
-      // Érvényes régió értékek
       const validRegions = ['14', '15', '16', '17', '18', '19'];
 
       demographics.forEach(user => {
-        // Végzettség
         result.vegzettseg[user.vegzettseg] = (result.vegzettseg[user.vegzettseg] || 0) + 1;
         
-        // Nem
         result.nem[user.nem] = (result.nem[user.nem] || 0) + 1;
-        
-        // Régió - csak érvényes értékeket adunk hozzá
+
         if (validRegions.includes(user.regio)) {
           result.regio[user.regio] = (result.regio[user.regio] || 0) + 1;
         }
-        
-        // Anyagi helyzet
+
         result.anyagi[user.anyagi] = (result.anyagi[user.anyagi] || 0) + 1;
-        
-        // Korcsoport
+
         const age = user.eletkor;
         if (age <= 25) result.korcsoport['18-25']++;
         else if (age <= 35) result.korcsoport['26-35']++;

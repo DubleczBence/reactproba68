@@ -1,4 +1,4 @@
-const TOKEN_KEY = 'token'; // Módosítva 'auth_token'-ről 'token'-re
+const TOKEN_KEY = 'token';
 
 export const setAuthToken = (token) => {
   localStorage.setItem(TOKEN_KEY, token);

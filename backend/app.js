@@ -11,30 +11,25 @@ const errorHandler = require('./middleware/error');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
 app.use(corsMiddleware)
 app.use(bodyParser.json());
 
-// Routes
 app.use('/api/users', userRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/main', homeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/main', szuresRoutes);
 
-// Error handling middleware
 app.use(errorHandler);
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
 
-// Start server
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
 }
 
-module.exports = app; // Export for testing
+module.exports = app;
