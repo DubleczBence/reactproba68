@@ -138,6 +138,18 @@ class UserModel {
       [name, email, credits, role, userId]
     );
   }
+
+  static async deleteUser(userId) {
+    await db.promise().query(
+      'DELETE FROM users_responses WHERE user_id = ?',
+      [userId]
+    );
+    
+    await db.promise().query(
+      'DELETE FROM users WHERE id = ?',
+      [userId]
+    );
+  }
 }
 
 module.exports = UserModel;

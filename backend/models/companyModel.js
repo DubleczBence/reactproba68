@@ -156,6 +156,18 @@ class CompanyModel {
     
     return lastLoginRows.length > 0 ? lastLoginRows[0] : null;
   }
+
+  static async deleteCompany(companyId) {
+    await db.promise().query(
+      'DELETE FROM company_connections WHERE company_id = ?',
+      [companyId]
+    );
+    
+    await db.promise().query(
+      'DELETE FROM companies WHERE id = ?',
+      [companyId]
+    );
+  }
 }
 
 module.exports = CompanyModel;

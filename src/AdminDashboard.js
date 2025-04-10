@@ -149,6 +149,79 @@ export default function AdminDashboard({ onSignOut }) {
   }, []);
 
 
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm('Biztosan törölni szeretnéd ezt a felhasználót?')) return;
+  
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`http://localhost:3001/api/admin/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      if (response.ok) {
+        setUsers(users.filter(user => user.id !== id));
+        setSnackbar({
+          open: true,
+          message: 'Felhasználó sikeresen törölve',
+          severity: 'success'
+        });
+      } else {
+        setSnackbar({
+          open: true,
+          message: 'Hiba a felhasználó törlése során',
+          severity: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      setSnackbar({
+        open: true,
+        message: 'Hiba a felhasználó törlése során',
+        severity: 'error'
+      });
+    }
+  };
+  
+  const handleDeleteCompany = async (id) => {
+    if (!window.confirm('Biztosan törölni szeretnéd ezt a céget?')) return;
+  
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`http://localhost:3001/api/admin/companies/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      if (response.ok) {
+        setCompanies(companies.filter(company => company.id !== id));
+        setSnackbar({
+          open: true,
+          message: 'Cég sikeresen törölve',
+          severity: 'success'
+        });
+      } else {
+        setSnackbar({
+          open: true,
+          message: 'Hiba a cég törlése során',
+          severity: 'error'
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting company:', error);
+      setSnackbar({
+        open: true,
+        message: 'Hiba a cég törlése során',
+        severity: 'error'
+      });
+    }
+  };
+
+
   const handleButtonClick = (questionId, type) => {
     setQuestions((prev) =>
       prev.map((question) =>
@@ -481,16 +554,27 @@ export default function AdminDashboard({ onSignOut }) {
     {
       field: 'actions',
       headerName: 'Műveletek',
-      width: 150,
+      width: 300,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Button 
-          startIcon={<EditIcon />} 
-          onClick={() => handleEditUser(params.row)}
-        >
-          Szerkesztés
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button 
+            startIcon={<EditIcon />} 
+            onClick={() => handleEditUser(params.row)}
+            size="small"
+          >
+            Szerkesztés
+          </Button>
+          <Button 
+            startIcon={<DeleteIcon />} 
+            color="error"
+            onClick={() => handleDeleteUser(params.row.id)}
+            size="small"
+          >
+            Törlés
+          </Button>
+        </Box>
       ),
     },
   ];
@@ -503,16 +587,27 @@ export default function AdminDashboard({ onSignOut }) {
     {
       field: 'actions',
       headerName: 'Műveletek',
-      width: 150,
+      width: 300,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Button 
-          startIcon={<EditIcon />} 
-          onClick={() => handleEditCompany(params.row)}
-        >
-          Szerkesztés
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button 
+            startIcon={<EditIcon />} 
+            onClick={() => handleEditCompany(params.row)}
+            size="small"
+          >
+            Szerkesztés
+          </Button>
+          <Button 
+            startIcon={<DeleteIcon />} 
+            color="error"
+            onClick={() => handleDeleteCompany(params.row.id)}
+            size="small"
+          >
+            Törlés
+          </Button>
+        </Box>
       ),
     },
   ];

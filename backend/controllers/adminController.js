@@ -97,6 +97,25 @@ class AdminController {
       res.status(500).json({ error: 'Failed to fetch companies list' });
     }
   }
+
+
+  static async deleteUser(req, res) {
+    try {
+      await UserModel.deleteUser(req.params.id);
+      res.json({ message: 'Felhasználó sikeresen törölve' });
+    } catch (error) {
+      res.status(500).json({ error: 'Hiba a felhasználó törlése során' });
+    }
+  }
+
+  static async deleteCompany(req, res) {
+    try {
+      await CompanyModel.deleteCompany(req.params.id);
+      res.json({ message: 'Cég sikeresen törölve' });
+    } catch (error) {
+      res.status(500).json({ error: 'Hiba a cég törlése során' });
+    }
+  }
 }
 
 module.exports = AdminController;
