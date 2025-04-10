@@ -1550,21 +1550,6 @@ const [open, setOpen] = React.useState(false);
           </DialogActions>
         </Dialog>
 
-        <Snackbar
-          open={purchaseSuccess}
-          autoHideDuration={5000}
-          onClose={() => setPurchaseSuccess(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <Alert 
-            onClose={() => setPurchaseSuccess(false)} 
-            severity="success" 
-            sx={{ width: '100%' }}
-          >
-            Sikeres vásárlás! A kuponjait a profil menüben tekintheti meg.
-          </Alert>
-        </Snackbar>
-
         <CssBaseline enableColorScheme />
         <style jsx global>{`
           @media (min-width: 600px) {
