@@ -1822,10 +1822,11 @@ const [open, setOpen] = React.useState(false);
       display: 'flex',
       gap: { xs: 2, sm: 3, md: 5 },
       order: { xs: 3, sm: 3 },
-      mt: { xs: 2, md: 0 },
+      mt: { xs: -2, sm: 0 },
       width: { xs: '100%', md: '25%' },
       justifyContent: { xs: 'center', md: 'flex-end' },
-      position: 'static',
+      position: 'relative',
+      top: { xs: -10, sm: 'auto' },
       right: 'auto'
     }}>
     <ColorModeSelect sx={{ 
