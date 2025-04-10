@@ -1937,6 +1937,8 @@ const handleCardDialogClose = (cardName) => {
             borderRadius: "20px",
             margin: "0 4px",
           },
+          flexDirection: { xs: "column", sm: "row" },
+          width: { xs: "100%", sm: "auto" },
         }}
       >
         <Button
@@ -1945,6 +1947,8 @@ const handleCardDialogClose = (cardName) => {
             backgroundColor: question.selectedButton === "radio" ? "#1976d2" : "transparent",
             color: question.selectedButton === "radio" ? "#fff" : "inherit",
             opacity: question.selectedButton === 'radio' ? 1 : 0.5,
+            width: { xs: "100%", sm: "auto" },
+            mb: { xs: 1, sm: 0 },
           }}
         >
           {<RadioButtonCheckedIcon />} Feleletválasztó
@@ -1955,6 +1959,8 @@ const handleCardDialogClose = (cardName) => {
             backgroundColor: question.selectedButton === "checkbox" ? "#1976d2" : "transparent",
             color: question.selectedButton === "checkbox" ? "#fff" : "inherit",
             opacity: question.selectedButton === 'checkbox' ? 1 : 0.5,
+            width: { xs: "100%", sm: "auto" },
+            mb: { xs: 1, sm: 0 },
           }}
         >
           {<CheckBoxIcon />} Jelölőnégyzet
@@ -1965,6 +1971,7 @@ const handleCardDialogClose = (cardName) => {
             backgroundColor: question.selectedButton === "text" ? "#1976d2" : "transparent",
             color: question.selectedButton === "text" ? "#fff" : "inherit",
             opacity: question.selectedButton === 'text' ? 1 : 0.5,
+            width: { xs: "100%", sm: "auto" },
           }}
         >
           {<TextFieldsIcon />} Szöveges válasz
@@ -1974,21 +1981,26 @@ const handleCardDialogClose = (cardName) => {
 
     <Box sx={{ width: 500, maxWidth: '100%' }}>
     {question.selectedButton === "radio" && (
-          <RadioGroup>
+          <RadioGroup sx={{ width: "100%" }}>
             {question.options.map((option) => (
-              <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1, flexWrap: { xs: "wrap", sm: "nowrap" },
+              width: "100%" }}>
                 <Radio />
                 <TextField
                   placeholder={`Option ${question.options.indexOf(option) + 1}`}
                   value={option.label}
                   onChange={(e) => handleLabelChange(question.id, option.id, e.target.value)}
-                  sx={{ ml: 2 }}
+                  sx={{ 
+                    ml: 2,
+                    flexGrow: 1,
+                    width: { xs: "calc(100% - 80px)", sm: "auto" }, 
+                    mr: { xs: 1, sm: 2 }
+                  }}
                 />
                   <Button
                   onClick={() => handleRemoveOption(question.id, option.id)}
                   color="error"
                   sx={{
-                    ml: 30,
                     minWidth: "30px",
                     padding: "4px",
                     borderRadius: "20%",
@@ -2002,21 +2014,26 @@ const handleCardDialogClose = (cardName) => {
         )}
 
         {question.selectedButton === "checkbox" && (
-          <FormGroup>
+          <FormGroup sx={{ width: "100%" }}>
             {question.options.map((option) => (
-              <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+              <Box key={option.id} sx={{ display: "flex", alignItems: "center", mb: 1, flexWrap: { xs: "wrap", sm: "nowrap" },
+              width: "100%" }}>
                 <Checkbox />
                 <TextField
                   placeholder={`Option ${question.options.indexOf(option) + 1}`}
                   value={option.label}
                   onChange={(e) => handleLabelChange(question.id, option.id, e.target.value)}
-                  sx={{ ml: 2 }}
+                  sx={{ 
+                    ml: 2,
+                    flexGrow: 1, 
+                    width: { xs: "calc(100% - 80px)", sm: "auto" },
+                    mr: { xs: 1, sm: 2 }
+                  }}
                 />
                 <Button
           onClick={() => handleRemoveOption(question.id, option.id)}
           color="error"
           sx={{
-            ml: 30,
             minWidth: "30px",
             padding: "4px",
             borderRadius: "20%",
