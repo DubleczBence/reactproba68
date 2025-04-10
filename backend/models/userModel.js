@@ -80,7 +80,7 @@ class UserModel {
   }
 
   static async updateProfile(userId, data) {
-    const { name, regio, anyagi } = data;
+    const { name, regio, anyagi, vegzettseg } = data;
     
     if (name !== undefined) {
       await db.promise().query(
@@ -108,6 +108,11 @@ class UserModel {
         params.push(anyagi);
       }
       
+      if (vegzettseg !== undefined) {
+        updates.push('vegzettseg = ?');
+        params.push(vegzettseg);
+      }
+      
       if (updates.length > 0) {
         params.push(userId);
         await db.promise().query(
@@ -115,11 +120,11 @@ class UserModel {
           params
         );
       }
-    } else if (regio !== undefined || anyagi !== undefined) {
+    } else if (regio !== undefined || anyagi !== undefined || vegzettseg !== undefined) {
       await db.promise().query(
         `INSERT INTO users_responses (user_id, korcsoport, vegzettseg, regio, nem, anyagi_helyzet)
-         VALUES (?, CURDATE(), '5', ?, '20', ?)`,
-        [userId, regio || '14', anyagi || '23']
+         VALUES (?, CURDATE(), ?, ?, '20', ?)`,
+        [userId, vegzettseg || '5', regio || '14', anyagi || '23']
       );
     }
   }

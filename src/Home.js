@@ -292,7 +292,8 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
   const [formData, setFormData] = useState({
     name: '',
     regio: '',
-    anyagi: ''
+    anyagi: '',
+    vegzettseg: ''
   });
 
   useEffect(() => {
@@ -300,7 +301,8 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
       setFormData({
         name: userData.name || '',
         regio: userData.regio || '',
-        anyagi: userData.anyagi || ''
+        anyagi: userData.anyagi || '',
+        vegzettseg: userData.vegzettseg || ''
       });
     }
   }, [userData]);
@@ -315,6 +317,7 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
     if (formData.name.trim() !== '') dataToSave.name = formData.name;
     if (formData.regio) dataToSave.regio = formData.regio;
     if (formData.anyagi) dataToSave.anyagi = formData.anyagi;
+    if (formData.vegzettseg) dataToSave.vegzettseg = formData.vegzettseg;
     
     onSave(dataToSave);
   };
@@ -337,14 +340,14 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
     { value: '28', label: '1 500 000 Ft <' }
   ];
   
-  const vegzettsegMap = {
-    '1': 'Egyetem, főiskola stb. oklevéllel',
-    '2': 'Középfokú végzettség érettségi nélkül, szakmai végzettséggel',
-    '3': 'Középfokú végzettség érettségivel (szakmai végzettség nélkül)',
-    '4': 'Középfokú végzettség érettségivel (szakmai végzettséggel)',
-    '5': 'Általános iskola 8. osztálya',
-    '6': '8 általános iskolánál kevesebb'
-  };
+  const vegzettsegOptions = [
+    { value: '1', label: 'Egyetem, főiskola stb. oklevéllel' },
+    { value: '2', label: 'Középfokú végzettség érettségi nélkül, szakmai végzettséggel' },
+    { value: '3', label: 'Középfokú végzettség érettségivel (szakmai végzettség nélkül)' },
+    { value: '4', label: 'Középfokú végzettség érettségivel (szakmai végzettséggel)' },
+    { value: '5', label: 'Általános iskola 8. osztálya' },
+    { value: '6', label: '8 általános iskolánál kevesebb' }
+  ];
   
   const nemMap = {
     '20': 'Férfi',
@@ -370,12 +373,12 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
           />
           
           <FormControl fullWidth>
-          <InputLabel 
-            shrink 
-            style={{ transform: 'translate(0, -17px) scale(0.75)' }}
-          >
-            Régió
-          </InputLabel>
+            <InputLabel 
+              shrink 
+              style={{ transform: 'translate(0, -17px) scale(0.75)' }}
+            >
+              Régió
+            </InputLabel>
             <Select
               name="regio"
               value={formData.regio}
@@ -395,9 +398,10 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
           
           <FormControl fullWidth>
             <InputLabel shrink 
-            style={{ transform: 'translate(0, -17px) scale(0.75)' }}
+              style={{ transform: 'translate(0, -17px) scale(0.75)' }}
             >
-              Anyagi helyzet</InputLabel>
+              Anyagi helyzet
+            </InputLabel>
             <Select
               name="anyagi"
               value={formData.anyagi}
@@ -408,6 +412,29 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
                 <em>Nincs kiválasztva</em>
               </MenuItem>
               {anyagiOptions.map(option => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          <FormControl fullWidth>
+            <InputLabel shrink 
+              style={{ transform: 'translate(0, -17px) scale(0.75)' }}
+            >
+              Végzettség
+            </InputLabel>
+            <Select
+              name="vegzettseg"
+              value={formData.vegzettseg}
+              onChange={handleChange}
+              label="Végzettség"
+            >
+              <MenuItem value="">
+                <em>Nincs kiválasztva</em>
+              </MenuItem>
+              {vegzettsegOptions.map(option => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -439,17 +466,6 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
           
           <TextField
             fullWidth
-            label="Végzettség"
-            value={vegzettsegMap[userData?.vegzettseg] || 'Nincs megadva'}
-            InputProps={{ readOnly: true }}
-            InputLabelProps={{
-              shrink: true,
-              style: { transform: 'translate(0, -17px) scale(0.75)' }
-            }}
-          />
-          
-          <TextField
-            fullWidth
             label="Nem"
             value={nemMap[userData?.nem] || 'Nincs megadva'}
             InputProps={{ readOnly: true }}
@@ -461,13 +477,13 @@ const ProfileDialog = ({ open, onClose, userData, onSave, userVouchers }) => {
           
           {userVouchers && userVouchers.length > 0 && (
             <Box>
-            <Typography variant="h6" sx={{ mb: 2 }}>Vásárolt kuponok</Typography>
-            <Box sx={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: 2,
-              justifyContent: 'flex-start'
-            }}>
+              <Typography variant="h6" sx={{ mb: 2 }}>Vásárolt kuponok</Typography>
+              <Box sx={{ 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: 2,
+                justifyContent: 'flex-start'
+              }}>
               {userVouchers.map((voucher) => {
                 let imageName = 'default.png';
                 

@@ -268,13 +268,13 @@ class UserController {
   }
 
   static async updateProfile(req, res) {
-    const { name, regio, anyagi } = req.body;
+    const { name, regio, anyagi, vegzettseg } = req.body;
     const userId = req.params.userId;
     
     try {
       await db.promise().query('START TRANSACTION');
       
-      await UserModel.updateProfile(userId, { name, regio, anyagi });
+      await UserModel.updateProfile(userId, { name, regio, anyagi, vegzettseg });
       
       await db.promise().query('COMMIT');
       
@@ -282,7 +282,7 @@ class UserController {
       
       res.json({ 
         message: 'User profile updated successfully',
-        updatedData: updatedUser || { name, regio, anyagi }
+        updatedData: updatedUser || { name, regio, anyagi, vegzettseg }
       });
     } catch (error) {
       await db.promise().query('ROLLBACK');
