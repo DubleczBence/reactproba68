@@ -1778,7 +1778,8 @@ const [open, setOpen] = React.useState(false);
     display: 'flex',
     flexDirection: { xs: 'column', sm: 'row' },
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    pl: { md: 4, lg: 8 },
   }}
 >
 <Typography
@@ -1805,14 +1806,14 @@ const [open, setOpen] = React.useState(false);
     sx={{
       textAlign: 'center',
       fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-      order: { xs: 1, sm: 2 },
-      position: { sm: 'absolute' },
-      left: { sm: '50%' },
-      transform: { sm: 'translateX(-50%)' },
-      width: { xs: '100%', sm: 'auto' },
-      mt: { xs: 4, sm: -1 },
+      order: { xs: 1, md: 2 },
+      width: { xs: '100%', md: '50%' },
+      mt: { xs: 0, sm: 0 },
+      mb: { xs: 1, md: 0 },
+      ml: { md: -8 },
       whiteSpace: 'nowrap',
-      zIndex: 4
+      zIndex: 4,
+      color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
     }}
   >
     Köszöntjük az oldalon, {name}!
@@ -1857,7 +1858,7 @@ const [open, setOpen] = React.useState(false);
               width: { xs: '95%', sm: '600px' },
               maxWidth: '600px',
               mx: 'auto',
-              mt: { xs: 2, sm: 2 },
+              mt: { xs: -2, sm: 0 },
               mb: { xs: 8, sm: 10 },
               position: 'relative',
               zIndex: 1,
