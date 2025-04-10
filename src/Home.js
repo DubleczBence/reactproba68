@@ -1858,7 +1858,7 @@ const [open, setOpen] = React.useState(false);
               width: { xs: '95%', sm: '600px' },
               maxWidth: '600px',
               mx: 'auto',
-              mt: { xs: -6, sm: -2 },
+              mt: { xs: 2, sm: -6 },
               mb: { xs: 8, sm: 10 },
               position: 'relative',
               zIndex: 1,
