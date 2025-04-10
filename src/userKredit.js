@@ -190,14 +190,14 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
           width: "100%",
           maxWidth: "700px",
           height: "auto",
-          maxHeight: "calc(80vh - 120px)",
+          maxHeight: isMobile ? "none" : "calc(80vh - 120px)",
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           padding: 2,
           paddingBottom: 0,
           margin: '0 auto',
-          overflowY: 'auto !important',
+          overflowY: isMobile ? 'visible' : 'auto !important',
           order: isMobile ? 1 : 2,
           animation: 'fadeInUp 0.7s ease-out',
           '&::-webkit-scrollbar': {
@@ -224,14 +224,13 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
       >
           <Box sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            mb: 0,
-            mt: 0,
-            width: '100%',
             position: 'relative',
-            padding: { xs: '0 10px', sm: '0 20px' }
+            width: '100%',
+            flexGrow: 1,
+            maxHeight: isMobile ? 'none' : '80vh',
+            overflow: isMobile ? 'visible' : 'hidden',
           }}>
             <Typography 
               variant="h4" 
