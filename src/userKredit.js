@@ -275,7 +275,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
               marginBottom: 1, 
               boxShadow: 'none', 
               height:'auto',
-              minHeight: 'auto',
+              minHeight: '300px',
               width: '100%', 
               backgroundColor: '#f5f5f5', 
               padding: 2
