@@ -180,6 +180,8 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
         position: 'relative',
         width: '100%',
         flexGrow: 1,
+        maxHeight: '80vh',
+        overflow: 'hidden',
       }}>
         <StyledCard
         variant="outlined"
@@ -187,7 +189,7 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
           mt: 15,
           width: "100%",
           maxWidth: "700px",
-          height: "auto",
+          height: isMobile ? "auto" : "600px",
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
