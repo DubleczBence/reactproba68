@@ -38,7 +38,6 @@ const StyledCard = styled(MuiCard)(({ theme }) => ({
     : 'rgba(0, 0, 5, 0.8) !important',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  maxHeight: '80vh',
   animation: 'fadeIn 0.5s ease-out',
   '@keyframes fadeIn': {
     '0%': {
@@ -180,8 +179,6 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
       position: 'relative',
       width: '100%',
       flexGrow: 1,
-      maxHeight: '80vh',
-      overflow: 'hidden',
     }}>
         <StyledCard
         variant="outlined"
@@ -189,15 +186,14 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
           mt: 15,
           width: "100%",
           maxWidth: "700px",
-          height: "auto",
-          maxHeight: isMobile ? "none" : "calc(80vh - 120px)",
+          height: isMobile ? "auto" : "600px",
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           padding: 2,
           paddingBottom: 0,
           margin: '0 auto',
-          overflowY: isMobile ? 'visible' : 'auto !important',
+          overflowY: 'auto',
           order: isMobile ? 1 : 2,
           animation: 'fadeInUp 0.7s ease-out',
           '&::-webkit-scrollbar': {
