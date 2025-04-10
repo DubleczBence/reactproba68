@@ -211,8 +211,8 @@ const SimpleBottomNavigation = ({ value, onChange }) => {
       
       sx={{
         backgroundColor: 'transparent',
-        mt: 2, 
-        mb: 2,
+        mt: { xs: 0, sm: 2 },
+        mb: { xs: 1, sm: 2 },
         width: '18%', 
       }}
     >
@@ -1449,7 +1449,7 @@ const handleCardDialogClose = (cardName) => {
     width: '95%', 
     maxWidth: '700px',
     mb: 0,
-    mt: 4,
+    mt: { xs: 1, sm: 4 },
   }}>
 
 
@@ -1488,7 +1488,7 @@ const handleCardDialogClose = (cardName) => {
   <Card
     variant="outlined"
     sx={{
-      mt: 1,
+      mt: { xs: 0, sm: 1 },
       width: "95% !important",
       height: { xs: "auto", sm: "70%" },
       maxWidth: "700px !important",
