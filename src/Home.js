@@ -1772,7 +1772,7 @@ const [open, setOpen] = React.useState(false);
   sx={{ 
     width: '100%', 
     mb: 4,
-    mt: { xs: 6, sm: 0 }, 
+    mt: { xs: 2, sm: 4 }, 
     px: { xs: 1, sm: 2, md: 3 },
     position: 'relative',
     display: 'flex',
@@ -1857,9 +1857,12 @@ const [open, setOpen] = React.useState(false);
               width: { xs: '95%', sm: '600px' },
               maxWidth: '600px',
               mx: 'auto',
-              mt: { xs: 0, sm: 10 },
+              mt: { xs: 2, sm: 2 },
+              mb: { xs: 8, sm: 10 },
               position: 'relative',
-              zIndex: 1
+              zIndex: 1,
+              height: { xs: "auto", sm: "auto" },
+              overflow: "auto"
             }}>
       
             <FormControl sx={{ m: 1, minWidth: 240 }}>
