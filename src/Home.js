@@ -1779,7 +1779,6 @@ const [open, setOpen] = React.useState(false);
     flexDirection: { xs: 'column', sm: 'row' },
     alignItems: 'center',
     justifyContent: 'space-between',
-    pl: { md: 4, lg: 8 },
   }}
 >
 <Typography
@@ -1806,29 +1805,29 @@ const [open, setOpen] = React.useState(false);
     sx={{
       textAlign: 'center',
       fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-      order: { xs: 1, md: 2 },
+      order: { xs: 1, sm: 2 },
+      position: { sm: 'absolute' },
+      left: { sm: '50%' },
+      transform: { sm: 'translateX(-50%)' },
       width: { xs: '100%', md: '50%' },
-      mt: { xs: 0, sm: 0 },
-      mb: { xs: 1, md: 0 },
-      ml: { md: -8 },
+      mt: { xs: 4, sm: -1 },
       whiteSpace: 'nowrap',
-      zIndex: 4,
-      color: theme => theme.palette.mode === 'light' ? '#003092' : 'inherit',
+      zIndex: 4
     }}
   >
     Köszöntjük az oldalon, {name}!
   </Typography>
   
-  <Box sx={{
-    display: 'flex',
-    gap: { xs: 2, sm: 3, md: 5 },
-    order: { xs: 3, sm: 3 },
-    mt: { xs: 0, sm: 0 },
-    position: 'relative',
-    right: { xs: 0, sm: -10, md: -20 },
-    width: { sm: '25%' },
-    justifyContent: 'flex-end'
-  }}>
+      <Box sx={{
+      display: 'flex',
+      gap: { xs: 2, sm: 3, md: 5 },
+      order: { xs: 3, sm: 3 },
+      mt: { xs: 2, md: 0 },
+      width: { xs: '100%', md: '25%' },
+      justifyContent: { xs: 'center', md: 'flex-end' },
+      position: 'static',
+      right: 'auto'
+    }}>
     <ColorModeSelect sx={{ 
       display: 'flex',
       alignItems: 'center'
