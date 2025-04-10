@@ -147,14 +147,18 @@ const CompHomeContainer = styled(Stack)(({ theme }) => ({
     padding: theme.spacing(4),
   },
   '&::before': {
-  content: '""',
-  position: 'absolute',
-  inset: 0,
-  backgroundColor: theme.palette.mode === 'light' 
-      ? 'rgba(255, 255, 255, 0.2)'
-      : 'rgba(0, 0, 0, 0.2)',
-  zIndex: -1,
-}
+    content: '""',
+    position: 'absolute',
+    inset: 0,
+    backgroundColor: theme.palette.mode === 'light' 
+        ? 'rgba(255, 255, 255, 0.2)'
+        : 'rgba(0, 0, 0, 0.2)',
+    zIndex: -1,
+  },
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  maxHeight: '100vh',
+  position: 'relative',
 }));
 
 
@@ -1292,15 +1296,17 @@ const handleCardDialogClose = (cardName) => {
 
 
 
-        <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"}  sx={{
-        position: 'relative',
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        pt: 4, 
-      }}>
+    <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"} sx={{
+      position: 'relative',
+      height: '100vh',
+      width: '100vw',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      pt: 4,
+      overflowY: 'auto',
+      overflowX: 'hidden',
+    }}>
 
     
 
