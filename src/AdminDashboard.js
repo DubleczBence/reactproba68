@@ -154,7 +154,7 @@ export default function AdminDashboard({ onSignOut }) {
   
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/users/${id}`, {
+      const response = await fetch(`https://optify.onrender.com/api/admin/users/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -190,7 +190,7 @@ export default function AdminDashboard({ onSignOut }) {
   
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:3001/api/admin/companies/${id}`, {
+      const response = await fetch(`https://optify.onrender.com/api/admin/companies/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
