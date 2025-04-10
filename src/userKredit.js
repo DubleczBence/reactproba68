@@ -59,13 +59,11 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
 
   const fetchCreditHistory = useCallback(async () => {
     try {
-      // Használjuk a get függvényt a kredit előzmények lekéréséhez
       const data = await get(`/users/credit-history/${userId}`);
 
       const uniqueTransactions = Array.isArray(data) ? 
       Array.from(new Map(data.map(item => [item.id, item])).values()) : [];
       
-      // Formázott dátum hozzáadása minden tranzakcióhoz
       const formattedData = uniqueTransactions.map(transaction => ({
         ...transaction,
         formatted_date: new Date(transaction.transaction_date).toLocaleDateString('hu-HU', {
@@ -389,7 +387,6 @@ const UserKredit = ({ currentCredits, onPurchase, userId, onClose, onVoucherSele
                       },
                       flexShrink: 0,
                     }}>
-                      {/* No need for the small image in the corner anymore */}
                       <Typography variant="h5" fontWeight="bold" sx={{ mb: 0, mt: 1, zIndex: 2 }}>
                         {item.name}
                       </Typography>
