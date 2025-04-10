@@ -140,7 +140,6 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 
 const CompHomeContainer = styled(Stack)(({ theme }) => ({
-  height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
   minHeight: '100%',
   padding: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
@@ -155,10 +154,9 @@ const CompHomeContainer = styled(Stack)(({ theme }) => ({
         : 'rgba(0, 0, 0, 0.2)',
     zIndex: -1,
   },
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  maxHeight: '100vh',
-  position: 'relative',
+  flexGrow: 1,
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 
@@ -1211,6 +1209,16 @@ const handleCardDialogClose = (cardName) => {
       <React.Fragment>
       
         <CssBaseline enableColorScheme />
+        <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        minHeight: '100vh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        position: 'relative'
+      }}>
+
+      </Box>
 
         <IllustrationContainer>
           <img 
@@ -1296,17 +1304,7 @@ const handleCardDialogClose = (cardName) => {
 
 
 
-    <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"} sx={{
-      position: 'relative',
-      height: '100vh',
-      width: '100vw',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      pt: 4,
-      overflowY: 'auto',
-      overflowX: 'hidden',
-    }}>
+    <CompHomeContainer direction="column" justifyContent={showStatisztika ? "flex-start" : "space-between"}>
 
     
 
