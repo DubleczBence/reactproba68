@@ -1804,7 +1804,7 @@ const handleCardDialogClose = (cardName) => {
     variant="outlined"
     sx={{
       top: "4px",
-      mt: 7,
+      mt: { xs: 0, sm: 7 },
       width: "95% !important",
       height: "70vh",
       maxWidth: "700px !important",
